@@ -2,3 +2,7 @@ data/*
 scratch/*
 outputs/preprocessing/*
 .DS_Store
+
+*.tsv
+*.csv
+*.parquet
