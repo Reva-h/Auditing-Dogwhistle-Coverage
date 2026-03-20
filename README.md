@@ -34,6 +34,7 @@ Expected project layout for a successful run:
 
 ```text
 benchmarking_dogwhistles/
+	glossary_formatter.ipynb
 	preprocessing_pipeline.ipynb
 	README.md
 	requirements.txt
@@ -44,6 +45,10 @@ benchmarking_dogwhistles/
 			implicit_hate_v1_stg3_posts.tsv
 			...
 	outputs/
+		glossary/
+			glossary_extracted.tsv
+			glossary_examples_long.tsv
+			glossary_group_metrics.tsv
 		preprocessing/
 			hatexplain_standardized.tsv
 			mhs_standardized.tsv
@@ -56,19 +61,18 @@ Notes:
 - [data/measuring_hate_speech.parquet](data/measuring_hate_speech.parquet) is used as a local cache and can be auto-created by the notebook.
 - ElSherief is optional and controlled with `include_elsherief` in the config cell.
 
-## Requirements
+## Environment Setup
 
-Recommended Python packages:
-- `pandas`
-- `pyarrow`
-- `fsspec`
-- `huggingface_hub`
+Set up a virtual environment and install dependencies from [requirements.txt](requirements.txt):
 
-In the notebook environment:
-
-```python
-%pip install pandas pyarrow fsspec huggingface_hub
+```bash
+cd /Users/RevaH/Documents/COS534/benchmarking_dogwhistles
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
 ```
+
+Then select the `.venv` interpreter as the notebook kernel in VS Code before running notebooks.
 
 ## Running the Notebook
 
@@ -82,6 +86,25 @@ Stages:
 5. Sensitivity analysis
 6. Target integrity checks
 7. Save outputs
+
+## Glossary Formatter Notebook
+
+Use [glossary_formatter.ipynb](glossary_formatter.ipynb) to parse [data/glossary](data/glossary) into structured tables and metrics.
+
+What it does:
+1. Extracts term-level fields: term, surface forms, persona/in-group, covert meaning, type, register, description, and links.
+2. Extracts example-level records with speaker/date metadata when present.
+3. Computes groupwise metrics and renders a pie chart of example volume by persona/in-group.
+4. Writes TSV outputs under [outputs](outputs).
+
+Run order:
+1. Open [glossary_formatter.ipynb](glossary_formatter.ipynb).
+2. Run all cells from top to bottom.
+
+Outputs from glossary formatter:
+- [outputs/glossary/glossary_extracted.tsv](outputs/glossary/glossary_extracted.tsv)
+- [outputs/glossary/glossary_examples_long.tsv](outputs/glossary/glossary_examples_long.tsv)
+- [outputs/glossary/glossary_group_metrics.tsv](outputs/glossary/glossary_group_metrics.tsv)
 
 ## Configuration
 
