@@ -1,0 +1,97 @@
+persona_in_group	type	register	term_count	unique_term_count	total_examples	avg_examples_per_term
+racist	concept (policy)	Formal/Offline	26	26	26	1.0
+antisemitic	stereotype-based target group label	Formal/Offline	22	22	22	1.0
+white supremacist	persona signal (symbol)	Informal/Online	21	21	21	1.0
+racist	stereotype-based target group label	Formal/Offline	12	12	12	1.0
+transphobic	concept (values)	Formal/Offline	11	11	11	1.0
+antisemitic	stereotype-based descriptor	Formal/Offline	10	10	10	1.0
+transphobic	persona signal (symbol)	Informal/Online	9	9	9	1.0
+transphobic	stereotype-based target group label	Informal/Online	9	9	9	1.0
+racist	concept (values)	Formal/Offline	8	8	8	1.0
+transphobic	persona signal (self-referential)	Formal/Offline	8	8	8	1.0
+antisemitic	concept (other)	Formal/Offline	7	7	7	1.0
+transphobic	persona signal (self-referential)	Informal/Online	7	7	7	1.0
+white supremacist	persona signal (self-referential)	Informal/Online	7	7	7	1.0
+antisemitic	representative (Bogeyman)	Formal/Offline	6	6	6	1.0
+antisemitic	stereotype-based target group label	Informal/Online	5	5	5	1.0
+racist	stereotype-based descriptor	Formal/Offline	5	5	5	1.0
+transphobic	persona signal (shared culture)	Informal/Online	5	5	5	1.0
+white supremacist	arbitrary target group label	Informal/Online	5	5	5	1.0
+Islamophobic	concept (other)	Formal/Offline	4	4	4	1.0
+anti-liberal	arbitrary target group label	Informal/Online	4	4	4	1.0
+anti-vax	concept (values)	Formal/Offline	4	4	4	1.0
+antisemitic	stereotype-based descriptor	Informal/Online	4	4	4	1.0
+conservative	concept (policy)	Formal/Offline	4	4	4	1.0
+homophobic	concept (values)	Formal/Offline	4	4	4	1.0
+racist	persona signal (self-referential)	Formal/Offline	4	4	4	1.0
+racist	stereotype-based descriptor	Informal/Online	4	4	4	1.0
+religious	persona signal (shared culture)	Formal/Offline	4	4	4	1.0
+transphobic	stereotype-based descriptor	Formal/Offline	4	4	4	1.0
+white supremacist	humor/mockery/sarcasm	Informal/Online	4	4	4	1.0
+white supremacist	persona signal (shared culture)	Informal/Online	4	4	4	1.0
+Islamophobic	stereotype-based target group label	Formal/Offline	3	3	3	1.0
+anti-Latino	stereotype-based target group label	Formal/Offline	3	3	3	1.0
+anti-liberal	stereotype-based target group label	Informal/Online	3	3	3	1.0
+antisemitic	arbitrary target group label	Informal/Online	3	3	3	1.0
+antisemitic	concept (other)	Informal/Online	3	3	3	1.0
+antisemitic	persona signal (self-referential)	Informal/Online	3	3	3	1.0
+antisemitic	persona signal (symbol)	Informal/Online	3	3	3	1.0
+racist	concept (other)	Formal/Offline	3	3	3	1.0
+racist	humor/mockery/sarcasm	Informal/Online	3	3	3	1.0
+racist	representative (Bogeyman)	Formal/Offline	3	3	3	1.0
+transphobic	arbitrary target group label	Informal/Online	3	3	3	1.0
+transphobic	concept (other)	Formal/Offline	3	3	3	1.0
+transphobic	concept (other)	Informal/Online	3	3	3	1.0
+transphobic	humor/mockery/sarcasm	Informal/Online	3	3	3	1.0
+transphobic	stereotype-based descriptor	Informal/Online	3	3	3	1.0
+Islamophobic	concept (other)	Informal/Online	2	2	2	1.0
+anti-Asian	arbitrary target group label	Informal/Online	2	2	2	1.0
+anti-Latino	concept (policy)	Formal/Offline	2	2	2	1.0
+antisemitic	concept (policy)	Formal/Offline	2	2	2	1.0
+antisemitic	persona signal (shared culture)	Informal/Online	2	2	2	1.0
+antisemitic	phonetic-based target group label	Informal/Online	2	2	2	1.0
+conservative	concept (values)	Formal/Offline	2	2	2	1.0
+racist	arbitrary target group label	Informal/Online	2	2	2	1.0
+racist	persona signal (symbol)	Informal/Online	2	2	2	1.0
+racist	phonetic-based target group label	Informal/Online	2	2	2	1.0
+transphobic	concept (values)	Informal/Online	2	2	2	1.0
+white supremacist	persona signal (self-referential)	Formal/Offline	2	2	2	1.0
+xenophobic	concept (policy)	Formal/Offline	2	2	2	1.0
+Islamophobic	arbitrary target group label	Informal/Online	1	1	1	1.0
+Islamophobic	concept (policy)	Formal/Offline	1	1	1	1.0
+Islamophobic	concept (values)	Formal/Offline	1	1	1	1.0
+Islamophobic	persona signal (shared culture)	Informal/Online	1	1	1	1.0
+Islamophobic	representative (Bogeyman)	Formal/Offline	1	1	1	1.0
+Islamophobic	stereotype-based descriptor	Formal/Offline	1	1	1	1.0
+Islamophobic	stereotype-based target group label	Informal/Online	1	1	1	1.0
+anti-Asian	stereotype-based descriptor	Formal/Offline	1	1	1	1.0
+anti-GMO	concept (policy)	Formal/Offline	1	1	1	1.0
+anti-GMO	concept (values)	Formal/Offline	1	1	1	1.0
+anti-LGBTQ	arbitrary target group label	Informal/Online	1	1	1	1.0
+anti-LGBTQ	concept (other)	Formal/Offline	1	1	1	1.0
+anti-LGBTQ	stereotype-based target group label	Formal/Offline	1	1	1	1.0
+anti-Latino	arbitrary target group label	Informal/Online	1	1	1	1.0
+anti-vax	stereotype-based descriptor	Formal/Offline	1	1	1	1.0
+antisemitic	persona signal (in-group label)	Informal/Online	1	1	1	1.0
+climate change denier	concept (policy)	Formal/Offline	1	1	1	1.0
+climate change denier	concept (values)	Formal/Offline	1	1	1	1.0
+climate change denier	persona signal (self-referential)	Formal/Offline	1	1	1	1.0
+climate change denier	stereotype-based target group label	Formal/Offline	1	1	1	1.0
+conservative	persona signal (self-referential)	Formal/Offline	1	1	1	1.0
+conservative	persona signal (shared culture)	Informal/Online	1	1	1	1.0
+homophobic	arbitrary target group label	Informal/Online	1	1	1	1.0
+homophobic	stereotype-based target group label	Formal/Offline	1	1	1	1.0
+liberal	concept (other)	Formal/Offline	1	1	1	1.0
+liberal	concept (policy)	Formal/Offline	1	1	1	1.0
+liberal	stereotype-based target group label	Formal/Offline	1	1	1	1.0
+misogynistic	concept (other)	Informal/Online	1	1	1	1.0
+racist	concept (values)	Informal/Online	1	1	1	1.0
+racist	stereotype-based target group label	Informal/Online	1	1	1	1.0
+transphobic	humor/mockery/sarcasm	Formal/Offline	1	1	1	1.0
+transphobic	persona signal (shared culture)	Formal/Offline	1	1	1	1.0
+transphobic	stereotype-based target group label	Formal/Offline	1	1	1	1.0
+white supremacist	concept (other)	Formal/Offline	1	1	1	1.0
+white supremacist	concept (policy)	Formal/Offline	1	1	1	1.0
+white supremacist	concept (values)	Formal/Offline	1	1	1	1.0
+white supremacist	concept (values)	Informal/Online	1	1	1	1.0
+white supremacist	stereotype-based descriptor	Informal/Online	1	1	1	1.0
