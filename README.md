@@ -7,17 +7,19 @@ Preprocessing pipeline for Section 4.1 of the dogwhistle benchmark audit project
 The primary pipeline is the modular notebook sequence in [data_preprocessing](data_preprocessing), documented in detail at [data_preprocessing/README.md](data_preprocessing/README.md).
 
 Run order:
-1. [data_preprocessing/01_hatexplain_formatting.ipynb](data_preprocessing/01_hatexplain_formatting.ipynb)
-2. [data_preprocessing/02_mhs_formatting.ipynb](data_preprocessing/02_mhs_formatting.ipynb)
-3. [data_preprocessing/03_elsherief_formatting.ipynb](data_preprocessing/03_elsherief_formatting.ipynb)
-4. [data_preprocessing/04_union_and_dedup.ipynb](data_preprocessing/04_union_and_dedup.ipynb)
-5. [data_preprocessing/05_target_label_analysis_and_filtering.ipynb](data_preprocessing/05_target_label_analysis_and_filtering.ipynb)
+1. [data_preprocessing/00_glossary_formatter.ipynb](data_preprocessing/00_glossary_formatter.ipynb)
+2. [data_preprocessing/01_hatexplain_formatting.ipynb](data_preprocessing/01_hatexplain_formatting.ipynb)
+3. [data_preprocessing/02_mhs_formatting.ipynb](data_preprocessing/02_mhs_formatting.ipynb)
+4. [data_preprocessing/03_elsherief_formatting.ipynb](data_preprocessing/03_elsherief_formatting.ipynb)
+5. [data_preprocessing/04_union_and_dedup.ipynb](data_preprocessing/04_union_and_dedup.ipynb)
+6. [data_preprocessing/05_target_label_analysis_and_filtering.ipynb](data_preprocessing/05_target_label_analysis_and_filtering.ipynb)
 
 At a high level, this pipeline:
-1. Standardizes each source dataset into a shared post-level schema.
-2. Unions standardized outputs and deduplicates with ID-first, text-key fallback logic.
-3. Normalizes/analyzes target labels and optionally filters low-support groups.
-4. Writes stage outputs under [outputs/preprocessing](outputs/preprocessing) and [outputs/unioned_data](outputs/unioned_data).
+1. Builds glossary artifacts from glossary source files into [outputs/glossary](outputs/glossary).
+2. Standardizes each source dataset into a shared post-level schema.
+3. Unions standardized outputs and deduplicates with ID-first, text-key fallback logic.
+4. Normalizes/analyzes target labels and optionally filters low-support groups.
+5. Writes stage outputs under [outputs/glossary](outputs/glossary), [outputs/preprocessing](outputs/preprocessing), and [outputs/unioned_data](outputs/unioned_data).
 
 Legacy notebook note:
 - [preprocessing_pipeline.ipynb](preprocessing_pipeline.ipynb) is an older monolithic variant kept for reference.
@@ -40,9 +42,9 @@ Expected project layout for a successful run:
 
 ```text
 benchmarking_dogwhistles/
-	glossary_formatter.ipynb
 	preprocessing_pipeline.ipynb
 	data_preprocessing/
+		00_glossary_formatter.ipynb
 		01_hatexplain_formatting.ipynb
 		02_mhs_formatting.ipynb
 		03_elsherief_formatting.ipynb
@@ -70,6 +72,7 @@ benchmarking_dogwhistles/
 			05_dedup_primary_filtered.tsv
 			05_raw_label_counts_for_annotation.tsv
 		glossary/
+			glossary.tsv
 			glossary_extracted.tsv
 			glossary_examples_long.tsv
 			glossary_group_metrics.tsv
@@ -96,31 +99,25 @@ Then select the `.venv` interpreter as the notebook kernel in VS Code before run
 
 Use the stage-by-stage notebooks in [data_preprocessing](data_preprocessing):
 
-1. Run [data_preprocessing/01_hatexplain_formatting.ipynb](data_preprocessing/01_hatexplain_formatting.ipynb)
-2. Run [data_preprocessing/02_mhs_formatting.ipynb](data_preprocessing/02_mhs_formatting.ipynb)
-3. Run [data_preprocessing/03_elsherief_formatting.ipynb](data_preprocessing/03_elsherief_formatting.ipynb)
-4. Run [data_preprocessing/04_union_and_dedup.ipynb](data_preprocessing/04_union_and_dedup.ipynb)
-5. Run [data_preprocessing/05_target_label_analysis_and_filtering.ipynb](data_preprocessing/05_target_label_analysis_and_filtering.ipynb)
+1. Run [data_preprocessing/00_glossary_formatter.ipynb](data_preprocessing/00_glossary_formatter.ipynb)
+2. Run [data_preprocessing/01_hatexplain_formatting.ipynb](data_preprocessing/01_hatexplain_formatting.ipynb)
+3. Run [data_preprocessing/02_mhs_formatting.ipynb](data_preprocessing/02_mhs_formatting.ipynb)
+4. Run [data_preprocessing/03_elsherief_formatting.ipynb](data_preprocessing/03_elsherief_formatting.ipynb)
+5. Run [data_preprocessing/04_union_and_dedup.ipynb](data_preprocessing/04_union_and_dedup.ipynb)
+6. Run [data_preprocessing/05_target_label_analysis_and_filtering.ipynb](data_preprocessing/05_target_label_analysis_and_filtering.ipynb)
 
 For detailed stage behavior and inputs/outputs, see [data_preprocessing/README.md](data_preprocessing/README.md).
 
 If needed, you can still run the monolithic reference notebook [preprocessing_pipeline.ipynb](preprocessing_pipeline.ipynb).
 
-## Glossary Formatter Notebook
+## Glossary Stage
 
-Use [glossary_formatter.ipynb](glossary_formatter.ipynb) to parse [data/glossary](data/glossary) into structured tables and metrics.
+The glossary formatter is stage `00` of the modular pipeline:
 
-What it does:
-1. Extracts term-level fields: term, surface forms, persona/in-group, covert meaning, type, register, description, and links.
-2. Extracts example-level records with speaker/date metadata when present.
-3. Computes groupwise metrics and renders a pie chart of example volume by persona/in-group.
-4. Writes TSV outputs under [outputs](outputs).
+- [data_preprocessing/00_glossary_formatter.ipynb](data_preprocessing/00_glossary_formatter.ipynb)
 
-Run order:
-1. Open [glossary_formatter.ipynb](glossary_formatter.ipynb).
-2. Run all cells from top to bottom.
-
-Outputs from glossary formatter:
+Outputs from glossary stage:
+- [outputs/glossary/glossary.tsv](outputs/glossary/glossary.tsv)
 - [outputs/glossary/glossary_extracted.tsv](outputs/glossary/glossary_extracted.tsv)
 - [outputs/glossary/glossary_examples_long.tsv](outputs/glossary/glossary_examples_long.tsv)
 - [outputs/glossary/glossary_group_metrics.tsv](outputs/glossary/glossary_group_metrics.tsv)

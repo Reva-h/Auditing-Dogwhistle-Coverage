@@ -5,17 +5,19 @@
 Run the preprocessing notebooks in [data_preprocessing](../data_preprocessing) end-to-end.
 
 Execution order:
-1. 01_hatexplain_formatting.ipynb
-2. 02_mhs_formatting.ipynb
-3. 03_elsherief_formatting.ipynb
-4. 04_union_and_dedup.ipynb
-5. 05_target_label_analysis_and_filtering.ipynb
+1. 00_glossary_formatter.ipynb
+2. 01_hatexplain_formatting.ipynb
+3. 02_mhs_formatting.ipynb
+4. 03_elsherief_formatting.ipynb
+5. 04_union_and_dedup.ipynb
+6. 05_target_label_analysis_and_filtering.ipynb
 
 ### Why this script exists
 
 - Automates the full preprocessing flow so it can be rerun consistently.
 - Stops immediately on the first notebook failure.
 - Keeps preprocessing outputs split by stage:
+- Notebook 00 writes glossary files to [outputs/glossary](../outputs/glossary).
 - Notebooks 01-03 write standardized files to [outputs/preprocessing](../outputs/preprocessing).
 - Notebooks 04-05 write union/filter files to [outputs/unioned_data](../outputs/unioned_data).
 

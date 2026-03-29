@@ -4,9 +4,10 @@ set -euo pipefail
 # Run the data preprocessing notebooks end-to-end in a deterministic order.
 #
 # What this script does:
-# 1. Executes notebooks in data_preprocessing/ from 01 -> 05.
+# 1. Executes notebooks in data_preprocessing/ from 00 -> 05.
 # 2. Uses the repository root as notebook execution working directory.
 # 3. Preserves the current artifact layout:
+#    - Notebook 00 writes glossary files to outputs/glossary/
 #    - Notebooks 01-03 write standardized files to outputs/preprocessing/
 #    - Notebooks 04-05 write union/filter artifacts to outputs/unioned_data/
 #
@@ -21,6 +22,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 NOTEBOOK_DIR="$ROOT_DIR/data_preprocessing"
+GLOSSARY_DIR="$ROOT_DIR/outputs/glossary"
 PREPROCESSING_DIR="$ROOT_DIR/outputs/preprocessing"
 UNIONED_DATA_DIR="$ROOT_DIR/outputs/unioned_data"
 
@@ -69,6 +71,7 @@ EOF
 fi
 
 NOTEBOOKS=(
+  "00_glossary_formatter.ipynb"
   "01_hatexplain_formatting.ipynb"
   "02_mhs_formatting.ipynb"
   "03_elsherief_formatting.ipynb"
@@ -76,7 +79,7 @@ NOTEBOOKS=(
   "05_target_label_analysis_and_filtering.ipynb"
 )
 
-mkdir -p "$PREPROCESSING_DIR" "$UNIONED_DATA_DIR"
+mkdir -p "$GLOSSARY_DIR" "$PREPROCESSING_DIR" "$UNIONED_DATA_DIR"
 
 run_notebook() {
   local in_path="$1"
@@ -120,6 +123,7 @@ PY
 echo "Repository root: $ROOT_DIR"
 echo "Notebook source directory: $NOTEBOOK_DIR"
 echo "Output mode: in-place notebook execution"
+echo "Notebook 00 outputs: $GLOSSARY_DIR"
 echo "Notebooks 01-03 outputs: $PREPROCESSING_DIR"
 echo "Notebooks 04-05 outputs: $UNIONED_DATA_DIR"
 echo "Per-cell timeout: ${TIMEOUT}s"
@@ -143,5 +147,6 @@ done
 
 echo ""
 echo "All preprocessing notebooks completed successfully."
+echo "Glossary outputs are in: $GLOSSARY_DIR"
 echo "Standardized outputs are in: $PREPROCESSING_DIR"
 echo "Union/filter outputs are in: $UNIONED_DATA_DIR"
