@@ -4,17 +4,23 @@ Preprocessing pipeline for Section 4.1 of the dogwhistle benchmark audit project
 
 ## Preprocessing Pipeline Summary
 
-The notebook [preprocessing_pipeline.ipynb](preprocessing_pipeline.ipynb) builds a unified, post-level corpus from HateXplain and Measuring Hate Speech (MHS), with optional ElSherief augmentation.
+The primary pipeline is the modular notebook sequence in [data_preprocessing](data_preprocessing), documented in detail at [data_preprocessing/README.md](data_preprocessing/README.md).
 
-At a high level, the pipeline:
-1. Loads local HateXplain JSON and local MHS parquet.
-2. Falls back to Hugging Face for MHS only when the local parquet is missing (or refresh is requested).
-3. Harmonizes datasets into a shared schema.
-4. Standardizes granularity to one row per post (MHS is aggregated from annotator-level rows).
-5. Unions datasets and deduplicates by ID and normalized text.
-6. Runs threshold sensitivity summaries.
-7. Validates that target annotations are preserved.
-8. Exports final TSV artifacts under [outputs/preprocessing](outputs/preprocessing).
+Run order:
+1. [data_preprocessing/01_hatexplain_formatting.ipynb](data_preprocessing/01_hatexplain_formatting.ipynb)
+2. [data_preprocessing/02_mhs_formatting.ipynb](data_preprocessing/02_mhs_formatting.ipynb)
+3. [data_preprocessing/03_elsherief_formatting.ipynb](data_preprocessing/03_elsherief_formatting.ipynb)
+4. [data_preprocessing/04_union_and_dedup.ipynb](data_preprocessing/04_union_and_dedup.ipynb)
+5. [data_preprocessing/05_target_label_analysis_and_filtering.ipynb](data_preprocessing/05_target_label_analysis_and_filtering.ipynb)
+
+At a high level, this pipeline:
+1. Standardizes each source dataset into a shared post-level schema.
+2. Unions standardized outputs and deduplicates with ID-first, text-key fallback logic.
+3. Normalizes/analyzes target labels and optionally filters low-support groups.
+4. Writes stage outputs under [outputs/preprocessing](outputs/preprocessing) and [outputs/unioned_data](outputs/unioned_data).
+
+Legacy notebook note:
+- [preprocessing_pipeline.ipynb](preprocessing_pipeline.ipynb) is an older monolithic variant kept for reference.
 
 Shared schema used throughout the notebook:
 - `post_id`
@@ -36,6 +42,13 @@ Expected project layout for a successful run:
 benchmarking_dogwhistles/
 	glossary_formatter.ipynb
 	preprocessing_pipeline.ipynb
+	data_preprocessing/
+		01_hatexplain_formatting.ipynb
+		02_mhs_formatting.ipynb
+		03_elsherief_formatting.ipynb
+		04_union_and_dedup.ipynb
+		05_target_label_analysis_and_filtering.ipynb
+		README.md
 	README.md
 	requirements.txt
 	data/
@@ -45,16 +58,21 @@ benchmarking_dogwhistles/
 			implicit_hate_v1_stg3_posts.tsv
 			...
 	outputs/
+		preprocessing/
+			01_hatexplain_standardized.tsv
+			02_mhs_standardized.tsv
+			03_elsherief_standardized.tsv
+		unioned_data/
+			04_union_primary.tsv
+			04_dedup_primary.tsv
+			04_union_dedup_summary.tsv
+			05_union_primary_filtered.tsv
+			05_dedup_primary_filtered.tsv
+			05_raw_label_counts_for_annotation.tsv
 		glossary/
 			glossary_extracted.tsv
 			glossary_examples_long.tsv
 			glossary_group_metrics.tsv
-		preprocessing/
-			hatexplain_standardized.tsv
-			mhs_standardized.tsv
-			union_primary.tsv
-			dedup_primary.tsv
-			sensitivity_summary.tsv
 ```
 
 Notes:
@@ -74,18 +92,19 @@ pip install -r requirements.txt
 
 Then select the `.venv` interpreter as the notebook kernel in VS Code before running notebooks.
 
-## Running the Notebook
+## Running the Data Preprocessing Notebooks
 
-Open [preprocessing_pipeline.ipynb](preprocessing_pipeline.ipynb) and run cells in order.
+Use the stage-by-stage notebooks in [data_preprocessing](data_preprocessing):
 
-Stages:
-1. Imports and config
-2. Load helpers
-3. Schema mapping and harmonization helpers
-4. Primary preprocessing run (load, harmonize, aggregate, union, dedup)
-5. Sensitivity analysis
-6. Target integrity checks
-7. Save outputs
+1. Run [data_preprocessing/01_hatexplain_formatting.ipynb](data_preprocessing/01_hatexplain_formatting.ipynb)
+2. Run [data_preprocessing/02_mhs_formatting.ipynb](data_preprocessing/02_mhs_formatting.ipynb)
+3. Run [data_preprocessing/03_elsherief_formatting.ipynb](data_preprocessing/03_elsherief_formatting.ipynb)
+4. Run [data_preprocessing/04_union_and_dedup.ipynb](data_preprocessing/04_union_and_dedup.ipynb)
+5. Run [data_preprocessing/05_target_label_analysis_and_filtering.ipynb](data_preprocessing/05_target_label_analysis_and_filtering.ipynb)
+
+For detailed stage behavior and inputs/outputs, see [data_preprocessing/README.md](data_preprocessing/README.md).
+
+If needed, you can still run the monolithic reference notebook [preprocessing_pipeline.ipynb](preprocessing_pipeline.ipynb).
 
 ## Glossary Formatter Notebook
 
@@ -108,35 +127,45 @@ Outputs from glossary formatter:
 
 ## Configuration
 
-Edit the config cell in [preprocessing_pipeline.ipynb](preprocessing_pipeline.ipynb):
-- `hatexplain_path`
-- `mhs_local_path`
-- `mhs_hf_uri`
-- `refresh_mhs_local_copy`
-- `include_elsherief`
-- `elsherief_path`
-- `mhs_primary_threshold`
-- `sensitivity_thresholds`
+Edit the config cells in the modular notebooks under [data_preprocessing](data_preprocessing):
+
+- [data_preprocessing/01_hatexplain_formatting.ipynb](data_preprocessing/01_hatexplain_formatting.ipynb): HateXplain input path and hate majority threshold.
+- [data_preprocessing/02_mhs_formatting.ipynb](data_preprocessing/02_mhs_formatting.ipynb): local/remote MHS source, refresh behavior, and primary threshold.
+- [data_preprocessing/03_elsherief_formatting.ipynb](data_preprocessing/03_elsherief_formatting.ipynb): stage-1/stage-3 ElSherief source paths.
+- [data_preprocessing/04_union_and_dedup.ipynb](data_preprocessing/04_union_and_dedup.ipynb): `include_elsherief` and union/dedup output paths.
+- [data_preprocessing/05_target_label_analysis_and_filtering.ipynb](data_preprocessing/05_target_label_analysis_and_filtering.ipynb): filtering controls and filtered export paths.
+
+The monolithic [preprocessing_pipeline.ipynb](preprocessing_pipeline.ipynb) retains its own config cell for legacy use.
 
 ## Output Files
 
-Primary files written to [outputs/preprocessing](outputs/preprocessing):
-- `hatexplain_standardized.tsv`
-- `mhs_standardized.tsv`
-- `union_primary.tsv`
-- `dedup_primary.tsv`
-- `sensitivity_summary.tsv`
+Primary files written by the modular pipeline:
+
+From [outputs/preprocessing](outputs/preprocessing):
+- `01_hatexplain_standardized.tsv`
+- `02_mhs_standardized.tsv`
+- `03_elsherief_standardized.tsv`
+
+From [outputs/unioned_data](outputs/unioned_data):
+- `04_union_primary.tsv`
+- `04_dedup_primary.tsv`
+- `04_union_dedup_summary.tsv`
+- `05_union_primary_filtered.tsv`
+- `05_dedup_primary_filtered.tsv`
+- `05_raw_label_counts_for_annotation.tsv`
 
 ## Rerunning with ElSherief
 
 When ElSherief data is available:
-1. Place the file locally (default path: [data/implicit-hate-corpus/implicit_hate_v1_stg3_posts.tsv](data/implicit-hate-corpus/implicit_hate_v1_stg3_posts.tsv)).
-2. Set `include_elsherief = True`.
-3. Update `elsherief_path` if needed.
-4. Re-run from the primary run cell onward.
+1. Ensure both stage files exist locally:
+	- [data/implicit-hate-corpus/implicit_hate_v1_stg1_posts.tsv](data/implicit-hate-corpus/implicit_hate_v1_stg1_posts.tsv)
+	- [data/implicit-hate-corpus/implicit_hate_v1_stg3_posts.tsv](data/implicit-hate-corpus/implicit_hate_v1_stg3_posts.tsv)
+2. Run [data_preprocessing/03_elsherief_formatting.ipynb](data_preprocessing/03_elsherief_formatting.ipynb).
+3. Set `include_elsherief = True` in [data_preprocessing/04_union_and_dedup.ipynb](data_preprocessing/04_union_and_dedup.ipynb).
+4. Re-run [data_preprocessing/04_union_and_dedup.ipynb](data_preprocessing/04_union_and_dedup.ipynb) and [data_preprocessing/05_target_label_analysis_and_filtering.ipynb](data_preprocessing/05_target_label_analysis_and_filtering.ipynb).
 
 ## Notes
 
 - MHS fetch is one-time unless `refresh_mhs_local_copy=True`.
 - Dedup prioritizes `post_id` and falls back to `text_dedup_key`.
-- Sensitivity analysis is controlled by `sensitivity_thresholds`.
+- Sensitivity analysis with `sensitivity_thresholds` is available in the legacy [preprocessing_pipeline.ipynb](preprocessing_pipeline.ipynb).
