@@ -4,15 +4,35 @@ This directory contains the modular notebook pipeline that builds the unified co
 
 ## Pipeline Overview
 
-The pipeline runs in five stages:
+The pipeline runs in six stages:
 
-1. `01_hatexplain_formatting.ipynb`
-2. `02_mhs_formatting.ipynb`
-3. `03_elsherief_formatting.ipynb` (optional in downstream union)
-4. `04_union_and_dedup.ipynb`
-5. `05_target_label_analysis_and_filtering.ipynb`
+1. `00_glossary_formatter.ipynb`
+2. `01_hatexplain_formatting.ipynb`
+3. `02_mhs_formatting.ipynb`
+4. `03_elsherief_formatting.ipynb` (optional in downstream union)
+5. `04_union_and_dedup.ipynb`
+6. `05_target_label_analysis_and_filtering.ipynb`
 
-Stages `01`-`03` standardize individual source datasets into a shared schema. Stage `04` unions and deduplicates those standardized tables. Stage `05` normalizes target labels, analyzes distributions, and optionally filters low-support groups.
+Stage `00` produces glossary artifacts under `outputs/glossary`. Stages `01`-`03` standardize individual source datasets into a shared schema. Stage `04` unions and deduplicates those standardized tables. Stage `05` normalizes target labels, analyzes distributions, and optionally filters low-support groups.
+
+## Notebook Stages In Detail
+
+### 00 Glossary Formatter
+
+Notebook: `00_glossary_formatter.ipynb`
+
+What it does:
+
+1. Parses glossary source files in `data/`.
+2. Produces term-level and example-level structured TSV outputs.
+3. Computes grouped glossary metrics.
+
+Outputs:
+
+- `outputs/glossary/glossary.tsv`
+- `outputs/glossary/glossary_extracted.tsv`
+- `outputs/glossary/glossary_examples_long.tsv`
+- `outputs/glossary/glossary_group_metrics.tsv`
 
 ## Shared Schema
 
@@ -27,8 +47,6 @@ The standardized outputs use this core schema:
 - `text_dedup_key`
 
 Additional columns may appear for specific sources (for example, `n_annotations` in the MHS standardized output).
-
-## Notebook Stages In Detail
 
 ### 01 HateXplain Formatting
 
@@ -125,13 +143,15 @@ Outputs:
 
 ## Typical Execution Order
 
-Run notebooks from `01` to `05` in order. If you only need the unioned corpus and dedup outputs, you can stop after `04`.
+Run notebooks from `00` to `05` in order. If you only need glossary outputs, run `00` only. If you only need the unioned corpus and dedup outputs, you can run `01` to `05`.
 
 ## Configuration Notes
 
 - `02_mhs_formatting.ipynb`: controls local-vs-remote MHS loading and threshold settings.
 - `04_union_and_dedup.ipynb`: `include_elsherief` controls whether stage `03` output is included.
 - `05_target_label_analysis_and_filtering.ipynb`: controls filtering behavior and export of filtered outputs.
+
+The glossary stage writes all outputs to `outputs/glossary/`.
 
 ## Quick Start
 
