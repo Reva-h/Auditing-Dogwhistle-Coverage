@@ -24,15 +24,12 @@ Notebook: `00_glossary_formatter.ipynb`
 What it does:
 
 1. Parses glossary source files in `data/`.
-2. Produces term-level and example-level structured TSV outputs.
-3. Computes grouped glossary metrics.
+2. Produces a consolidated glossary TSV.
+3. Computes grouped metrics and visualization summaries in notebook cells.
 
 Outputs:
 
 - `outputs/glossary/glossary.tsv`
-- `outputs/glossary/glossary_extracted.tsv`
-- `outputs/glossary/glossary_examples_long.tsv`
-- `outputs/glossary/glossary_group_metrics.tsv`
 
 ## Shared Schema
 
