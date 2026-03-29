@@ -44,4 +44,12 @@ Optional flags:
 ```bash
 # Increase per-cell timeout to 30 minutes
 scripts/run_data_preprocessing.sh --timeout 1800
+
+# Run from stage 01 through the end
+scripts/run_data_preprocessing.sh --from 01
+
+# Run a bounded stage range (inclusive)
+scripts/run_data_preprocessing.sh --from 01 --to 04
 ```
+
+Stage values accepted by `--from`/`--to`: `00`, `01`, `02`, `03`, `04`, `05`.

@@ -14,9 +14,13 @@ set -euo pipefail
 # Usage:
 #   scripts/run_data_preprocessing.sh
 #   scripts/run_data_preprocessing.sh --timeout 1800
+#   scripts/run_data_preprocessing.sh --from 01
+#   scripts/run_data_preprocessing.sh --from 01 --to 04
 #
 # Options:
 #   --timeout <seconds>  Per-cell timeout for notebook execution (default: 1200)
+#   --from <stage>       Start stage (00-05), inclusive (default: 00)
+#   --to <stage>         End stage (00-05), inclusive (default: 05)
 #   --help               Show help text
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -27,6 +31,8 @@ PREPROCESSING_DIR="$ROOT_DIR/outputs/preprocessing"
 UNIONED_DATA_DIR="$ROOT_DIR/outputs/unioned_data"
 
 TIMEOUT=1200
+FROM_STAGE="00"
+TO_STAGE="05"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -38,8 +44,24 @@ while [[ $# -gt 0 ]]; do
       TIMEOUT="$2"
       shift 2
       ;;
+    --from)
+      if [[ $# -lt 2 ]]; then
+        echo "Error: --from requires a stage value (00-05)." >&2
+        exit 2
+      fi
+      FROM_STAGE="$2"
+      shift 2
+      ;;
+    --to)
+      if [[ $# -lt 2 ]]; then
+        echo "Error: --to requires a stage value (00-05)." >&2
+        exit 2
+      fi
+      TO_STAGE="$2"
+      shift 2
+      ;;
     --help|-h)
-      sed -n '1,40p' "$0"
+      sed -n '1,50p' "$0"
       exit 0
       ;;
     *)
@@ -78,6 +100,35 @@ NOTEBOOKS=(
   "04_union_and_dedup.ipynb"
   "05_target_label_analysis_and_filtering.ipynb"
 )
+
+STAGE_IDS=("00" "01" "02" "03" "04" "05")
+
+stage_to_index() {
+  local stage="$1"
+  local i
+  for i in "${!STAGE_IDS[@]}"; do
+    if [[ "${STAGE_IDS[$i]}" == "$stage" ]]; then
+      echo "$i"
+      return 0
+    fi
+  done
+  return 1
+}
+
+if ! FROM_INDEX="$(stage_to_index "$FROM_STAGE")"; then
+  echo "Error: --from must be one of 00, 01, 02, 03, 04, 05." >&2
+  exit 2
+fi
+
+if ! TO_INDEX="$(stage_to_index "$TO_STAGE")"; then
+  echo "Error: --to must be one of 00, 01, 02, 03, 04, 05." >&2
+  exit 2
+fi
+
+if (( FROM_INDEX > TO_INDEX )); then
+  echo "Error: --from stage must be less than or equal to --to stage." >&2
+  exit 2
+fi
 
 mkdir -p "$GLOSSARY_DIR" "$PREPROCESSING_DIR" "$UNIONED_DATA_DIR"
 
@@ -127,11 +178,17 @@ echo "Notebook 00 outputs: $GLOSSARY_DIR"
 echo "Notebooks 01-03 outputs: $PREPROCESSING_DIR"
 echo "Notebooks 04-05 outputs: $UNIONED_DATA_DIR"
 echo "Per-cell timeout: ${TIMEOUT}s"
+echo "Stage range: ${FROM_STAGE} -> ${TO_STAGE}"
 
 echo ""
 echo "Starting end-to-end preprocessing run..."
 
-for nb_name in "${NOTEBOOKS[@]}"; do
+for i in "${!NOTEBOOKS[@]}"; do
+  if (( i < FROM_INDEX || i > TO_INDEX )); then
+    continue
+  fi
+
+  nb_name="${NOTEBOOKS[$i]}"
   input_nb="$NOTEBOOK_DIR/$nb_name"
 
   if [[ ! -f "$input_nb" ]]; then
