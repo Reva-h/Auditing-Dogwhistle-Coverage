@@ -1,0 +1,146 @@
+# Data Preprocessing Pipeline
+
+This directory contains the modular notebook pipeline that builds the unified corpus used by downstream audits.
+
+## Pipeline Overview
+
+The pipeline runs in five stages:
+
+1. `01_hatexplain_formatting.ipynb`
+2. `02_mhs_formatting.ipynb`
+3. `03_elsherief_formatting.ipynb` (optional in downstream union)
+4. `04_union_and_dedup.ipynb`
+5. `05_target_label_analysis_and_filtering.ipynb`
+
+Stages `01`-`03` standardize individual source datasets into a shared schema. Stage `04` unions and deduplicates those standardized tables. Stage `05` normalizes target labels, analyzes distributions, and optionally filters low-support groups.
+
+## Shared Schema
+
+The standardized outputs use this core schema:
+
+- `post_id`
+- `text`
+- `raw_label`
+- `binary_hate`
+- `targets`
+- `dataset`
+- `text_dedup_key`
+
+Additional columns may appear for specific sources (for example, `n_annotations` in the MHS standardized output).
+
+## Notebook Stages In Detail
+
+### 01 HateXplain Formatting
+
+Notebook: `01_hatexplain_formatting.ipynb`
+
+What it does:
+
+1. Loads HateXplain JSON from `data/hatexplain.json`.
+2. Normalizes text and target fields.
+3. Computes `binary_hate` using a positive-only majority rule from annotator labels.
+4. Exports one standardized row per post.
+
+Output:
+
+- `outputs/preprocessing/01_hatexplain_standardized.tsv`
+
+### 02 MHS Formatting
+
+Notebook: `02_mhs_formatting.ipynb`
+
+What it does:
+
+1. Loads MHS from local parquet cache `data/measuring_hate_speech.parquet`.
+2. Optionally refreshes from the configured Hugging Face parquet URI.
+3. Harmonizes annotator-level rows into the shared schema.
+4. Aggregates to one post-level row and computes `binary_hate` from the post-level mean score threshold.
+
+Outputs:
+
+- `outputs/preprocessing/02_mhs_standardized.tsv`
+- Optional local cache refresh: `data/measuring_hate_speech.parquet`
+
+### 03 ElSherief Formatting
+
+Notebook: `03_elsherief_formatting.ipynb`
+
+What it does:
+
+1. Uses `data/implicit-hate-corpus/implicit_hate_v1_stg1_posts.tsv` as the base post table.
+2. Uses `data/implicit-hate-corpus/implicit_hate_v1_stg3_posts.tsv` to recover target annotations.
+3. Merges/normalizes fields into the shared schema.
+4. Keeps posts with no stage-3 target annotation and assigns `unknown` target.
+
+Output:
+
+- `outputs/preprocessing/03_elsherief_standardized.tsv`
+
+### 04 Union and Dedup
+
+Notebook: `04_union_and_dedup.ipynb`
+
+Inputs:
+
+- `outputs/preprocessing/01_hatexplain_standardized.tsv`
+- `outputs/preprocessing/02_mhs_standardized.tsv`
+- `outputs/preprocessing/03_elsherief_standardized.tsv` (optional via config)
+
+What it does:
+
+1. Loads available standardized datasets.
+2. Enforces required columns.
+3. Unions selected datasets.
+4. Deduplicates with an ID-first strategy, then `text_dedup_key` fallback.
+5. Writes a compact run summary.
+
+Outputs:
+
+- `outputs/unioned_data/04_union_primary.tsv`
+- `outputs/unioned_data/04_dedup_primary.tsv`
+- `outputs/unioned_data/04_union_dedup_summary.tsv`
+
+### 05 Target Label Analysis and Filtering
+
+Notebook: `05_target_label_analysis_and_filtering.ipynb`
+
+Inputs:
+
+- `outputs/unioned_data/04_union_primary.tsv`
+- `outputs/unioned_data/04_dedup_primary.tsv`
+
+What it does:
+
+1. Parses raw target labels and logs unique labels by dataset.
+2. Maps raw labels to canonical standardized labels (`target_std`).
+3. Reports target label breakdowns for all rows and for `binary_hate == 1`.
+4. Optionally filters low-support groups based on positive-hate support thresholds.
+5. Exports filtered datasets and a raw-label count table for annotation.
+
+Outputs:
+
+- `outputs/unioned_data/05_union_primary_filtered.tsv`
+- `outputs/unioned_data/05_dedup_primary_filtered.tsv`
+- `outputs/unioned_data/05_raw_label_counts_for_annotation.tsv`
+
+## Typical Execution Order
+
+Run notebooks from `01` to `05` in order. If you only need the unioned corpus and dedup outputs, you can stop after `04`.
+
+## Configuration Notes
+
+- `02_mhs_formatting.ipynb`: controls local-vs-remote MHS loading and threshold settings.
+- `04_union_and_dedup.ipynb`: `include_elsherief` controls whether stage `03` output is included.
+- `05_target_label_analysis_and_filtering.ipynb`: controls filtering behavior and export of filtered outputs.
+
+## Quick Start
+
+From the project root:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+Then open the notebooks in this folder and run them top-to-bottom in stage order.
