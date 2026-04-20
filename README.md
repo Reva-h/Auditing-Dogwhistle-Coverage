@@ -73,9 +73,6 @@ benchmarking_dogwhistles/
 			05_raw_label_counts_for_annotation.tsv
 		glossary/
 			glossary.tsv
-			glossary_extracted.tsv
-			glossary_examples_long.tsv
-			glossary_group_metrics.tsv
 ```
 
 Notes:
@@ -118,9 +115,6 @@ The glossary formatter is stage `00` of the modular pipeline:
 
 Outputs from glossary stage:
 - [outputs/glossary/glossary.tsv](outputs/glossary/glossary.tsv)
-- [outputs/glossary/glossary_extracted.tsv](outputs/glossary/glossary_extracted.tsv)
-- [outputs/glossary/glossary_examples_long.tsv](outputs/glossary/glossary_examples_long.tsv)
-- [outputs/glossary/glossary_group_metrics.tsv](outputs/glossary/glossary_group_metrics.tsv)
 
 ## Configuration
 

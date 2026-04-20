@@ -4,12 +4,12 @@ set -euo pipefail
 # Run the data preprocessing notebooks end-to-end in a deterministic order.
 #
 # What this script does:
-# 1. Executes notebooks in data_preprocessing/ from 00 -> 05.
+# 1. Executes notebooks in data_preprocessing/ from 00 -> 06.
 # 2. Uses the repository root as notebook execution working directory.
 # 3. Preserves the current artifact layout:
 #    - Notebook 00 writes glossary files to outputs/glossary/
 #    - Notebooks 01-03 write standardized files to outputs/preprocessing/
-#    - Notebooks 04-05 write union/filter artifacts to outputs/unioned_data/
+#    - Notebooks 04-06 write union/filter/annotation artifacts to outputs/unioned_data/
 #
 # Usage:
 #   scripts/run_data_preprocessing.sh
@@ -19,8 +19,8 @@ set -euo pipefail
 #
 # Options:
 #   --timeout <seconds>  Per-cell timeout for notebook execution (default: 1200)
-#   --from <stage>       Start stage (00-05), inclusive (default: 00)
-#   --to <stage>         End stage (00-05), inclusive (default: 05)
+#   --from <stage>       Start stage (00-06), inclusive (default: 00)
+#   --to <stage>         End stage (00-06), inclusive (default: 06)
 #   --help               Show help text
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -32,7 +32,7 @@ UNIONED_DATA_DIR="$ROOT_DIR/outputs/unioned_data"
 
 TIMEOUT=1200
 FROM_STAGE="00"
-TO_STAGE="05"
+TO_STAGE="06"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -46,7 +46,7 @@ while [[ $# -gt 0 ]]; do
       ;;
     --from)
       if [[ $# -lt 2 ]]; then
-        echo "Error: --from requires a stage value (00-05)." >&2
+        echo "Error: --from requires a stage value (00-06)." >&2
         exit 2
       fi
       FROM_STAGE="$2"
@@ -54,7 +54,7 @@ while [[ $# -gt 0 ]]; do
       ;;
     --to)
       if [[ $# -lt 2 ]]; then
-        echo "Error: --to requires a stage value (00-05)." >&2
+        echo "Error: --to requires a stage value (00-06)." >&2
         exit 2
       fi
       TO_STAGE="$2"
@@ -99,9 +99,10 @@ NOTEBOOKS=(
   "03_elsherief_formatting.ipynb"
   "04_union_and_dedup.ipynb"
   "05_target_label_analysis_and_filtering.ipynb"
+  "06_apply_annotations.ipynb"
 )
 
-STAGE_IDS=("00" "01" "02" "03" "04" "05")
+STAGE_IDS=("00" "01" "02" "03" "04" "05" "06")
 
 stage_to_index() {
   local stage="$1"
@@ -116,12 +117,12 @@ stage_to_index() {
 }
 
 if ! FROM_INDEX="$(stage_to_index "$FROM_STAGE")"; then
-  echo "Error: --from must be one of 00, 01, 02, 03, 04, 05." >&2
+  echo "Error: --from must be one of 00, 01, 02, 03, 04, 05, 06." >&2
   exit 2
 fi
 
 if ! TO_INDEX="$(stage_to_index "$TO_STAGE")"; then
-  echo "Error: --to must be one of 00, 01, 02, 03, 04, 05." >&2
+  echo "Error: --to must be one of 00, 01, 02, 03, 04, 05, 06." >&2
   exit 2
 fi
 
@@ -176,7 +177,7 @@ echo "Notebook source directory: $NOTEBOOK_DIR"
 echo "Output mode: in-place notebook execution"
 echo "Notebook 00 outputs: $GLOSSARY_DIR"
 echo "Notebooks 01-03 outputs: $PREPROCESSING_DIR"
-echo "Notebooks 04-05 outputs: $UNIONED_DATA_DIR"
+echo "Notebooks 04-06 outputs: $UNIONED_DATA_DIR"
 echo "Per-cell timeout: ${TIMEOUT}s"
 echo "Stage range: ${FROM_STAGE} -> ${TO_STAGE}"
 
@@ -206,4 +207,4 @@ echo ""
 echo "All preprocessing notebooks completed successfully."
 echo "Glossary outputs are in: $GLOSSARY_DIR"
 echo "Standardized outputs are in: $PREPROCESSING_DIR"
-echo "Union/filter outputs are in: $UNIONED_DATA_DIR"
+echo "Union/filter/annotation outputs are in: $UNIONED_DATA_DIR"

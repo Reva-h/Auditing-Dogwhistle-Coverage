@@ -11,6 +11,7 @@ Execution order:
 4. 03_elsherief_formatting.ipynb
 5. 04_union_and_dedup.ipynb
 6. 05_target_label_analysis_and_filtering.ipynb
+7. 06_apply_annotations.ipynb
 
 ### Why this script exists
 
@@ -19,7 +20,7 @@ Execution order:
 - Keeps preprocessing outputs split by stage:
 - Notebook 00 writes glossary files to [outputs/glossary](../outputs/glossary).
 - Notebooks 01-03 write standardized files to [outputs/preprocessing](../outputs/preprocessing).
-- Notebooks 04-05 write union/filter files to [outputs/unioned_data](../outputs/unioned_data).
+- Notebooks 04-06 write union/filter/annotation files to [outputs/unioned_data](../outputs/unioned_data).
 
 ### Prerequisites
 
@@ -49,7 +50,7 @@ scripts/run_data_preprocessing.sh --timeout 1800
 scripts/run_data_preprocessing.sh --from 01
 
 # Run a bounded stage range (inclusive)
-scripts/run_data_preprocessing.sh --from 01 --to 04
+scripts/run_data_preprocessing.sh --from 01 --to 06
 ```
 
-Stage values accepted by `--from`/`--to`: `00`, `01`, `02`, `03`, `04`, `05`.
+Stage values accepted by `--from`/`--to`: `00`, `01`, `02`, `03`, `04`, `05`, `06`.
