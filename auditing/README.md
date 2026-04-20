@@ -1,6 +1,11 @@
 # Data Auditing Pipeline
 
-This directory contains a three-stage notebook pipeline that calculates auditing metrics from the deduplicated dataset and glossary.
+This directory contains a three-stage notebook pipeline that calculates auditing metrics from the cleaned stage-06 dataset and glossary.
+
+Default upstream inputs:
+
+- `../outputs/unioned_data/06_cleaned_labels_glossary_mapped.tsv` (used by stage 00 and stage 01)
+- `../outputs/unioned_data/06_glossary_label_reference.tsv` (used by stage 00)
 
 Glossary schema used by this pipeline:
 
@@ -16,6 +21,7 @@ Run notebooks in this order:
 1. `00_coverage_audit.ipynb`
 2. `01_annotation_quality_audit.ipynb`
 3. `02_disparity_audit.ipynb`
+4. `03_audit_visualizations.ipynb`
 
 ## Stages
 
@@ -131,3 +137,26 @@ Produces:
 
 - Re-run downstream stages whenever upstream outputs are regenerated.
 - Stage 02 assumes one row per `(taxonomy_level, target)` in upstream metric files.
+- If stage-06 outputs are regenerated (`06_cleaned_labels_glossary_mapped.tsv` and `06_glossary_label_reference.tsv`), re-run all audit notebooks in order:
+  1. `00_coverage_audit.ipynb`
+  2. `01_annotation_quality_audit.ipynb`
+  3. `02_disparity_audit.ipynb`
+
+### Stage 03: Visualization Audit
+
+Notebook: `03_audit_visualizations.ipynb`
+
+Consumes:
+
+- `../outputs/coverage_audits/audit_metrics.tsv`
+- `../outputs/coverage_audits/audit_detailed.tsv`
+- `../outputs/annotation_audits/annotation_quality.tsv`
+- `../outputs/annotation_audits/case_breakdown.tsv`
+- `../outputs/annotation_audits/form_labeling_detail.tsv`
+- `../outputs/disparity_audits/coverage_disparity.tsv`
+- `../outputs/disparity_audits/annotation_disparity.tsv`
+- `../outputs/disparity_audits/cross_level_consistency.tsv`
+
+Produces PNG figures in:
+
+- `../outputs/audit_visualizations/`
