@@ -4,7 +4,7 @@ This directory contains the modular notebook pipeline that builds the unified co
 
 ## Pipeline Overview
 
-The pipeline runs in six stages:
+The pipeline runs in seven stages:
 
 1. `00_glossary_formatter.ipynb`
 2. `01_hatexplain_formatting.ipynb`
@@ -12,8 +12,9 @@ The pipeline runs in six stages:
 4. `03_elsherief_formatting.ipynb` (optional in downstream union)
 5. `04_union_and_dedup.ipynb`
 6. `05_target_label_analysis_and_filtering.ipynb`
+7. `06_apply_annotations.ipynb`
 
-Stage `00` produces glossary artifacts under `outputs/glossary`. Stages `01`-`03` standardize individual source datasets into a shared schema. Stage `04` unions and deduplicates those standardized tables. Stage `05` normalizes target labels, analyzes distributions, and optionally filters low-support groups.
+Stage `00` produces glossary artifacts under `outputs/glossary`. Stages `01`-`03` standardize individual source datasets into a shared schema. Stage `04` unions and deduplicates those standardized tables. Stage `05` normalizes target labels, analyzes distributions, and optionally filters low-support groups. Stage `06` applies the human annotation schemas and exports cleaned labels for downstream analysis.
 
 ## Notebook Stages In Detail
 
@@ -138,15 +139,41 @@ Outputs:
 - `outputs/unioned_data/05_dedup_primary_filtered.tsv`
 - `outputs/unioned_data/05_raw_label_counts_for_annotation.tsv`
 
+### 06 Apply Annotations
+
+Inputs:
+
+- `outputs/unioned_data/05_union_primary_filtered.tsv`
+- `annotation_results/*_label_annotations.tsv`
+- `annotation_results/*_glossary_annotations.tsv`
+- `outputs/glossary/glossary.tsv`
+- `outputs/group_labels.tsv`
+
+What it does:
+
+1. Loads all available annotator TSVs from `annotation_results/`.
+2. Aggregates direct raw-target annotations and glossary-term annotations into a future-proof annotator-aware structure.
+3. Resolves disagreements by taking the union of assigned labels.
+4. Applies those annotations into a new `cleaned_label` column.
+5. Maps matched glossary terms to taxonomy-level and target labels for downstream audits.
+6. Reports raw label counts split across hate and non-hate rows and renders summary figures.
+
+Outputs:
+
+- `outputs/unioned_data/06_cleaned_labels.tsv`
+- `outputs/unioned_data/06_cleaned_labels_glossary_mapped.tsv`
+- `outputs/unioned_data/06_glossary_label_reference.tsv`
+
 ## Typical Execution Order
 
-Run notebooks from `00` to `05` in order. If you only need glossary outputs, run `00` only. If you only need the unioned corpus and dedup outputs, you can run `01` to `05`.
+Run notebooks from `00` to `06` in order. If you only need glossary outputs, run `00` only. If you only need the unioned corpus and dedup outputs, you can run `01` to `05`.
 
 ## Configuration Notes
 
 - `02_mhs_formatting.ipynb`: controls local-vs-remote MHS loading and threshold settings.
 - `04_union_and_dedup.ipynb`: `include_elsherief` controls whether stage `03` output is included.
 - `05_target_label_analysis_and_filtering.ipynb`: controls filtering behavior and export of filtered outputs.
+- `06_apply_annotations.ipynb`: controls how direct annotations, glossary annotations, and legacy target backfills are merged into `cleaned_label`.
 
 The glossary stage writes all outputs to `outputs/glossary/`.
 
