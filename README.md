@@ -107,6 +107,29 @@ For detailed stage behavior and inputs/outputs, see [data_preprocessing/README.m
 
 If needed, you can still run the monolithic reference notebook [preprocessing_pipeline.ipynb](preprocessing_pipeline.ipynb).
 
+## Auditing Notebooks
+
+Post-preprocessing audit notebooks live in [auditing](auditing) and are documented in [auditing/README.md](auditing/README.md).
+
+Recommended run order:
+1. [auditing/00_coverage_audit.ipynb](auditing/00_coverage_audit.ipynb)
+2. [auditing/01_annotation_quality_audit.ipynb](auditing/01_annotation_quality_audit.ipynb)
+3. [auditing/02_disparity_audit.ipynb](auditing/02_disparity_audit.ipynb)
+4. [auditing/03_audit_visualizations.ipynb](auditing/03_audit_visualizations.ipynb)
+
+## Annotation Agreement
+
+Inter-annotator agreement (IAA) is computed separately in [annotations/inter_annotator_agreement.ipynb](annotations/inter_annotator_agreement.ipynb), alongside the annotation TSV files it reads.
+
+The IAA notebook computes agreement between Reva and Ryan for both target-label mapping and dogwhistle inferred-target annotation tasks using:
+
+- Exact Match %
+- Mean Jaccard Similarity
+- Macro-averaged Cohen's kappa (per-label binary formulation)
+- Krippendorff's alpha with Jaccard distance
+
+It also includes a top-20 per-label kappa breakdown and built-in sanity checks against expected benchmark values.
+
 ## Glossary Stage
 
 The glossary formatter is stage `00` of the modular pipeline:
