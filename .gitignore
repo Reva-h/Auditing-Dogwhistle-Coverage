@@ -2,6 +2,7 @@ data/*
 scratch/*
 outputs/preprocessing/*
 .DS_Store
+pipeline/__pycache__
 
 *.tsv
 *.csv
