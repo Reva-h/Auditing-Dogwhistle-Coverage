@@ -8,8 +8,8 @@ from __future__ import annotations
 
 import pandas as pd
 
-from pipeline.config import DATA_PATH, N_MIN, OUT_S1, OUT_S2
-from pipeline.helpers import ensure_dirs, write_tsv
+from audit_pipeline.config import DATA_PATH, N_MIN, OUT_S1, OUT_S2
+from audit_pipeline.helpers import ensure_dirs, write_tsv
 
 
 def _target_contains(row_targets: str, specific_target: str) -> bool:

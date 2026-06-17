@@ -11,8 +11,8 @@ import re
 
 import pandas as pd
 
-from pipeline.config import DATA_PATH, GLOSSARY_PATH, OUT_S1
-from pipeline.helpers import (
+from audit_pipeline.config import DATA_PATH, GLOSSARY_PATH, OUT_S1
+from audit_pipeline.helpers import (
     build_surface_form_pattern,
     ensure_dirs,
     map_type_to_coding_level,

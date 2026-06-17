@@ -15,8 +15,8 @@ import pandas as pd
 from matplotlib.colors import LinearSegmentedColormap
 from pandas.errors import EmptyDataError
 
-from pipeline.config import OUT_S1, OUT_S2, OUT_S3, OUT_S4, OUT_S5, DI_THRESHOLD
-from pipeline.helpers import ensure_dirs
+from audit_pipeline.config import OUT_S1, OUT_S2, OUT_S3, OUT_S4, OUT_S5, DI_THRESHOLD
+from audit_pipeline.helpers import ensure_dirs
 
 # ── Global style ──────────────────────────────────────────────────────────────
 mpl.rcParams.update(

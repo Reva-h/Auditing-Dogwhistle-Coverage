@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import pandas as pd
 
-from pipeline.config import (
+from audit_pipeline.config import (
     DATA_PATH,
     DI_THRESHOLD,
     ELSHERIEF_DATASET_NAME,
@@ -17,7 +17,7 @@ from pipeline.config import (
     OUT_S1,
     OUT_S4,
 )
-from pipeline.helpers import (
+from audit_pipeline.helpers import (
     add_reporting_columns,
     build_pairwise_rows,
     ensure_dirs,

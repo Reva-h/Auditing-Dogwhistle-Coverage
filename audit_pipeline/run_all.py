@@ -8,11 +8,11 @@ import subprocess
 import sys
 
 stages = [
-    "pipeline.stage1_coverage",
-    "pipeline.stage2_annotation",
-    "pipeline.stage3_disparity",
-    "pipeline.stage4_rollup",
-    "pipeline.stage5_figures",
+    "audit_pipeline.stage1_coverage",
+    "audit_pipeline.stage2_annotation",
+    "audit_pipeline.stage3_disparity",
+    "audit_pipeline.stage4_rollup",
+    "audit_pipeline.stage5_figures",
 ]
 
 

@@ -9,8 +9,8 @@ from __future__ import annotations
 
 import pandas as pd
 
-from pipeline.config import N_MIN, OUT_S1, OUT_S2, OUT_S3
-from pipeline.helpers import build_pairwise_rows, ensure_dirs, write_tsv
+from audit_pipeline.config import N_MIN, OUT_S1, OUT_S2, OUT_S3
+from audit_pipeline.helpers import build_pairwise_rows, ensure_dirs, write_tsv
 
 
 def _level_rank(level_value: str) -> int:
