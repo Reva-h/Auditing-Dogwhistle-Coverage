@@ -1,5 +1,47 @@
 # Scripts
 
+Shell entry points for running the two pipelines. Both scripts must be run
+from the repository root with the virtual environment activated.
+
+## run_audit_pipeline.sh
+
+Run the [audit_pipeline](../audit_pipeline/README.md) stages end-to-end.
+
+**Prerequisite:** `run_data_preprocessing.sh` must have completed successfully
+(requires `outputs/unioned_data/06_cleaned_labels_glossary_mapped.tsv` and
+`06_glossary_label_reference.tsv`).
+
+Execution order:
+
+| Stage | Module | Output directory |
+|---|---|---|
+| stage1 | `audit_pipeline.stage1_coverage` | `outputs/stage1/` |
+| stage2 | `audit_pipeline.stage2_annotation` | `outputs/stage2/` |
+| stage3 | `audit_pipeline.stage3_disparity` | `outputs/stage3/` |
+| stage4 | `audit_pipeline.stage4_rollup` | `outputs/stage4/` |
+| stage5 | `audit_pipeline.stage5_figures` | `outputs/stage5/` |
+| rq_reporting | `audit_pipeline.rq_reporting` | `outputs/rq_reporting/` |
+
+### Usage
+
+```bash
+# Full run
+scripts/run_audit_pipeline.sh
+
+# Start from a specific stage (skip earlier ones)
+scripts/run_audit_pipeline.sh --from stage3
+
+# Run a bounded range (inclusive)
+scripts/run_audit_pipeline.sh --from stage1 --to stage3
+
+# Re-run only the RQ reporting step
+scripts/run_audit_pipeline.sh --from rq_reporting --to rq_reporting
+```
+
+Stage values accepted by `--from`/`--to`: `stage1`, `stage2`, `stage3`, `stage4`, `stage5`, `rq_reporting`.
+
+---
+
 ## run_data_preprocessing.sh
 
 Run the preprocessing notebooks in [data_preprocessing](../data_preprocessing) end-to-end.
