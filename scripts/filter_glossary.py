@@ -58,28 +58,67 @@ OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 # Tier domain sets
 # ---------------------------------------------------------------------------
 TIER_1_DOMAINS = {
-    "link.springer.com", "www.tandfonline.com", "www.taylorfrancis.com", "brill.com",
-    "www.nytimes.com", "www.washingtonpost.com", "www.theguardian.com", "www.vox.com",
-    "fivethirtyeight.com", "slate.com", "prospect.org", "foreignpolicy.com",
-    "www.adl.org", "www.ajc.org", "www.nccm.ca", "antisemitism.org.uk",
-    "ianhaneylopez.com", "contemporaryrhetoric.com", "today.tamu.edu",
-    "www.law.cuny.edu", "s-usih.org",
+    "link.springer.com",
+    "www.tandfonline.com",
+    "www.taylorfrancis.com",
+    "brill.com",
+    "www.nytimes.com",
+    "www.washingtonpost.com",
+    "www.theguardian.com",
+    "www.vox.com",
+    "fivethirtyeight.com",
+    "slate.com",
+    "prospect.org",
+    "foreignpolicy.com",
+    "www.adl.org",
+    "www.ajc.org",
+    "www.nccm.ca",
+    "antisemitism.org.uk",
+    "ianhaneylopez.com",
+    "contemporaryrhetoric.com",
+    "today.tamu.edu",
+    "www.law.cuny.edu",
+    "s-usih.org",
+    "papers.ssrn.com",
 }
 
 TIER_2_DOMAINS = {
-    "colorofchange.org", "queervegan.com", "everydayfeminism.com",
-    "thedemlabs.org", "blmgrassroots.org", "medium.com", "helenldecruz.medium.com",
-    "www.theroot.com", "theconversation.com", "politicalresearch.org",
-    "forward.com", "www.dailykos.com", "talkingpointsmemo.com",
-    "www.salon.com", "nymag.com", "www.sapiens.org", "www.patheos.com",
-    "www.usnews.com", "www.newsweek.com", "www.thedailybeast.com",
-    "www.csmonitor.com", "www.latimes.com", "www.haaretz.com",
-    "www.jta.org", "storyful.com", "hyperallergic.com", "money.cnn.com",
-    "www.ourspectrum.com", "www.cpreview.org", "electionsos.com",
+    "colorofchange.org",
+    "queervegan.com",
+    "everydayfeminism.com",
+    "thedemlabs.org",
+    "blmgrassroots.org",
+    "medium.com",
+    "helenldecruz.medium.com",
+    "www.theroot.com",
+    "theconversation.com",
+    "politicalresearch.org",
+    "forward.com",
+    "www.dailykos.com",
+    "talkingpointsmemo.com",
+    "www.salon.com",
+    "nymag.com",
+    "www.sapiens.org",
+    "www.patheos.com",
+    "www.usnews.com",
+    "www.newsweek.com",
+    "www.thedailybeast.com",
+    "www.csmonitor.com",
+    "www.latimes.com",
+    "www.haaretz.com",
+    "www.jta.org",
+    "storyful.com",
+    "hyperallergic.com",
+    "money.cnn.com",
+    "www.ourspectrum.com",
+    "www.cpreview.org",
+    "electionsos.com",
+    "jacksonfreepress.com",
 }
 
 TIER_3_DOMAINS = {
-    "rationalwiki.org", "en.wikipedia.org",
+    "rationalwiki.org",
+    "en.wikipedia.org",
 }
 
 # google.com/books redirects to López (2014) "Dog Whistle Politics" (OUP).
@@ -94,6 +133,7 @@ TIER_1_OVERRIDES: set[str] = {
 # ---------------------------------------------------------------------------
 # Parsing helpers
 # ---------------------------------------------------------------------------
+
 
 def _extract_link_url(text: str) -> str:
     """
@@ -152,7 +192,9 @@ def parse_glossary_md(path: Path) -> pd.DataFrame:
         # --- Surface forms ---
         sf_m = re.search(r"_Surface forms_:\s*([^\n]+)", entry)
         surface_forms_raw = sf_m.group(1).strip() if sf_m else ""
-        surface_forms_list = [s.strip() for s in surface_forms_raw.split(";") if s.strip()]
+        surface_forms_list = [
+            s.strip() for s in surface_forms_raw.split(";") if s.strip()
+        ]
 
         # --- Persona/In-Group block (ends at Description or Example or EOF) ---
         persona_block_m = re.search(
@@ -245,6 +287,7 @@ def parse_glossary_md(path: Path) -> pd.DataFrame:
 # Tier classification
 # ---------------------------------------------------------------------------
 
+
 def extract_domain(url: str) -> str:
     """Return the netloc of a URL, lower-cased, with trailing spaces stripped."""
     if not url:
@@ -284,6 +327,7 @@ def classify_tier(term: str, domain: str) -> str:
 # Main
 # ---------------------------------------------------------------------------
 
+
 def main() -> None:
     df = parse_glossary_md(GLOSSARY_MD_PATH)
 
@@ -320,7 +364,9 @@ def main() -> None:
     lines.append("")
 
     # --- Total counts per tier ---
-    tier_counts = df["tier"].value_counts().reindex(["1", "2", "3", "unknown"], fill_value=0)
+    tier_counts = (
+        df["tier"].value_counts().reindex(["1", "2", "3", "unknown"], fill_value=0)
+    )
     lines.append("Total entries per tier")
     lines.append("-" * 30)
     for tier, count in tier_counts.items():
@@ -359,7 +405,9 @@ def main() -> None:
     exploded = df.copy()
     exploded["persona_split"] = exploded["persona_in_group"].str.split(" / ")
     exploded = exploded.explode("persona_split")
-    exploded["persona_split"] = exploded["persona_split"].str.strip().replace("", "unknown")
+    exploded["persona_split"] = (
+        exploded["persona_split"].str.strip().replace("", "unknown")
+    )
 
     pivot = (
         exploded.groupby(["persona_split", "tier"])
