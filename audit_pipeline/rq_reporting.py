@@ -1,14 +1,50 @@
+"""RQ reporting: compute and write all research-question outputs.
+
+Reads directly from the data-preprocessing outputs
+(``outputs/unioned_data/06_cleaned_labels_glossary_mapped.tsv`` and
+``06_glossary_label_reference.tsv``) and writes figures, tables, and appendix
+deltas under ``outputs/rq_reporting/``.
+
+Can be run standalone::
+
+    python -m audit_pipeline.rq_reporting
+
+or as the final step via ``audit_pipeline/run_all.py``.
+
+Functions shared with the rest of the audit pipeline
+(``norm_target``, ``map_reporting_group``, ``add_reporting_columns``,
+``ReportGroup``, ``write_tsv``) are imported from ``audit_pipeline.helpers``
+to keep a single source of truth.
+
+The following helpers are kept local because their signatures or return types
+differ from the helpers.py versions in ways that would require updating all
+call-sites throughout this module:
+
+* ``safe_float`` / ``safe_di_ratio`` — return ``pd.NA`` (not NaN) so
+  downstream ``pd.notna`` checks work correctly on Series.
+* ``parse_list_like`` — handles only Python-list-literal form; the helpers.py
+  version adds semicolon splitting that is not needed here.
+* ``ensure_dirs`` — takes ``Iterable[Path]`` rather than ``*args``; all
+  call-sites pass a list literal.
+"""
+
 from __future__ import annotations
 
 import ast
 import itertools
-from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable
 
 import matplotlib.pyplot as plt
 import pandas as pd
 
+from audit_pipeline.helpers import (
+    ReportGroup,
+    add_reporting_columns,
+    map_reporting_group,
+    norm_target,
+    write_tsv,
+)
 
 WORKDIR = Path(__file__).resolve().parents[1]
 OUTPUTS = WORKDIR / "outputs"
@@ -16,12 +52,9 @@ N_MIN = 30
 DI_THRESHOLD = 0.8
 
 
-@dataclass(frozen=True)
-class ReportGroup:
-    report_level: str
-    report_target: str
-    include: bool
-
+# ---------------------------------------------------------------------------
+# Local helpers (see module docstring for why these are not imported)
+# ---------------------------------------------------------------------------
 
 def safe_float(value: object) -> float:
     if pd.isna(value):
@@ -57,54 +90,14 @@ def parse_list_like(value: object) -> list[str]:
     return []
 
 
-def norm_target(value: str) -> str:
-    s = str(value).replace("_", " ").replace("-", " ").strip().lower()
-    s = " ".join(s.split())
-    if s == "nonbinary":
-        return "non binary"
-    return s
+def ensure_dirs(paths: Iterable[Path]) -> None:
+    for path in paths:
+        path.mkdir(parents=True, exist_ok=True)
 
 
-def map_reporting_group(level: str, target: str) -> ReportGroup:
-    level_n = norm_target(level)
-    target_n = norm_target(target)
-
-    lgb_terms = {"lesbian", "gay", "bisexual"}
-    trans_nb_terms = {
-        "transgender men",
-        "transgender women",
-        "transgender unspecified",
-        "non binary",
-    }
-
-    if level_n == "sexuality" and target_n in lgb_terms:
-        return ReportGroup("lgbtq", "LGB", True)
-    if level_n == "gender" and target_n in trans_nb_terms:
-        return ReportGroup("lgbtq", "Trans/NB", True)
-    if level_n == "gender" and target_n in {"men", "women", "other"}:
-        return ReportGroup("gender", target_n, True)
-    if level_n == "sexuality":
-        return ReportGroup("sexuality", target_n, False)
-
-    allowed_levels = {"race", "religion", "politics", "disability", "origin"}
-    if level_n in allowed_levels:
-        return ReportGroup(level_n, target_n, True)
-
-    return ReportGroup(level_n, target_n, False)
-
-
-def add_reporting_columns(
-    df: pd.DataFrame, level_col: str, target_col: str
-) -> pd.DataFrame:
-    mapped = df[[level_col, target_col]].apply(
-        lambda r: map_reporting_group(r[level_col], r[target_col]), axis=1
-    )
-    out = df.copy()
-    out["report_level"] = [m.report_level for m in mapped]
-    out["report_target"] = [m.report_target for m in mapped]
-    out["report_include"] = [m.include for m in mapped]
-    return out
-
+# ---------------------------------------------------------------------------
+# Pairwise disparity builder (rq_reporting-specific; not in helpers.py)
+# ---------------------------------------------------------------------------
 
 def build_pairwise_disparity(
     coverage_agg: pd.DataFrame, annotation_agg: pd.DataFrame
@@ -179,15 +172,9 @@ def build_pairwise_disparity(
     return pd.DataFrame(rows)
 
 
-def ensure_dirs(paths: Iterable[Path]) -> None:
-    for path in paths:
-        path.mkdir(parents=True, exist_ok=True)
-
-
-def write_tsv(df: pd.DataFrame, path: Path) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    df.to_csv(path, sep="\t", index=False)
-
+# ---------------------------------------------------------------------------
+# Plot helpers
+# ---------------------------------------------------------------------------
 
 def filter_disability_unspecific_for_plots(df: pd.DataFrame) -> pd.DataFrame:
     keep = (df["report_level"] != "disability") | (df["report_target"] == "unspecific")
@@ -516,9 +503,18 @@ def make_rq3_outputs(
     return pass_fail
 
 
+# ---------------------------------------------------------------------------
+# Main metric computation
+# ---------------------------------------------------------------------------
+
 def compute_reporting_metrics_from_cleaned(
     dataset_name: str,
 ) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+    """Load preprocessed outputs, compute coverage/annotation/pairwise metrics.
+
+    Pass ``dataset_name=""`` to use the full union dataset, or a lowercase
+    dataset name (e.g. ``"elsherief"``) to filter to a single source.
+    """
     cleaned = pd.read_csv(
         OUTPUTS / "unioned_data" / "06_cleaned_labels_glossary_mapped.tsv",
         sep="\t",
@@ -770,7 +766,7 @@ def write_manifest(base_dir: Path) -> None:
     manifest = base_dir / "README.md"
     text = """# RQ Reporting Outputs
 
-Generated by `scripts/generate_rq_reporting.py`.
+Generated by `audit_pipeline/rq_reporting.py`.
 
 - `rq1/main`: RQ1 main figure (presence vs type coverage scatter).
 - `rq1/appendix`: token frequency bars.
@@ -797,11 +793,14 @@ Delta sign convention in appendix TSVs:
     manifest.write_text(text, encoding="utf-8")
 
 
+# ---------------------------------------------------------------------------
+# Entry point
+# ---------------------------------------------------------------------------
+
 def main() -> None:
     base_dir = OUTPUTS / "rq_reporting"
     ensure_dirs([base_dir])
 
-    # Build primary metrics from raw row-level files to avoid type double-counting after collapse.
     coverage_agg, annotation_agg, pairwise = compute_reporting_metrics_from_cleaned("")
 
     write_tsv(coverage_agg, base_dir / "rq1" / "tables" / "rq1_coverage_collapsed.tsv")
