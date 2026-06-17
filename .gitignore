@@ -1,6 +1,6 @@
 data/*
 scratch/*
-outputs/preprocessing/*
+outputs
 .DS_Store
 pipeline/__pycache__
 
