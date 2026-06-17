@@ -1,6 +1,50 @@
 # benchmarking_dogwhistles
 
-Preprocessing pipeline for Section 4.1 of the dogwhistle benchmark audit project.
+Benchmark audit for Section 4.1 of the dogwhistle project — preprocessing,
+annotation, and programmatic RQ analysis.
+
+## Repository Structure
+
+| Directory | Purpose |
+|---|---|
+| [`data_preprocessing/`](data_preprocessing/README.md) | Notebook pipeline: parse glossary → standardize datasets → union/dedup → apply annotations |
+| [`annotations/`](annotations/README.md) | Annotator TSVs, merge notebook, IAA notebook |
+| [`audit_pipeline/`](audit_pipeline/README.md) | Python pipeline: coverage → annotation quality → disparity → rollup → figures → RQ reporting |
+| [`auditing/`](auditing/README.md) | Exploratory notebook audits (coverage, annotation quality, disparity, visualizations) |
+| [`scripts/`](scripts/README.md) | Shell entry point for running the data-preprocessing notebooks end-to-end |
+| `scratch/` | Personal working notes and exploratory drafts — not part of the reproducible pipeline |
+
+## End-to-End Workflow
+
+### Step 1 — Data Preprocessing
+
+Runs notebooks `00` through `06` in order.  Output: cleaned, annotated corpus under `outputs/`.
+
+```bash
+scripts/run_data_preprocessing.sh
+```
+
+Or run the annotation merge separately (needed before notebook `06`):
+
+```bash
+# In Jupyter: annotations/merge_annotation_union.ipynb
+```
+
+### Step 2 — Audit Pipeline (RQ metrics and figures)
+
+Reads from Step 1 outputs. Produces coverage, annotation-quality, disparity,
+and RQ reporting artifacts under `outputs/stage1/` through `outputs/rq_reporting/`.
+
+```bash
+python -m audit_pipeline.run_all
+```
+
+Individual stages can be rerun independently:
+
+```bash
+python -m audit_pipeline.stage1_coverage
+python -m audit_pipeline.rq_reporting
+```
 
 ## Preprocessing Pipeline Summary
 
@@ -13,16 +57,16 @@ Run order:
 4. [data_preprocessing/03_elsherief_formatting.ipynb](data_preprocessing/03_elsherief_formatting.ipynb)
 5. [data_preprocessing/04_union_and_dedup.ipynb](data_preprocessing/04_union_and_dedup.ipynb)
 6. [data_preprocessing/05_target_label_analysis_and_filtering.ipynb](data_preprocessing/05_target_label_analysis_and_filtering.ipynb)
+7. `annotations/merge_annotation_union.ipynb` (merge annotator files)
+8. [data_preprocessing/06_apply_annotations.ipynb](data_preprocessing/06_apply_annotations.ipynb)
 
 At a high level, this pipeline:
 1. Builds glossary artifacts from glossary source files into [outputs/glossary](outputs/glossary).
 2. Standardizes each source dataset into a shared post-level schema.
 3. Unions standardized outputs and deduplicates with ID-first, text-key fallback logic.
 4. Normalizes/analyzes target labels and optionally filters low-support groups.
-5. Writes stage outputs under [outputs/glossary](outputs/glossary), [outputs/preprocessing](outputs/preprocessing), and [outputs/unioned_data](outputs/unioned_data).
-
-Legacy notebook note:
-- [preprocessing_pipeline.ipynb](preprocessing_pipeline.ipynb) is an older monolithic variant kept for reference.
+5. Applies human annotation schemas and writes cleaned labels.
+6. Writes stage outputs under [outputs/glossary](outputs/glossary), [outputs/preprocessing](outputs/preprocessing), and [outputs/unioned_data](outputs/unioned_data).
 
 Shared schema used throughout the notebook:
 - `post_id`
@@ -42,17 +86,12 @@ Expected project layout for a successful run:
 
 ```text
 benchmarking_dogwhistles/
-	preprocessing_pipeline.ipynb
-	data_preprocessing/
-		00_glossary_formatter.ipynb
-		01_hatexplain_formatting.ipynb
-		02_mhs_formatting.ipynb
-		03_elsherief_formatting.ipynb
-		04_union_and_dedup.ipynb
-		05_target_label_analysis_and_filtering.ipynb
-		README.md
-	README.md
-	requirements.txt
+	data_preprocessing/       # notebook pipeline (stages 00–06)
+	annotations/              # annotator TSVs + merge + IAA notebooks
+	audit_pipeline/           # Python RQ analysis pipeline
+	auditing/                 # exploratory audit notebooks
+	scripts/                  # shell entry point for data_preprocessing
+	scratch/                  # personal working notes (gitignored)
 	data/
 		hatexplain.json
 		measuring_hate_speech.parquet
@@ -60,19 +99,19 @@ benchmarking_dogwhistles/
 			implicit_hate_v1_stg3_posts.tsv
 			...
 	outputs/
+		glossary/
+			glossary.tsv
+			glossary_tier_summary.txt
 		preprocessing/
 			01_hatexplain_standardized.tsv
 			02_mhs_standardized.tsv
 			03_elsherief_standardized.tsv
 		unioned_data/
-			04_union_primary.tsv
-			04_dedup_primary.tsv
-			04_union_dedup_summary.tsv
-			05_union_primary_filtered.tsv
-			05_dedup_primary_filtered.tsv
-			05_raw_label_counts_for_annotation.tsv
-		glossary/
-			glossary.tsv
+			04_union_primary.tsv  ...
+			06_cleaned_labels_glossary_mapped.tsv
+			06_glossary_label_reference.tsv
+		stage1/ ... stage5/    # audit_pipeline intermediate outputs
+		rq_reporting/          # RQ1/RQ2/RQ3 figures, tables, appendix
 ```
 
 Notes:
@@ -105,17 +144,17 @@ Use the stage-by-stage notebooks in [data_preprocessing](data_preprocessing):
 
 For detailed stage behavior and inputs/outputs, see [data_preprocessing/README.md](data_preprocessing/README.md).
 
-If needed, you can still run the monolithic reference notebook [preprocessing_pipeline.ipynb](preprocessing_pipeline.ipynb).
-
 ## Auditing Notebooks
 
-Post-preprocessing audit notebooks live in [auditing](auditing) and are documented in [auditing/README.md](auditing/README.md).
+Exploratory audit notebooks live in [auditing](auditing) and are documented in [auditing/README.md](auditing/README.md).
 
 Recommended run order:
 1. [auditing/00_coverage_audit.ipynb](auditing/00_coverage_audit.ipynb)
 2. [auditing/01_annotation_quality_audit.ipynb](auditing/01_annotation_quality_audit.ipynb)
 3. [auditing/02_disparity_audit.ipynb](auditing/02_disparity_audit.ipynb)
 4. [auditing/03_audit_visualizations.ipynb](auditing/03_audit_visualizations.ipynb)
+
+The programmatic equivalent is [audit_pipeline/](audit_pipeline/README.md), which runs the same analyses as a reproducible Python pipeline.
 
 ## Annotation Agreement
 
@@ -149,7 +188,7 @@ Edit the config cells in the modular notebooks under [data_preprocessing](data_p
 - [data_preprocessing/04_union_and_dedup.ipynb](data_preprocessing/04_union_and_dedup.ipynb): `include_elsherief` and union/dedup output paths.
 - [data_preprocessing/05_target_label_analysis_and_filtering.ipynb](data_preprocessing/05_target_label_analysis_and_filtering.ipynb): filtering controls and filtered export paths.
 
-The monolithic [preprocessing_pipeline.ipynb](preprocessing_pipeline.ipynb) retains its own config cell for legacy use.
+Audit pipeline thresholds are set in [`audit_pipeline/config.py`](audit_pipeline/config.py).
 
 ## Output Files
 
@@ -182,4 +221,4 @@ When ElSherief data is available:
 
 - MHS fetch is one-time unless `refresh_mhs_local_copy=True`.
 - Dedup prioritizes `post_id` and falls back to `text_dedup_key`.
-- Sensitivity analysis with `sensitivity_thresholds` is available in the legacy [preprocessing_pipeline.ipynb](preprocessing_pipeline.ipynb).
+- Sensitivity analysis with `sensitivity_thresholds` is available in `scratch/preprocessing_pipeline.ipynb` (exploratory draft, not part of the reproducible pipeline).
