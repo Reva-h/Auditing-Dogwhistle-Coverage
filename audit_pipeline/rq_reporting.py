@@ -3,13 +3,15 @@
 Reads directly from the data-preprocessing outputs
 (``outputs/unioned_data/06_cleaned_labels_glossary_mapped.tsv`` and
 ``06_glossary_label_reference.tsv``) and writes figures, tables, and appendix
-deltas under ``outputs/rq_reporting/``.
+deltas under ``outputs/rq_reporting/`` (primary) or a caller-supplied
+directory (e.g. ``outputs/rq_reporting_tier12/`` for the robustness check).
 
 Can be run standalone::
 
-    python -m audit_pipeline.rq_reporting
+    python -m audit_pipeline.rq_reporting                  # full variant
+    python -m audit_pipeline.rq_reporting --variant tier12 # tier-1+2 only
 
-or as the final step via ``audit_pipeline/run_all.py``.
+or called programmatically via ``run_all.py``.
 
 Functions shared with the rest of the audit pipeline
 (``norm_target``, ``map_reporting_group``, ``add_reporting_columns``,
@@ -509,11 +511,22 @@ def make_rq3_outputs(
 
 def compute_reporting_metrics_from_cleaned(
     dataset_name: str,
+    allowed_tiers: frozenset | None = None,
 ) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     """Load preprocessed outputs, compute coverage/annotation/pairwise metrics.
 
-    Pass ``dataset_name=""`` to use the full union dataset, or a lowercase
-    dataset name (e.g. ``"elsherief"``) to filter to a single source.
+    Parameters
+    ----------
+    dataset_name : str
+        Pass ``""`` to use the full union dataset, or a lowercase dataset name
+        (e.g. ``"elsherief"``) to restrict to a single source.
+    allowed_tiers : frozenset[int] or None
+        When provided, the glossary is filtered to rows whose ``tier`` column
+        parses to an integer in this set before computing glossary totals and
+        looking up matched terms.  This ensures that both the denominator
+        (``total_glossary_dogwhistles``) and the numerator (matched hits) are
+        restricted to the same tier universe, making the robustness check
+        self-consistent.  ``None`` retains all tiers.
     """
     cleaned = pd.read_csv(
         OUTPUTS / "unioned_data" / "06_cleaned_labels_glossary_mapped.tsv",
@@ -528,6 +541,14 @@ def compute_reporting_metrics_from_cleaned(
         cleaned = cleaned[
             cleaned["dataset"].astype(str).str.lower() == dataset_name.lower()
         ].copy()
+
+    # Apply the tier filter before computing glossary totals so that
+    # total_glossary_dogwhistles only counts entries in the active tier set.
+    # The hit-lookup below uses ref_grouped, which is built from this filtered
+    # table, ensuring numerator and denominator are drawn from the same universe.
+    if allowed_tiers is not None and "tier" in glossary_ref.columns:
+        tier_int = pd.to_numeric(glossary_ref["tier"], errors="coerce")
+        glossary_ref = glossary_ref[tier_int.isin(allowed_tiers)].copy()
 
     glossary_ref = add_reporting_columns(glossary_ref, "taxonomy_level", "target")
     glossary_ref = glossary_ref[glossary_ref["report_include"]].copy()
@@ -706,11 +727,25 @@ def write_appendix_deltas(
     primary_cov: pd.DataFrame,
     primary_ann: pd.DataFrame,
     primary_pair: pd.DataFrame,
+    allowed_tiers: frozenset | None = None,
 ) -> None:
+    """Compute and write ElSherief-vs-union delta tables.
+
+    Parameters
+    ----------
+    allowed_tiers : frozenset[int] or None
+        Passed through to compute_reporting_metrics_from_cleaned so that the
+        ElSherief subset is filtered by the same tiers as the primary analysis,
+        keeping the delta comparison internally consistent.
+    """
     appendix_dir = base_dir / "appendix" / "elsherief"
     ensure_dirs([appendix_dir])
 
-    els_cov, els_ann, els_pair = compute_reporting_metrics_from_cleaned("elsherief")
+    # Use the same tier filter for the ElSherief subset so deltas compare
+    # tier-matched analyses (e.g. tier12-union minus tier12-elsherief).
+    els_cov, els_ann, els_pair = compute_reporting_metrics_from_cleaned(
+        "elsherief", allowed_tiers
+    )
 
     cov_delta = primary_cov.merge(
         els_cov,
@@ -797,11 +832,30 @@ Delta sign convention in appendix TSVs:
 # Entry point
 # ---------------------------------------------------------------------------
 
-def main() -> None:
-    base_dir = OUTPUTS / "rq_reporting"
+def main(
+    base_dir: Path | None = None,
+    allowed_tiers: frozenset | None = None,
+) -> None:
+    """Run all RQ reporting steps and write outputs to *base_dir*.
+
+    Parameters
+    ----------
+    base_dir : Path or None
+        Root directory for all outputs.  Defaults to
+        ``outputs/rq_reporting/`` (the primary-analysis location).
+    allowed_tiers : frozenset[int] or None
+        When provided, all metric computation and the ElSherief appendix are
+        restricted to the specified glossary tiers.  Pass
+        ``frozenset({1, 2})`` for the tier-1+2 robustness check.
+        ``None`` (default) uses all tiers.
+    """
+    if base_dir is None:
+        base_dir = OUTPUTS / "rq_reporting"
     ensure_dirs([base_dir])
 
-    coverage_agg, annotation_agg, pairwise = compute_reporting_metrics_from_cleaned("")
+    coverage_agg, annotation_agg, pairwise = compute_reporting_metrics_from_cleaned(
+        "", allowed_tiers
+    )
 
     write_tsv(coverage_agg, base_dir / "rq1" / "tables" / "rq1_coverage_collapsed.tsv")
     write_tsv(
@@ -811,11 +865,13 @@ def main() -> None:
     make_rq1_plots(coverage_agg, base_dir)
     make_rq2_outputs(annotation_agg, base_dir)
     make_rq3_outputs(pairwise, base_dir)
-    write_appendix_deltas(base_dir, coverage_agg, annotation_agg, pairwise)
+    write_appendix_deltas(base_dir, coverage_agg, annotation_agg, pairwise, allowed_tiers)
     write_manifest(base_dir)
 
     print(f"Reporting outputs written to: {base_dir}")
 
 
 if __name__ == "__main__":
-    main()
+    from audit_pipeline.config import resolve_variant
+    _v = resolve_variant()
+    main(base_dir=_v.rq_out, allowed_tiers=_v.allowed_tiers)

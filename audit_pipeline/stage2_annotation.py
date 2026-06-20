@@ -2,13 +2,22 @@
 
 This stage converts Stage 1 matches into Case A/B/C counts, per-group labeling
 rates, and dogwhistle-level detail tables for error analysis.
+
+Pass a PipelineVariant to run() to select which stage-1 outputs to read from
+and where stage-2 outputs are written.
 """
 
 from __future__ import annotations
 
 import pandas as pd
 
-from audit_pipeline.config import DATA_PATH, N_MIN, OUT_S1, OUT_S2
+from audit_pipeline.config import (
+    DATA_PATH,
+    N_MIN,
+    VARIANT_FULL,
+    PipelineVariant,
+    resolve_variant,
+)
 from audit_pipeline.helpers import ensure_dirs, write_tsv
 
 
@@ -21,13 +30,20 @@ def _target_contains(row_targets: str, specific_target: str) -> bool:
     return str(specific_target).strip().lower() in target_set
 
 
-def run() -> None:
-    """Aggregate annotation-quality metrics from Stage 1 match artifacts."""
-    ensure_dirs(OUT_S2)
+def run(variant: PipelineVariant = VARIANT_FULL) -> None:
+    """Aggregate annotation-quality metrics from Stage 1 match artifacts.
 
-    matches = pd.read_csv(OUT_S1 / "s1_matches.tsv", sep="\t", low_memory=False)
+    Parameters
+    ----------
+    variant : PipelineVariant
+        Controls where stage-1 inputs are read from (``variant.out_s1``) and
+        where stage-2 outputs are written (``variant.out_s2``).
+    """
+    ensure_dirs(variant.out_s2)
+
+    matches = pd.read_csv(variant.out_s1 / "s1_matches.tsv", sep="\t", low_memory=False)
     _ = pd.read_csv(
-        OUT_S1 / "s1_coverage_by_level_target.tsv", sep="\t", low_memory=False
+        variant.out_s1 / "s1_coverage_by_level_target.tsv", sep="\t", low_memory=False
     )
     data = pd.read_csv(DATA_PATH, sep="\t", low_memory=False)
 
@@ -183,12 +199,12 @@ def run() -> None:
             ascending=[True, True, True, False, False],
         )
 
-    p_ann = OUT_S2 / "s2_annotation_by_level_target.tsv"
-    p_det = OUT_S2 / "s2_form_labeling_detail.tsv"
+    p_ann = variant.out_s2 / "s2_annotation_by_level_target.tsv"
+    p_det = variant.out_s2 / "s2_form_labeling_detail.tsv"
     write_tsv(annotation, p_ann)
     write_tsv(detail, p_det)
 
-    print("[Stage 2] Annotation quality complete")
+    print(f"[Stage 2 – {variant.name}] Annotation quality complete")
     print(f"  wrote {len(annotation):,} rows -> {p_ann}")
     print(f"  wrote {len(detail):,} rows -> {p_det}")
 
@@ -198,4 +214,4 @@ def run() -> None:
 
 
 if __name__ == "__main__":
-    run()
+    run(resolve_variant())

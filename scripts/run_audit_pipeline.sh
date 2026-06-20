@@ -3,16 +3,21 @@ set -euo pipefail
 
 # Run the audit pipeline stages end-to-end in a deterministic order.
 #
+# By default two passes are executed:
+#   1. Primary analysis  – all glossary tiers (outputs/stage1/ … outputs/rq_reporting/)
+#   2. Robustness check  – tier-1 and tier-2 terms only
+#                          (outputs/stage1_tier12/ … outputs/rq_reporting_tier12/)
+#
+# Use --no-robustness to skip the second pass and run only the primary analysis.
+# Use --variant <name> to run a single variant (full | tier12) instead of both.
+#
 # What this script does:
-# 1. Runs audit_pipeline stages 1-5 then rq_reporting as Python modules.
+# 1. Runs audit_pipeline stages 1-5 then rq_reporting as Python modules,
+#    once per active variant.
 # 2. Each stage reads from the previous stage's outputs under outputs/.
-# 3. Artifact layout:
-#    - stage1 writes to outputs/stage1/
-#    - stage2 writes to outputs/stage2/
-#    - stage3 writes to outputs/stage3/
-#    - stage4 writes to outputs/stage4/
-#    - stage5 writes to outputs/stage5/
-#    - rq_reporting writes to outputs/rq_reporting/
+# 3. Artifact layout per variant:
+#    full    → outputs/stage1/  … outputs/stage5/  outputs/rq_reporting/
+#    tier12  → outputs/stage1_tier12/ … outputs/stage5_tier12/ outputs/rq_reporting_tier12/
 #
 # Prerequisites:
 #   The data-preprocessing pipeline must have run successfully first:
@@ -23,19 +28,25 @@ set -euo pipefail
 #
 # Usage:
 #   scripts/run_audit_pipeline.sh
+#   scripts/run_audit_pipeline.sh --no-robustness
+#   scripts/run_audit_pipeline.sh --variant tier12
 #   scripts/run_audit_pipeline.sh --from stage2
 #   scripts/run_audit_pipeline.sh --from stage1 --to stage3
 #
 # Options:
-#   --from <stage>  Start stage (inclusive). One of: stage1 stage2 stage3 stage4 stage5 rq_reporting
-#   --to   <stage>  End stage (inclusive).   One of: stage1 stage2 stage3 stage4 stage5 rq_reporting
-#   --help          Show help text
+#   --from <stage>     Start stage (inclusive). One of: stage1 stage2 stage3 stage4 stage5 rq_reporting
+#   --to   <stage>     End stage (inclusive).   One of: stage1 stage2 stage3 stage4 stage5 rq_reporting
+#   --no-robustness    Run only the primary (full-tier) analysis; skip tier-1+2 pass
+#   --variant <name>   Run a single variant only (full | tier12)
+#   --help             Show help text
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 FROM_STAGE="stage1"
 TO_STAGE="rq_reporting"
+NO_ROBUSTNESS=0
+SINGLE_VARIANT=""
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -55,8 +66,20 @@ while [[ $# -gt 0 ]]; do
       TO_STAGE="$2"
       shift 2
       ;;
+    --no-robustness)
+      NO_ROBUSTNESS=1
+      shift
+      ;;
+    --variant)
+      if [[ $# -lt 2 ]]; then
+        echo "Error: --variant requires a name (full | tier12)." >&2
+        exit 2
+      fi
+      SINGLE_VARIANT="$2"
+      shift 2
+      ;;
     --help|-h)
-      sed -n '1,30p' "$0"
+      sed -n '1,40p' "$0"
       exit 0
       ;;
     *)
@@ -119,6 +142,14 @@ if (( FROM_INDEX > TO_INDEX )); then
   exit 2
 fi
 
+# Validate --variant when provided.
+if [[ -n "$SINGLE_VARIANT" ]]; then
+  if [[ "$SINGLE_VARIANT" != "full" && "$SINGLE_VARIANT" != "tier12" ]]; then
+    echo "Error: --variant must be 'full' or 'tier12'." >&2
+    exit 2
+  fi
+fi
+
 # Fail fast with a clear message if the audit_pipeline package is not importable.
 if ! python3 -c "import audit_pipeline" >/dev/null 2>&1; then
   cat >&2 <<EOF
@@ -158,23 +189,65 @@ done
 
 echo "Repository root:  $ROOT_DIR"
 echo "Stage range:      ${FROM_STAGE} -> ${TO_STAGE}"
+
+# Determine which variants to run.
+# --variant overrides --no-robustness; both flags together are also fine
+# (--variant tier12 --no-robustness is redundant but accepted).
+if [[ -n "$SINGLE_VARIANT" ]]; then
+  VARIANTS=("$SINGLE_VARIANT")
+elif (( NO_ROBUSTNESS )); then
+  VARIANTS=("full")
+else
+  VARIANTS=("full" "tier12")
+fi
+
+echo "Variants:         ${VARIANTS[*]}"
+
+# ── Helper: run one pass for a single variant ─────────────────────────────────
+
+run_variant() {
+  local variant="$1"
+  local variant_args=""
+  if [[ "$variant" != "full" ]]; then
+    # Pass --variant to each Python module so it writes to the correct dirs.
+    variant_args="--variant $variant"
+  fi
+
+  echo ""
+  echo "┌─────────────────────────────────────────────────────────"
+  echo "│ Variant: $variant"
+  echo "└─────────────────────────────────────────────────────────"
+
+  for i in "${!STAGE_IDS[@]}"; do
+    if (( i < FROM_INDEX || i > TO_INDEX )); then
+      continue
+    fi
+
+    local stage="${STAGE_IDS[$i]}"
+    local module
+    module="$(stage_to_module "$stage")"
+
+    echo ""
+    echo "[RUN] $module  (variant: $variant)"
+    # shellcheck disable=SC2086
+    python3 -m "$module" $variant_args
+    echo "[OK ] $module"
+  done
+}
+
+# ── Main loop ────────────────────────────────────────────────────────────────
+
 echo ""
 echo "Starting audit pipeline run..."
 
-for i in "${!STAGE_IDS[@]}"; do
-  if (( i < FROM_INDEX || i > TO_INDEX )); then
-    continue
-  fi
-
-  stage="${STAGE_IDS[$i]}"
-  module="$(stage_to_module "$stage")"
-
-  echo ""
-  echo "[RUN] $module"
-  python3 -m "$module"
-  echo "[OK ] $module"
+for variant in "${VARIANTS[@]}"; do
+  run_variant "$variant"
 done
 
 echo ""
 echo "Audit pipeline completed successfully."
-echo "Stage outputs are in: $ROOT_DIR/outputs/{stage1..stage5,rq_reporting}/"
+echo ""
+echo "Primary outputs:      $ROOT_DIR/outputs/{stage1..stage5,rq_reporting}/"
+if [[ " ${VARIANTS[*]} " == *" tier12 "* ]]; then
+  echo "Robustness outputs:   $ROOT_DIR/outputs/{stage1_tier12..stage5_tier12,rq_reporting_tier12}/"
+fi

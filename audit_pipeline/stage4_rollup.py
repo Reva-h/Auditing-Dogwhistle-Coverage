@@ -2,9 +2,16 @@
 
 This stage collapses target-level outputs into reporting groups, computes the
 four-fifths pass/fail summary, and measures deltas for the ElSherief subset.
+
+Pass a PipelineVariant to run() to select which glossary tiers are active and
+where outputs are written.  The glossary is re-filtered here (using the same
+allowed_tiers as Stage 1) so that the ``total_glossary_dogwhistles`` denominator
+used to compute presence_rate is consistent with the tier-filtered match set.
 """
 
 from __future__ import annotations
+
+from pathlib import Path
 
 import pandas as pd
 
@@ -14,8 +21,9 @@ from audit_pipeline.config import (
     ELSHERIEF_DATASET_NAME,
     GLOSSARY_PATH,
     N_MIN,
-    OUT_S1,
-    OUT_S4,
+    VARIANT_FULL,
+    PipelineVariant,
+    resolve_variant,
 )
 from audit_pipeline.helpers import (
     add_reporting_columns,
@@ -29,9 +37,21 @@ from audit_pipeline.helpers import (
 )
 
 
-def _load_filtered_matches(dataset_filter: str | None) -> pd.DataFrame:
-    """Load Stage 1 matches, optionally restricted to a dataset name."""
-    matches = pd.read_csv(OUT_S1 / "s1_matches.tsv", sep="\t", low_memory=False)
+def _load_filtered_matches(
+    dataset_filter: str | None,
+    s1_dir: Path,
+) -> pd.DataFrame:
+    """Load Stage 1 matches, optionally restricted to a dataset name.
+
+    Parameters
+    ----------
+    dataset_filter : str or None
+        When provided, keep only rows whose ``dataset`` column matches this
+        string (case-insensitive).
+    s1_dir : Path
+        Directory containing the Stage 1 ``s1_matches.tsv`` artifact.
+    """
+    matches = pd.read_csv(s1_dir / "s1_matches.tsv", sep="\t", low_memory=False)
     if dataset_filter:
         matches = matches[
             matches["dataset"].astype(str).str.lower() == dataset_filter.lower()
@@ -113,18 +133,58 @@ def _build_target_posts(
     return out
 
 
+def _load_glossary_ref(
+    allowed_tiers: frozenset[int] | None,
+) -> pd.DataFrame:
+    """Load and optionally tier-filter the glossary reference table.
+
+    The returned DataFrame is used to compute ``total_glossary_dogwhistles``
+    and ``total_glossary_types`` denominators.  Applying the same tier filter
+    here as in Stage 1 ensures that presence_rate = found / total uses a
+    consistent denominator: only the tiers that were actually searched for.
+
+    Parameters
+    ----------
+    allowed_tiers : frozenset[int] or None
+        When provided, keep only glossary rows whose ``tier`` parses to an
+        integer in this set.  ``None`` retains all rows.
+    """
+    glossary_ref = pd.read_csv(GLOSSARY_PATH, sep="\t", low_memory=False)
+    if allowed_tiers is not None and "tier" in glossary_ref.columns:
+        tier_int = pd.to_numeric(glossary_ref["tier"], errors="coerce")
+        glossary_ref = glossary_ref[tier_int.isin(allowed_tiers)].copy()
+    return glossary_ref
+
+
 def compute_rollup(
-    dataset_filter: str | None, include_taxonomy_level: bool
+    dataset_filter: str | None,
+    include_taxonomy_level: bool,
+    s1_dir: Path,
+    allowed_tiers: frozenset[int] | None = None,
 ) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     """Compute coverage, annotation, and pairwise rollups for one reporting view.
 
     ``include_taxonomy_level`` toggles between the group-collapsed outputs (4a)
     and the taxonomy-preserving outputs (4b).
+
+    Parameters
+    ----------
+    dataset_filter : str or None
+        When provided, restrict to rows from this dataset (e.g. ``"elsherief"``).
+    include_taxonomy_level : bool
+        Whether to keep the taxonomy_level dimension in group keys.
+    s1_dir : Path
+        Directory containing the Stage 1 match artifact for this variant.
+    allowed_tiers : frozenset[int] or None
+        Tier filter applied to the glossary denominator to match the one used
+        in Stage 1.  Passing ``None`` uses all tiers.
     """
-    matches = _load_filtered_matches(dataset_filter)
+    matches = _load_filtered_matches(dataset_filter, s1_dir)
     dataset_rows = _dataset_row_count(dataset_filter)
 
-    glossary_ref = pd.read_csv(GLOSSARY_PATH, sep="\t", low_memory=False)
+    # Filter the glossary denominator by the same tiers used in Stage 1 so
+    # that presence_rate = found/total is computed over a consistent universe.
+    glossary_ref = _load_glossary_ref(allowed_tiers)
     glossary_ref = add_reporting_columns(glossary_ref, "taxonomy_level", "target")
     glossary_ref = glossary_ref[glossary_ref["report_include"]].copy()
     glossary_ref["coding_level"] = glossary_ref["type"].apply(map_type_to_coding_level)
@@ -439,7 +499,7 @@ def compute_rollup(
 def _build_pass_fail(
     pairwise: pd.DataFrame, coverage: pd.DataFrame, annotation: pd.DataFrame
 ) -> pd.DataFrame:
-    """Summarize four-fifths outcomes per reporting group.
+    """Summarise four-fifths outcomes per reporting group.
 
     The worst stable pair touching each reporting target is retained as the
     explanatory note so the summary table stays interpretable.
@@ -507,16 +567,27 @@ def _build_pass_fail(
     return out
 
 
-def run() -> None:
-    """Generate Stage 4 rollups for union, by-level, and ElSherief slices."""
-    by_group_dir = OUT_S4 / "by_group"
-    by_level_group_dir = OUT_S4 / "by_level_group"
-    els_dir = OUT_S4 / "elsherief"
+def run(variant: PipelineVariant = VARIANT_FULL) -> None:
+    """Generate Stage 4 rollups for union, by-level, and ElSherief slices.
+
+    Parameters
+    ----------
+    variant : PipelineVariant
+        Controls where stage-1 inputs are read from (``variant.out_s1``),
+        which glossary tiers seed the denominators (``variant.allowed_tiers``),
+        and where stage-4 outputs are written (``variant.out_s4``).
+    """
+    by_group_dir = variant.out_s4 / "by_group"
+    by_level_group_dir = variant.out_s4 / "by_level_group"
+    els_dir = variant.out_s4 / "elsherief"
     ensure_dirs(by_group_dir, by_level_group_dir, els_dir)
 
     # 4a collapsed-by-group (union).
     cov_a, ann_a, pair_a = compute_rollup(
-        dataset_filter=None, include_taxonomy_level=False
+        dataset_filter=None,
+        include_taxonomy_level=False,
+        s1_dir=variant.out_s1,
+        allowed_tiers=variant.allowed_tiers,
     )
     pass_fail = _build_pass_fail(pair_a, cov_a, ann_a)
 
@@ -527,7 +598,10 @@ def run() -> None:
 
     # 4b by-level-group (union).
     cov_b, ann_b, pair_b = compute_rollup(
-        dataset_filter=None, include_taxonomy_level=True
+        dataset_filter=None,
+        include_taxonomy_level=True,
+        s1_dir=variant.out_s1,
+        allowed_tiers=variant.allowed_tiers,
     )
     write_tsv(cov_b, by_level_group_dir / "s4b_coverage_by_level_group.tsv")
     write_tsv(ann_b, by_level_group_dir / "s4b_annotation_by_level_group.tsv")
@@ -535,7 +609,10 @@ def run() -> None:
 
     # 4c ElSherief deltas.
     cov_e, ann_e, pair_e = compute_rollup(
-        dataset_filter=ELSHERIEF_DATASET_NAME, include_taxonomy_level=False
+        dataset_filter=ELSHERIEF_DATASET_NAME,
+        include_taxonomy_level=False,
+        s1_dir=variant.out_s1,
+        allowed_tiers=variant.allowed_tiers,
     )
 
     cov_d = cov_a.merge(
@@ -582,7 +659,7 @@ def run() -> None:
     write_tsv(ann_d, els_dir / "s4c_annotation_delta_union_vs_elsherief.tsv")
     write_tsv(pair_d, els_dir / "s4c_pairwise_delta_union_vs_elsherief.tsv")
 
-    print("[Stage 4] Rollup complete")
+    print(f"[Stage 4 – {variant.name}] Rollup complete")
     print(
         f"  wrote {len(cov_a):,} rows -> {by_group_dir / 's4a_coverage_by_group.tsv'}"
     )
@@ -616,4 +693,4 @@ def run() -> None:
 
 
 if __name__ == "__main__":
-    run()
+    run(resolve_variant())

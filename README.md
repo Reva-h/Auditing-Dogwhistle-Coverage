@@ -32,18 +32,27 @@ Or run the annotation merge separately (needed before notebook `06`):
 
 ### Step 2 — Audit Pipeline (RQ metrics and figures)
 
-Reads from Step 1 outputs. Produces coverage, annotation-quality, disparity,
-and RQ reporting artifacts under `outputs/stage1/` through `outputs/rq_reporting/`.
+Reads from Step 1 outputs.  Runs two passes by default:
+
+- **Primary analysis** (all glossary tiers) → `outputs/stage1/` … `outputs/rq_reporting/`
+- **Tier-1+2 robustness check** (explicit slurs and stereotype-based terms only) → `outputs/stage1_tier12/` … `outputs/rq_reporting_tier12/`
 
 ```bash
 python -m audit_pipeline.run_all
 ```
 
-Individual stages can be rerun independently:
+Run only the primary analysis (skip robustness check):
+
+```bash
+scripts/run_audit_pipeline.sh --no-robustness
+```
+
+Individual stages can be rerun independently (defaults to full variant):
 
 ```bash
 python -m audit_pipeline.stage1_coverage
-python -m audit_pipeline.rq_reporting
+python -m audit_pipeline.stage1_coverage --variant tier12
+python -m audit_pipeline.rq_reporting --variant tier12
 ```
 
 ## Preprocessing Pipeline Summary
@@ -110,8 +119,10 @@ benchmarking_dogwhistles/
 			04_union_primary.tsv  ...
 			06_cleaned_labels_glossary_mapped.tsv
 			06_glossary_label_reference.tsv
-		stage1/ ... stage5/    # audit_pipeline intermediate outputs
-		rq_reporting/          # RQ1/RQ2/RQ3 figures, tables, appendix
+		stage1/ ... stage5/              # audit_pipeline intermediate outputs (all tiers)
+		stage1_tier12/ ... stage5_tier12/ # tier-1+2 robustness check outputs
+		rq_reporting/                    # RQ1/RQ2/RQ3 figures, tables, appendix
+		rq_reporting_tier12/             # same, restricted to tiers 1+2
 ```
 
 Notes:
@@ -188,7 +199,7 @@ Edit the config cells in the modular notebooks under [data_preprocessing](data_p
 - [data_preprocessing/04_union_and_dedup.ipynb](data_preprocessing/04_union_and_dedup.ipynb): `include_elsherief` and union/dedup output paths.
 - [data_preprocessing/05_target_label_analysis_and_filtering.ipynb](data_preprocessing/05_target_label_analysis_and_filtering.ipynb): filtering controls and filtered export paths.
 
-Audit pipeline thresholds are set in [`audit_pipeline/config.py`](audit_pipeline/config.py).
+Audit pipeline thresholds and pipeline variants (full vs. tier-1+2 robustness check) are set in [`audit_pipeline/config.py`](audit_pipeline/config.py).
 
 ## Output Files
 

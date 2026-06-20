@@ -3,18 +3,26 @@
 This stage compares target groups within the same taxonomy/coding partitions,
 then adds context for when differing base rates imply unavoidable fairness
 tradeoffs.
+
+Pass a PipelineVariant to run() to select which stage-1 and stage-2 outputs
+to read from and where stage-3 outputs are written.
 """
 
 from __future__ import annotations
 
 import pandas as pd
 
-from audit_pipeline.config import N_MIN, OUT_S1, OUT_S2, OUT_S3
+from audit_pipeline.config import (
+    N_MIN,
+    VARIANT_FULL,
+    PipelineVariant,
+    resolve_variant,
+)
 from audit_pipeline.helpers import build_pairwise_rows, ensure_dirs, write_tsv
 
 
 def _level_rank(level_value: str) -> int:
-    """Normalize taxonomy-level labels to a sortable numeric rank."""
+    """Normalise taxonomy-level labels to a sortable numeric rank."""
     # Accept values like 'l1', 'L2', '1', etc.
     s = str(level_value).strip().lower()
     if s.startswith("l") and s[1:].isdigit():
@@ -24,15 +32,22 @@ def _level_rank(level_value: str) -> int:
     return 999
 
 
-def run() -> None:
-    """Build Stage 3 disparity tables from Stage 1 and Stage 2 outputs."""
-    ensure_dirs(OUT_S3)
+def run(variant: PipelineVariant = VARIANT_FULL) -> None:
+    """Build Stage 3 disparity tables from Stage 1 and Stage 2 outputs.
+
+    Parameters
+    ----------
+    variant : PipelineVariant
+        Controls where stage-1/2 inputs are read from and where stage-3
+        outputs are written (``variant.out_s3``).
+    """
+    ensure_dirs(variant.out_s3)
 
     coverage = pd.read_csv(
-        OUT_S1 / "s1_coverage_by_level_target.tsv", sep="\t", low_memory=False
+        variant.out_s1 / "s1_coverage_by_level_target.tsv", sep="\t", low_memory=False
     )
     annotation = pd.read_csv(
-        OUT_S2 / "s2_annotation_by_level_target.tsv", sep="\t", low_memory=False
+        variant.out_s2 / "s2_annotation_by_level_target.tsv", sep="\t", low_memory=False
     )
     if "base_rate_q_a" not in annotation.columns:
         annotation["base_rate_q_a"] = pd.NA
@@ -301,18 +316,18 @@ def run() -> None:
 
     cross = pd.DataFrame(cross_rows)
 
-    p_cov = OUT_S3 / "s3_coverage_disparity.tsv"
-    p_ann = OUT_S3 / "s3_annotation_disparity.tsv"
-    p_xlv = OUT_S3 / "s3_cross_level_consistency.tsv"
+    p_cov = variant.out_s3 / "s3_coverage_disparity.tsv"
+    p_ann = variant.out_s3 / "s3_annotation_disparity.tsv"
+    p_xlv = variant.out_s3 / "s3_cross_level_consistency.tsv"
     write_tsv(coverage_disparity, p_cov)
     write_tsv(annotation_disparity, p_ann)
     write_tsv(cross, p_xlv)
 
-    print("[Stage 3] Disparity complete")
+    print(f"[Stage 3 – {variant.name}] Disparity complete")
     print(f"  wrote {len(coverage_disparity):,} rows -> {p_cov}")
     print(f"  wrote {len(annotation_disparity):,} rows -> {p_ann}")
     print(f"  wrote {len(cross):,} rows -> {p_xlv}")
 
 
 if __name__ == "__main__":
-    run()
+    run(resolve_variant())

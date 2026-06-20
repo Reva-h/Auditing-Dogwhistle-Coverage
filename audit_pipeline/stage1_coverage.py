@@ -3,6 +3,15 @@
 This stage joins standardized benchmark posts to glossary surface forms and
 produces the foundational match table used by later annotation and disparity
 audits.
+
+Pass a PipelineVariant to run() to select which glossary tiers are active and
+where outputs are written.  The default (VARIANT_FULL) uses all tiers and
+writes to outputs/stage1/, preserving existing behaviour.
+
+Tier filtering is applied when loading the glossary — before the surface-form
+regex is compiled — so that only allowed-tier tokens enter the pattern.
+Filtering after matching would leave excluded-tier tokens in the regex and
+inflate match counts for the restricted variant.
 """
 
 from __future__ import annotations
@@ -11,7 +20,14 @@ import re
 
 import pandas as pd
 
-from audit_pipeline.config import DATA_PATH, GLOSSARY_PATH, OUT_S1
+from audit_pipeline.config import (
+    DATA_PATH,
+    GLOSSARY_PATH,
+    OUT_S1,
+    VARIANT_FULL,
+    PipelineVariant,
+    resolve_variant,
+)
 from audit_pipeline.helpers import (
     build_surface_form_pattern,
     ensure_dirs,
@@ -22,11 +38,26 @@ from audit_pipeline.helpers import (
 )
 
 
-def _load_glossary() -> tuple[pd.DataFrame, pd.DataFrame, re.Pattern]:
-    """Load and normalize the glossary plus a compiled matching regex.
+def _load_glossary(
+    allowed_tiers: frozenset[int] | None,
+) -> tuple[pd.DataFrame, pd.DataFrame, re.Pattern]:
+    """Load and normalise the glossary, optionally restricted to allowed tiers.
 
-    Returns the raw normalized glossary, the expanded one-row-per-surface-form
-    table, and a single alternation regex used to scan benchmark text.
+    Parameters
+    ----------
+    allowed_tiers : frozenset[int] or None
+        When provided, only rows whose ``tier`` column parses to an integer in
+        this set are kept.  Non-numeric tier values (e.g. ``"unknown"``) are
+        always excluded when a filter is active.  ``None`` retains all rows.
+
+    Returns
+    -------
+    glossary : DataFrame
+        One row per dogwhistle entry (after tier filtering).
+    glossary_expanded : DataFrame
+        One row per surface form (after tier filtering).
+    pattern : re.Pattern
+        Compiled alternation regex built from the filtered surface forms.
     """
     glossary = pd.read_csv(GLOSSARY_PATH, sep="\t", low_memory=False)
     required = {"dogwhistle", "surface_forms", "taxonomy_level", "target", "type"}
@@ -34,7 +65,13 @@ def _load_glossary() -> tuple[pd.DataFrame, pd.DataFrame, re.Pattern]:
     if missing:
         raise ValueError(f"Glossary missing required columns: {missing}")
 
-    glossary = glossary[list(required)].copy()
+    # Load tier alongside the required columns so we can filter before building
+    # the surface-form regex.  The tier column may be absent in older glossary
+    # versions; in that case we skip filtering even if allowed_tiers is set.
+    has_tier = "tier" in glossary.columns
+    load_cols = list(required) + (["tier"] if has_tier else [])
+    glossary = glossary[load_cols].copy()
+
     glossary["dogwhistle"] = glossary["dogwhistle"].astype(str).str.strip().str.lower()
     glossary["taxonomy_level"] = (
         glossary["taxonomy_level"].astype(str).str.strip().str.lower()
@@ -44,6 +81,17 @@ def _load_glossary() -> tuple[pd.DataFrame, pd.DataFrame, re.Pattern]:
     glossary["is_self_referential"] = glossary["type"].str.contains(
         "self-referential", na=False
     )
+
+    # Apply tier filter before expanding surface forms so that the regex is
+    # built only from allowed-tier entries.
+    if allowed_tiers is not None and has_tier:
+        tier_int = pd.to_numeric(glossary["tier"], errors="coerce")
+        n_before = len(glossary)
+        glossary = glossary[tier_int.isin(allowed_tiers)].copy()
+        print(
+            f"  [tier filter] kept {len(glossary):,} / {n_before:,} glossary rows "
+            f"(tiers: {sorted(allowed_tiers)})"
+        )
 
     rows = []
     all_forms = []
@@ -106,9 +154,17 @@ def _extract_matches(data: pd.DataFrame, pattern: re.Pattern) -> pd.DataFrame:
     return exploded
 
 
-def run() -> None:
-    """Build Stage 1 coverage artifacts and the row-level match table."""
-    ensure_dirs(OUT_S1)
+def run(variant: PipelineVariant = VARIANT_FULL) -> None:
+    """Build Stage 1 coverage artifacts and the row-level match table.
+
+    Parameters
+    ----------
+    variant : PipelineVariant
+        Controls which glossary tiers are matched (``variant.allowed_tiers``)
+        and where outputs are written (``variant.out_s1``).
+    """
+    out = variant.out_s1
+    ensure_dirs(out)
 
     data = pd.read_csv(DATA_PATH, sep="\t", low_memory=False)
     required_data = {"text_dedup_key", "text", "binary_hate", "targets", "dataset"}
@@ -116,7 +172,7 @@ def run() -> None:
     if missing:
         raise ValueError(f"Input data missing required columns: {missing}")
 
-    glossary, glossary_expanded, pattern = _load_glossary()
+    glossary, glossary_expanded, pattern = _load_glossary(variant.allowed_tiers)
     exploded = _extract_matches(data, pattern)
 
     audit_df = exploded.merge(
@@ -277,17 +333,17 @@ def run() -> None:
             )
     missing_df = pd.DataFrame(missing_rows)
 
-    p_cov = OUT_S1 / "s1_coverage_by_level_target.tsv"
-    p_det = OUT_S1 / "s1_coverage_detailed.tsv"
-    p_mis = OUT_S1 / "s1_coverage_missing.tsv"
-    p_mat = OUT_S1 / "s1_matches.tsv"
+    p_cov = out / "s1_coverage_by_level_target.tsv"
+    p_det = out / "s1_coverage_detailed.tsv"
+    p_mis = out / "s1_coverage_missing.tsv"
+    p_mat = out / "s1_matches.tsv"
 
     write_tsv(coverage, p_cov)
     write_tsv(detailed, p_det)
     write_tsv(missing_df, p_mis)
     write_tsv(s1_matches, p_mat)
 
-    print("[Stage 1] Coverage complete")
+    print(f"[Stage 1 – {variant.name}] Coverage complete")
     print(f"  wrote {len(coverage):,} rows -> {p_cov}")
     print(f"  wrote {len(detailed):,} rows -> {p_det}")
     print(f"  wrote {len(missing_df):,} rows -> {p_mis}")
@@ -295,4 +351,4 @@ def run() -> None:
 
 
 if __name__ == "__main__":
-    run()
+    run(resolve_variant())

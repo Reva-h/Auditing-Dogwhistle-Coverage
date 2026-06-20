@@ -2,9 +2,14 @@
 
 The plotting code is organized by reporting view so each figure family can be
 rerun or restyled without changing the upstream metric computations.
+
+Pass a PipelineVariant to run() to select which stage-1 through stage-4
+outputs to read from and where stage-5 figures are written.
 """
 
 from __future__ import annotations
+
+from pathlib import Path
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -15,7 +20,12 @@ import pandas as pd
 from matplotlib.colors import LinearSegmentedColormap
 from pandas.errors import EmptyDataError
 
-from audit_pipeline.config import OUT_S1, OUT_S2, OUT_S3, OUT_S4, OUT_S5, DI_THRESHOLD
+from audit_pipeline.config import (
+    DI_THRESHOLD,
+    VARIANT_FULL,
+    PipelineVariant,
+    resolve_variant,
+)
 from audit_pipeline.helpers import ensure_dirs
 
 # ── Global style ──────────────────────────────────────────────────────────────
@@ -117,13 +127,26 @@ def _facet_title(ax, label: str) -> None:
 # ── Level-stratified figures ──────────────────────────────────────────────────
 
 
-def level_stratified_figures(level_dir):
-    """Render the coding-level faceted figure set from Stages 1-3 outputs."""
-    s1 = _filter_self_ref(_read(OUT_S1 / "s1_coverage_by_level_target.tsv"))
-    s2 = _filter_self_ref(_read(OUT_S2 / "s2_annotation_by_level_target.tsv"))
-    s3c = _read(OUT_S3 / "s3_coverage_disparity.tsv")
-    s3a = _read(OUT_S3 / "s3_annotation_disparity.tsv")
-    s3x = _read(OUT_S3 / "s3_cross_level_consistency.tsv")
+def level_stratified_figures(
+    level_dir: Path,
+    s1_dir: Path,
+    s2_dir: Path,
+    s3_dir: Path,
+) -> None:
+    """Render the coding-level faceted figure set from Stages 1-3 outputs.
+
+    Parameters
+    ----------
+    level_dir : Path
+        Output directory for level-stratified figures.
+    s1_dir, s2_dir, s3_dir : Path
+        Input directories for the corresponding stage artifacts.
+    """
+    s1 = _filter_self_ref(_read(s1_dir / "s1_coverage_by_level_target.tsv"))
+    s2 = _filter_self_ref(_read(s2_dir / "s2_annotation_by_level_target.tsv"))
+    s3c = _read(s3_dir / "s3_coverage_disparity.tsv")
+    s3a = _read(s3_dir / "s3_annotation_disparity.tsv")
+    s3x = _read(s3_dir / "s3_cross_level_consistency.tsv")
 
     def _coding_levels(df):
         """Return coding levels in paper order, dropping absent facets."""
@@ -476,13 +499,21 @@ def level_stratified_figures(level_dir):
 # ── Group-collapsed figures ───────────────────────────────────────────────────
 
 
-def group_collapsed_figures(group_dir):
-    """Render reporting-group figures from Stage 4 collapsed outputs."""
+def group_collapsed_figures(group_dir: Path, s4_dir: Path) -> None:
+    """Render reporting-group figures from Stage 4 collapsed outputs.
+
+    Parameters
+    ----------
+    group_dir : Path
+        Output directory for group-collapsed figures.
+    s4_dir : Path
+        Input directory containing Stage 4 artifacts.
+    """
     # Use by-level-group coverage so duplicated taxonomy mappings can be deduplicated
     # explicitly by report group + coding level for a stable heatmap matrix.
-    cov = _read(OUT_S4 / "by_level_group/s4b_coverage_by_level_group.tsv")
-    ann = _filter_self_ref(_read(OUT_S4 / "by_group/s4a_annotation_by_group.tsv"))
-    pair = _read(OUT_S4 / "by_group/s4a_pairwise_disparity_by_group.tsv")
+    cov = _read(s4_dir / "by_level_group/s4b_coverage_by_level_group.tsv")
+    ann = _filter_self_ref(_read(s4_dir / "by_group/s4a_annotation_by_group.tsv"))
+    pair = _read(s4_dir / "by_group/s4a_pairwise_disparity_by_group.tsv")
 
     if not cov.empty:
         d = cov.copy()
@@ -912,11 +943,19 @@ def group_collapsed_figures(group_dir):
 # ── ElSherief delta figures ───────────────────────────────────────────────────
 
 
-def elsherief_figures(els_dir):
-    """Render delta figures comparing the union benchmark to ElSherief."""
-    cov = _read(OUT_S4 / "elsherief/s4c_coverage_delta_union_vs_elsherief.tsv")
-    ann = _read(OUT_S4 / "elsherief/s4c_annotation_delta_union_vs_elsherief.tsv")
-    pair = _read(OUT_S4 / "elsherief/s4c_pairwise_delta_union_vs_elsherief.tsv")
+def elsherief_figures(els_dir: Path, s4_dir: Path) -> None:
+    """Render delta figures comparing the union benchmark to ElSherief.
+
+    Parameters
+    ----------
+    els_dir : Path
+        Output directory for ElSherief delta figures.
+    s4_dir : Path
+        Input directory containing Stage 4 ElSherief artifacts.
+    """
+    cov = _read(s4_dir / "elsherief/s4c_coverage_delta_union_vs_elsherief.tsv")
+    ann = _read(s4_dir / "elsherief/s4c_annotation_delta_union_vs_elsherief.tsv")
+    pair = _read(s4_dir / "elsherief/s4c_pairwise_delta_union_vs_elsherief.tsv")
 
     def _diverging_bar(ax, labels, values, xlabel):
         """Draw a horizontal bar chart where sign is encoded by color."""
@@ -994,25 +1033,32 @@ def elsherief_figures(els_dir):
 # ── Orchestrator ──────────────────────────────────────────────────────────────
 
 
-def run() -> None:
-    """Generate all Stage 5 figure families and report the PNG count."""
-    lev_dir = OUT_S5 / "level_stratified"
-    grp_dir = OUT_S5 / "group_collapsed"
-    els_dir = OUT_S5 / "elsherief"
+def run(variant: PipelineVariant = VARIANT_FULL) -> None:
+    """Generate all Stage 5 figure families and report the PNG count.
+
+    Parameters
+    ----------
+    variant : PipelineVariant
+        Controls where stage-1 through stage-4 artifacts are read from and
+        where stage-5 figures are written (``variant.out_s5``).
+    """
+    lev_dir = variant.out_s5 / "level_stratified"
+    grp_dir = variant.out_s5 / "group_collapsed"
+    els_dir = variant.out_s5 / "elsherief"
     ensure_dirs(lev_dir, grp_dir, els_dir)
 
-    level_stratified_figures(lev_dir)
-    group_collapsed_figures(grp_dir)
-    elsherief_figures(els_dir)
+    level_stratified_figures(lev_dir, variant.out_s1, variant.out_s2, variant.out_s3)
+    group_collapsed_figures(grp_dir, variant.out_s4)
+    elsherief_figures(els_dir, variant.out_s4)
 
     pngs = (
         list(lev_dir.glob("*.png"))
         + list(grp_dir.glob("*.png"))
         + list(els_dir.glob("*.png"))
     )
-    print("[Stage 5] Figures complete")
-    print(f"  wrote {len(pngs):,} PNG files under {OUT_S5}")
+    print(f"[Stage 5 – {variant.name}] Figures complete")
+    print(f"  wrote {len(pngs):,} PNG files under {variant.out_s5}")
 
 
 if __name__ == "__main__":
-    run()
+    run(resolve_variant())
