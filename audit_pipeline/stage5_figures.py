@@ -1,3 +1,20 @@
+# ============================================================================
+# DEPRECATED (as of 2026-07-03): DO NOT RUN THIS FILE DIRECTLY.
+#
+# audit_pipeline/notebooks/figures_consolidated.ipynb is now the canonical,
+# permanent figure generator for this project. This file writes to the same
+# output paths that notebook owns (outputs/stage5/**), so running it directly
+# will SILENTLY OVERWRITE the notebook's current styled output with a stale,
+# unstyled version -- no error, no visible sign anything went wrong.
+#
+# Kept in the repo for reference/rollback only, not for regular use. Direct
+# execution (`python -m audit_pipeline.stage5_figures`) now requires an
+# explicit opt-in -- see the `if __name__ == "__main__":` guard at the
+# bottom of this file. Importing from this module (e.g.
+# `from audit_pipeline.stage5_figures import level_stratified_figures`) is
+# unaffected and continues to work normally.
+# ============================================================================
+
 """Stage 5: publication-oriented figures for the audit outputs.
 
 The plotting code is organized by reporting view so each figure family can be
@@ -103,11 +120,18 @@ def _filter_self_ref(df: pd.DataFrame) -> pd.DataFrame:
     return df[~df["is_self_referential"].fillna(False)].copy()
 
 
-def _top_n(df: pd.DataFrame, by: str, n: int) -> pd.DataFrame:
-    """Return the top ``n`` rows by a metric column if that column exists."""
+def _top_n(df: pd.DataFrame, by: str, n: int, ascending: bool = False) -> pd.DataFrame:
+    """Return the top ``n`` rows by a metric column if that column exists.
+
+    ``ascending=False`` (default) selects the *highest* n values -- correct
+    for metrics where higher = more extreme (token frequency, label gaps,
+    etc.). Pass ``ascending=True`` for metrics where *lower* = worse (e.g.
+    DI ratios), so "top n" means "n most disparate", not "n with the highest
+    raw value".
+    """
     if df.empty or by not in df.columns:
         return df
-    return df.sort_values(by, ascending=False).head(n).copy()
+    return df.sort_values(by, ascending=ascending).head(n).copy()
 
 
 def _style_ax(ax, grid_axis: str = "x") -> None:
@@ -384,7 +408,7 @@ def level_stratified_figures(
             sub["pair"] = (
                 sub["target_a"].astype(str) + " vs " + sub["target_b"].astype(str)
             )
-            d = _top_n(sub, "worst_di_ratio", 8).sort_values(
+            d = _top_n(sub, "worst_di_ratio", 8, ascending=True).sort_values(
                 "worst_di_ratio", ascending=True
             )
             colors = [_RED if v < DI_THRESHOLD else _BLUE for v in d["worst_di_ratio"]]
@@ -452,11 +476,11 @@ def level_stratified_figures(
         d["transition"] = (
             d["target"].astype(str)
             + " ("
-            + d["coding_level"].astype(str)
-            + ") "
-            + d["level_from"].astype(str)
+            + d["taxonomy_level"].astype(str)
+            + "): "
+            + d["coding_level_from"].astype(str)
             + " \u2192 "
-            + d["level_to"].astype(str)
+            + d["coding_level_to"].astype(str)
         )
         d = _top_n(
             d.assign(abs_presence=d["presence_rate_delta"].abs()), "abs_presence", 20
@@ -890,7 +914,7 @@ def group_collapsed_figures(group_dir: Path, s4_dir: Path) -> None:
             + " vs "
             + pair_plot["target_b"].astype(str)
         )
-        left = _top_n(pair_plot, "worst_di_ratio", 20).sort_values(
+        left = _top_n(pair_plot, "worst_di_ratio", 20, ascending=True).sort_values(
             "worst_di_ratio", ascending=True
         )
         right = _top_n(pair_plot, "labeling_rate_gap_abs", 20).sort_values(
@@ -1060,5 +1084,43 @@ def run(variant: PipelineVariant = VARIANT_FULL) -> None:
     print(f"  wrote {len(pngs):,} PNG files under {variant.out_s5}")
 
 
+def _deprecation_guard() -> None:
+    """Abort before writing anything unless the caller explicitly opts in.
+
+    audit_pipeline/notebooks/figures_consolidated.ipynb now owns
+    outputs/stage5/**; running this script unattended would silently
+    overwrite its current styled output with a stale, unstyled version.
+    """
+    import os
+    import sys
+
+    opt_in_flag = "--i-know-this-is-deprecated"
+    opt_in_env = "I_KNOW_THIS_IS_DEPRECATED"
+    if opt_in_flag in sys.argv:
+        sys.argv.remove(opt_in_flag)
+        return
+    if os.environ.get(opt_in_env) == "1":
+        return
+    print(
+        "\n"
+        "############################################################\n"
+        "# DEPRECATED: stage5_figures.py should not be run directly. #\n"
+        "#                                                            #\n"
+        "# audit_pipeline/notebooks/figures_consolidated.ipynb is now #\n"
+        "# the canonical figure generator. Running this script would  #\n"
+        "# silently overwrite its current styled output at the same   #\n"
+        "# paths under outputs/stage5/** with a stale, unstyled       #\n"
+        "# version -- no error, no visible sign anything went wrong.  #\n"
+        "#                                                            #\n"
+        "# Aborting WITHOUT writing anything. To run anyway (e.g. for #\n"
+        "# a rollback/diff check), pass --i-know-this-is-deprecated   #\n"
+        "# or set I_KNOW_THIS_IS_DEPRECATED=1.                        #\n"
+        "############################################################\n",
+        file=sys.stderr,
+    )
+    sys.exit(1)
+
+
 if __name__ == "__main__":
+    _deprecation_guard()
     run(resolve_variant())
