@@ -258,9 +258,9 @@ def run(variant: PipelineVariant = VARIANT_FULL) -> None:
             ]
         ].copy()
 
-    # Cross-level consistency compares adjacent taxonomy levels for the same
-    # target and coding level to surface abrupt metric shifts across the coding
-    # hierarchy rather than across different targets.
+    # Cross-level consistency compares adjacent coding levels (L2→L3, L3→L4)
+    # for the same (taxonomy_level, target) pair to surface abrupt metric shifts
+    # across the coding hierarchy.
     cov_ann = coverage.merge(
         annotation[
             [
@@ -276,19 +276,19 @@ def run(variant: PipelineVariant = VARIANT_FULL) -> None:
     )
 
     cross_rows = []
-    for (target, coding_level), tdf in cov_ann.groupby(["target", "coding_level"]):
+    for (taxonomy_level, target), tdf in cov_ann.groupby(["taxonomy_level", "target"]):
         tdf = tdf.copy()
-        tdf["_rank"] = tdf["taxonomy_level"].apply(_level_rank)
+        tdf["_rank"] = tdf["coding_level"].apply(_level_rank)
         tdf = tdf.sort_values("_rank")
         for i in range(len(tdf) - 1):
             a = tdf.iloc[i]
             b = tdf.iloc[i + 1]
             cross_rows.append(
                 {
+                    "taxonomy_level": taxonomy_level,
                     "target": target,
-                    "coding_level": coding_level,
-                    "level_from": a["taxonomy_level"],
-                    "level_to": b["taxonomy_level"],
+                    "coding_level_from": a["coding_level"],
+                    "coding_level_to": b["coding_level"],
                     "presence_rate_from": a["presence_rate"],
                     "presence_rate_to": b["presence_rate"],
                     "presence_rate_delta": b["presence_rate"] - a["presence_rate"]
@@ -315,6 +315,15 @@ def run(variant: PipelineVariant = VARIANT_FULL) -> None:
             )
 
     cross = pd.DataFrame(cross_rows)
+
+    if not coverage_disparity.empty:
+        coverage_disparity = coverage_disparity.sort_values(
+            "worst_di_ratio", ascending=True, na_position="last"
+        )
+    if not annotation_disparity.empty:
+        annotation_disparity = annotation_disparity.sort_values(
+            "annotation_di_ratio", ascending=True, na_position="last"
+        )
 
     p_cov = variant.out_s3 / "s3_coverage_disparity.tsv"
     p_ann = variant.out_s3 / "s3_annotation_disparity.tsv"
