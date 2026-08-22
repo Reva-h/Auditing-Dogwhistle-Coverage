@@ -316,6 +316,17 @@ def run(variant: PipelineVariant = VARIANT_FULL) -> None:
 
     cross = pd.DataFrame(cross_rows)
 
+    # Regression guard: this table should never be silently empty when the input
+    # spans more than one coding level per target. Added after c92ea92 fixed a
+    # groupby bug (taxonomy_level/coding_level swapped) that produced 0 rows with
+    # no error — this assertion turns that failure mode into a loud one.
+    assert not cross.empty, (
+        f"cross_level_consistency produced 0 rows from {len(cov_ann)} input rows "
+        f"across {cov_ann['target'].nunique()} targets and "
+        f"{cov_ann['coding_level'].nunique()} coding levels — check that the "
+        f"groupby is on (taxonomy_level, target), not (target, coding_level)."
+    )
+
     if not coverage_disparity.empty:
         coverage_disparity = coverage_disparity.sort_values(
             "worst_di_ratio", ascending=True, na_position="last"
