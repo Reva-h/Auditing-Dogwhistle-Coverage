@@ -3,21 +3,31 @@ set -euo pipefail
 
 # Run the audit pipeline stages end-to-end in a deterministic order.
 #
-# By default two passes are executed:
-#   1. Primary analysis  – all glossary tiers (outputs/stage1/ … outputs/rq_reporting/)
+# By default two passes are executed, followed by a comparison step:
+#   1. Primary analysis  – all glossary tiers (outputs/stage1/ … outputs/stage5/)
 #   2. Robustness check  – tier-1 and tier-2 terms only
-#                          (outputs/stage1_tier12/ … outputs/rq_reporting_tier12/)
+#                          (outputs/stage1_tier12/ … outputs/stage5_tier12/)
+#   3. robustness_check  – compares (1) and (2) once both have run;
+#                          writes outputs/robustness_check/
 #
-# Use --no-robustness to skip the second pass and run only the primary analysis.
-# Use --variant <name> to run a single variant (full | tier12) instead of both.
+# Use --no-robustness to skip pass 2 (and therefore step 3) and run only the
+# primary analysis. Use --variant <name> to run a single variant instead of
+# both (step 3 is skipped in that case too, since it has nothing to compare).
 #
 # What this script does:
-# 1. Runs audit_pipeline stages 1-5 then rq_reporting as Python modules,
-#    once per active variant.
+# 1. Runs audit_pipeline stages 1-5 as Python modules, once per active variant.
 # 2. Each stage reads from the previous stage's outputs under outputs/.
-# 3. Artifact layout per variant:
-#    full    → outputs/stage1/  … outputs/stage5/  outputs/rq_reporting/
-#    tier12  → outputs/stage1_tier12/ … outputs/stage5_tier12/ outputs/rq_reporting_tier12/
+# 3. If (and only if) both the full and tier12 variants ran in this
+#    invocation, runs audit_pipeline.robustness_check once afterward,
+#    comparing their Stage 4 outputs -- it is not a per-variant stage, so it
+#    is not part of the per-variant loop below.
+# 4. Artifact layout per variant:
+#    full    → outputs/stage1/  … outputs/stage5/
+#    tier12  → outputs/stage1_tier12/ … outputs/stage5_tier12/
+#    (both)  → outputs/robustness_check/
+#
+# rq_reporting is deprecated (see audit_pipeline/rq_reporting.py) and is no
+# longer part of this script's default execution order.
 #
 # Prerequisites:
 #   The data-preprocessing pipeline must have run successfully first:
@@ -34,8 +44,8 @@ set -euo pipefail
 #   scripts/run_audit_pipeline.sh --from stage1 --to stage3
 #
 # Options:
-#   --from <stage>     Start stage (inclusive). One of: stage1 stage2 stage3 stage4 stage5 rq_reporting
-#   --to   <stage>     End stage (inclusive).   One of: stage1 stage2 stage3 stage4 stage5 rq_reporting
+#   --from <stage>     Start stage (inclusive). One of: stage1 stage2 stage3 stage4 stage5 robustness_check
+#   --to   <stage>     End stage (inclusive).   One of: stage1 stage2 stage3 stage4 stage5 robustness_check
 #   --no-robustness    Run only the primary (full-tier) analysis; skip tier-1+2 pass
 #   --variant <name>   Run a single variant only (full | tier12)
 #   --help             Show help text
@@ -44,7 +54,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 FROM_STAGE="stage1"
-TO_STAGE="rq_reporting"
+TO_STAGE="robustness_check"
 NO_ROBUSTNESS=0
 SINGLE_VARIANT=""
 
@@ -79,7 +89,7 @@ while [[ $# -gt 0 ]]; do
       shift 2
       ;;
     --help|-h)
-      sed -n '1,40p' "$0"
+      sed -n '1,51p' "$0"
       exit 0
       ;;
     *)
@@ -89,27 +99,31 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-# Ordered list of stage identifiers.
+# Ordered list of stage identifiers. "robustness_check" is included here only
+# so it can be named in --from/--to ranges -- it is NOT a per-variant stage
+# (it compares two variants' outputs) and is deliberately excluded from the
+# per-variant loop in run_variant() below; see the main loop at the bottom of
+# this file for where it actually runs.
 STAGE_IDS=(
   "stage1"
   "stage2"
   "stage3"
   "stage4"
   "stage5"
-  "rq_reporting"
+  "robustness_check"
 )
 
 # Map stage id -> audit_pipeline module name.
 stage_to_module() {
   local stage="$1"
   case "$stage" in
-    stage1)        echo "audit_pipeline.stage1_coverage" ;;
-    stage2)        echo "audit_pipeline.stage2_annotation" ;;
-    stage3)        echo "audit_pipeline.stage3_disparity" ;;
-    stage4)        echo "audit_pipeline.stage4_rollup" ;;
-    stage5)        echo "audit_pipeline.stage5_figures" ;;
-    rq_reporting)  echo "audit_pipeline.rq_reporting" ;;
-    *)             return 1 ;;
+    stage1)             echo "audit_pipeline.stage1_coverage" ;;
+    stage2)             echo "audit_pipeline.stage2_annotation" ;;
+    stage3)             echo "audit_pipeline.stage3_disparity" ;;
+    stage4)             echo "audit_pipeline.stage4_rollup" ;;
+    stage5)             echo "audit_pipeline.stage5_figures" ;;
+    robustness_check)   echo "audit_pipeline.robustness_check" ;;
+    *)                  return 1 ;;
   esac
 }
 
@@ -224,13 +238,31 @@ run_variant() {
     fi
 
     local stage="${STAGE_IDS[$i]}"
+    # robustness_check compares two variants' outputs -- it is not a
+    # per-variant stage, so it is never run inside this loop. See the main
+    # loop below for where it actually runs (once, after both variants).
+    if [[ "$stage" == "robustness_check" ]]; then
+      continue
+    fi
+
     local module
     module="$(stage_to_module "$stage")"
+
+    # stage5_figures.py is deprecated in favour of
+    # audit_pipeline/notebooks/figures_consolidated.ipynb and refuses to run
+    # via its __main__ entry point (which is exactly how this script invokes
+    # it) without an explicit opt-in. This script is a legitimate,
+    # intentional orchestrator -- not an accidental direct run -- so it
+    # always passes the opt-in flag for this one stage.
+    local module_args="$variant_args"
+    if [[ "$stage" == "stage5" ]]; then
+      module_args="$module_args --i-know-this-is-deprecated"
+    fi
 
     echo ""
     echo "[RUN] $module  (variant: $variant)"
     # shellcheck disable=SC2086
-    python3 -m "$module" $variant_args
+    python3 -m "$module" $module_args
     echo "[OK ] $module"
   done
 }
@@ -244,10 +276,35 @@ for variant in "${VARIANTS[@]}"; do
   run_variant "$variant"
 done
 
+# robustness_check runs once, after the per-variant loop, only when both
+# variants actually ran in this invocation (--variant/--no-robustness both
+# restrict to a single variant, which leaves nothing to compare) and only
+# when the requested stage range reaches it.
+ROBUSTNESS_CHECK_INDEX="$(stage_to_index "robustness_check")"
+BOTH_VARIANTS_RAN=0
+if [[ " ${VARIANTS[*]} " == *" full "* && " ${VARIANTS[*]} " == *" tier12 "* ]]; then
+  BOTH_VARIANTS_RAN=1
+fi
+
+if (( TO_INDEX >= ROBUSTNESS_CHECK_INDEX )); then
+  if (( BOTH_VARIANTS_RAN )); then
+    echo ""
+    echo "[RUN] audit_pipeline.robustness_check"
+    python3 -m audit_pipeline.robustness_check
+    echo "[OK ] audit_pipeline.robustness_check"
+  else
+    echo ""
+    echo "[SKIP] audit_pipeline.robustness_check requires both variants; only ${VARIANTS[*]} ran in this invocation."
+  fi
+fi
+
 echo ""
 echo "Audit pipeline completed successfully."
 echo ""
-echo "Primary outputs:      $ROOT_DIR/outputs/{stage1..stage5,rq_reporting}/"
+echo "Primary outputs:      $ROOT_DIR/outputs/{stage1..stage5}/"
 if [[ " ${VARIANTS[*]} " == *" tier12 "* ]]; then
-  echo "Robustness outputs:   $ROOT_DIR/outputs/{stage1_tier12..stage5_tier12,rq_reporting_tier12}/"
+  echo "Robustness outputs:   $ROOT_DIR/outputs/{stage1_tier12..stage5_tier12}/"
+fi
+if (( BOTH_VARIANTS_RAN && TO_INDEX >= ROBUSTNESS_CHECK_INDEX )); then
+  echo "Comparison output:    $ROOT_DIR/outputs/robustness_check/"
 fi
