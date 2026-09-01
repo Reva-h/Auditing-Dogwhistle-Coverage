@@ -2,7 +2,7 @@ data/*
 scratch/*
 outputs
 .DS_Store
-audit_pipeline/__pycache__
+__pycache__/
 scratch/
 
 *.tsv
