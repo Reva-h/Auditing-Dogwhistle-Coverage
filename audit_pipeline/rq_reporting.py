@@ -1,17 +1,51 @@
+# ============================================================================
+# DEPRECATED (as of 2026-09-01): DO NOT RUN THIS FILE DIRECTLY.
+#
+# This module independently re-derives coverage/annotation/pairwise-disparity
+# metrics straight from the raw stage-06 preprocessed data, with NO
+# coding-level (L2/L3/L4) stratification anywhere -- it pools all levels
+# together from the start. audit_pipeline/stage1_coverage.py through
+# stage4_rollup.py already compute the same quantities, more granularly
+# (level-stratified), from the same upstream data, and have their own test
+# coverage. Nothing in the repository reads this module's outputs (confirmed:
+# none of its filenames appear in the compiled paper), so nothing is broken
+# by not running it -- but it duplicates stage1-4's work on a separate,
+# independently-recomputed, less granular copy of the same data, which is
+# exactly the kind of drift risk this project has repeatedly had to debug.
+#
+# The one genuinely distinct idea this module had -- pool a pair's raw counts
+# across all coding levels, THEN compute one DI ratio -- now lives properly
+# in audit_pipeline/robustness_check.py, built on top of stage3/stage4's
+# already-computed, already-tested outputs instead of re-deriving from raw
+# data a second time.
+#
+# Kept in the repo for reference/rollback only, not for regular use -- it is
+# the only remaining executable record of this module's RQ1/RQ2/RQ3 plotting
+# functions, which were not ported forward. Direct execution
+# (`python -m audit_pipeline.rq_reporting`) now requires an explicit opt-in
+# -- see the `if __name__ == "__main__":` guard at the bottom of this file.
+# Importing from this module (e.g. `from audit_pipeline.rq_reporting import
+# compute_reporting_metrics_from_cleaned`) is unaffected and continues to
+# work normally.
+# ============================================================================
+
 """RQ reporting: compute and write all research-question outputs.
 
 Reads directly from the data-preprocessing outputs
 (``outputs/unioned_data/06_cleaned_labels_glossary_mapped.tsv`` and
 ``06_glossary_label_reference.tsv``) and writes figures, tables, and appendix
 deltas under ``outputs/rq_reporting/`` (primary) or a caller-supplied
-directory (e.g. ``outputs/rq_reporting_tier12/`` for the robustness check).
+directory (e.g. ``outputs/rq_reporting_tier12/`` for a tier-restricted run).
 
-Can be run standalone::
+See the DEPRECATED banner above: this module's coverage/annotation
+computation duplicates stage1-4's more granular, already-tested outputs
+without coding-level stratification, and its one distinct idea (pooling
+across levels) now lives in ``audit_pipeline/robustness_check.py``.
 
-    python -m audit_pipeline.rq_reporting                  # full variant
-    python -m audit_pipeline.rq_reporting --variant tier12 # tier-1+2 only
+Can be run standalone with explicit opt-in (see ``_deprecation_guard``
+below)::
 
-or called programmatically via ``run_all.py``.
+    python -m audit_pipeline.rq_reporting --i-know-this-is-deprecated
 
 Functions shared with the rest of the audit pipeline
 (``norm_target``, ``map_reporting_group``, ``add_reporting_columns``,
@@ -871,7 +905,45 @@ def main(
     print(f"Reporting outputs written to: {base_dir}")
 
 
+def _deprecation_guard() -> None:
+    """Abort before writing anything unless the caller explicitly opts in.
+
+    This module's coverage/annotation computation duplicates stage1-4's
+    more granular, already-tested outputs (see the DEPRECATED banner at the
+    top of this file); its one distinct idea now lives in
+    audit_pipeline/robustness_check.py.
+    """
+    import os
+    import sys
+
+    opt_in_flag = "--i-know-this-is-deprecated"
+    opt_in_env = "I_KNOW_THIS_IS_DEPRECATED"
+    if opt_in_flag in sys.argv:
+        sys.argv.remove(opt_in_flag)
+        return
+    if os.environ.get(opt_in_env) == "1":
+        return
+    print(
+        "\n"
+        "############################################################\n"
+        "# DEPRECATED: rq_reporting.py should not be run directly.   #\n"
+        "#                                                            #\n"
+        "# It duplicates stage1-4's more granular, already-tested     #\n"
+        "# outputs (no coding-level stratification here at all), and  #\n"
+        "# its one distinct idea -- pooling across levels -- now lives #\n"
+        "# in audit_pipeline/robustness_check.py instead.              #\n"
+        "#                                                            #\n"
+        "# Aborting WITHOUT writing anything. To run anyway (e.g. for #\n"
+        "# a rollback/diff check), pass --i-know-this-is-deprecated   #\n"
+        "# or set I_KNOW_THIS_IS_DEPRECATED=1.                        #\n"
+        "############################################################\n",
+        file=sys.stderr,
+    )
+    sys.exit(1)
+
+
 if __name__ == "__main__":
+    _deprecation_guard()
     from audit_pipeline.config import resolve_variant
     _v = resolve_variant()
     main(base_dir=_v.rq_out, allowed_tiers=_v.allowed_tiers)
