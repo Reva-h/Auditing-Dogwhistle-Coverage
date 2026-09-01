@@ -12,15 +12,17 @@ Run the [audit_pipeline](../audit_pipeline/README.md) stages end-to-end.
 `06_glossary_label_reference.tsv`).
 
 By default the script runs **two passes**: the primary analysis (all glossary
-tiers) followed by the tier-1+2 robustness check.  Use `--no-robustness` or
-`--variant` to restrict to a single pass.
+tiers) followed by the tier-1+2 robustness check, then compares them.  Use
+`--no-robustness` or `--variant` to restrict to a single pass (which also
+skips the comparison, since it has nothing to compare against).
 
 ### Variants and output directories
 
 | Variant | Tiers | Output directories |
 |---|---|---|
-| `full` (primary) | All (1, 2, 3) | `outputs/stage1/` … `outputs/rq_reporting/` |
-| `tier12` (robustness) | 1 and 2 only | `outputs/stage1_tier12/` … `outputs/rq_reporting_tier12/` |
+| `full` (primary) | All (1, 2, 3) | `outputs/stage1/` … `outputs/stage5/` |
+| `tier12` (robustness) | 1 and 2 only | `outputs/stage1_tier12/` … `outputs/stage5_tier12/` |
+| — (comparison) | both, compared | `outputs/robustness_check/` |
 
 ### Execution order (per variant)
 
@@ -31,18 +33,25 @@ tiers) followed by the tier-1+2 robustness check.  Use `--no-robustness` or
 | stage3 | `audit_pipeline.stage3_disparity` | `outputs/stage3/` | `outputs/stage3_tier12/` |
 | stage4 | `audit_pipeline.stage4_rollup` | `outputs/stage4/` | `outputs/stage4_tier12/` |
 | stage5 | `audit_pipeline.stage5_figures` | `outputs/stage5/` | `outputs/stage5_tier12/` |
-| rq_reporting | `audit_pipeline.rq_reporting` | `outputs/rq_reporting/` | `outputs/rq_reporting_tier12/` |
+
+`robustness_check` (`audit_pipeline.robustness_check`) is **not** part of
+this per-variant table — it runs once, after both variants above have
+completed, comparing their Stage 4 outputs. It writes a single output,
+`outputs/robustness_check/`, not a per-variant pair of directories.
+
+`audit_pipeline.rq_reporting` is deprecated (see that module's docstring)
+and is no longer part of this script's execution order.
 
 ### Usage
 
 ```bash
-# Full run — both primary analysis and tier-1+2 robustness check (default)
+# Full run — both primary analysis and tier-1+2 robustness check, then compare (default)
 scripts/run_audit_pipeline.sh
 
-# Primary analysis only (all tiers, skip robustness check)
+# Primary analysis only (all tiers, skip the robustness check and comparison)
 scripts/run_audit_pipeline.sh --no-robustness
 
-# Robustness check only (tier 1+2)
+# Robustness check only (tier 1+2) -- no comparison, since there's only one variant to compare
 scripts/run_audit_pipeline.sh --variant tier12
 
 # Start from a specific stage (applies to all active variants)
@@ -51,11 +60,12 @@ scripts/run_audit_pipeline.sh --from stage3
 # Run a bounded range (inclusive) for the primary analysis only
 scripts/run_audit_pipeline.sh --no-robustness --from stage1 --to stage3
 
-# Re-run only the RQ reporting step for both variants
-scripts/run_audit_pipeline.sh --from rq_reporting --to rq_reporting
+# Re-run only the comparison step, assuming both variants' Stage 4 outputs
+# already exist on disk
+scripts/run_audit_pipeline.sh --from robustness_check --to robustness_check
 ```
 
-Stage values accepted by `--from`/`--to`: `stage1`, `stage2`, `stage3`, `stage4`, `stage5`, `rq_reporting`.
+Stage values accepted by `--from`/`--to`: `stage1`, `stage2`, `stage3`, `stage4`, `stage5`, `robustness_check`.
 
 ---
 

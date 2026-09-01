@@ -10,7 +10,7 @@ annotation, and programmatic RQ analysis.
 | [`data_preprocessing/`](data_preprocessing/README.md) | Notebook pipeline: parse glossary → standardize datasets → union/dedup → apply annotations |
 | [`annotations/`](annotations/README.md) | Annotator TSVs, merge notebook, IAA notebook |
 | [`annotation_results/`](annotation_results/) | Raw annotation output TSVs from each annotator (Ryan's glossary and label files) |
-| [`audit_pipeline/`](audit_pipeline/README.md) | Python pipeline: coverage → annotation quality → disparity → rollup → figures → RQ reporting |
+| [`audit_pipeline/`](audit_pipeline/README.md) | Python pipeline: coverage → annotation quality → disparity → rollup → figures → robustness check |
 | [`auditing/`](auditing/README.md) | Exploratory notebook audits (coverage, annotation quality, disparity, visualizations) |
 | [`fpr_annotation/`](fpr_annotation/) | False-positive-rate annotation task: sampler script, annotator worksheets, and collected judgments |
 | [`scripts/`](scripts/README.md) | Shell entry point for running the data-preprocessing notebooks end-to-end |
@@ -34,16 +34,17 @@ Or run the annotation merge separately (needed before notebook `06`):
 
 ### Step 2 — Audit Pipeline (RQ metrics and figures)
 
-Reads from Step 1 outputs.  Runs two passes by default:
+Reads from Step 1 outputs.  Runs two passes by default, then compares them:
 
-- **Primary analysis** (all glossary tiers) → `outputs/stage1/` … `outputs/rq_reporting/`
-- **Tier-1+2 robustness check** (explicit slurs and stereotype-based terms only) → `outputs/stage1_tier12/` … `outputs/rq_reporting_tier12/`
+- **Primary analysis** (all glossary tiers) → `outputs/stage1/` … `outputs/stage5/`
+- **Tier-1+2 robustness check** (explicit slurs and stereotype-based terms only) → `outputs/stage1_tier12/` … `outputs/stage5_tier12/`
+- **Comparison** — once both passes have run, `audit_pipeline/robustness_check.py` compares their Stage 4 outputs pair-by-pair, per level and pooled → `outputs/robustness_check/`
 
 ```bash
 python -m audit_pipeline.run_all
 ```
 
-Run only the primary analysis (skip robustness check):
+Run only the primary analysis (skip the robustness check and its comparison):
 
 ```bash
 scripts/run_audit_pipeline.sh --no-robustness
@@ -54,8 +55,13 @@ Individual stages can be rerun independently (defaults to full variant):
 ```bash
 python -m audit_pipeline.stage1_coverage
 python -m audit_pipeline.stage1_coverage --variant tier12
-python -m audit_pipeline.rq_reporting --variant tier12
+python -m audit_pipeline.robustness_check
 ```
+
+`audit_pipeline/rq_reporting.py` is deprecated — see that module's docstring
+for why (it duplicated stage1-4's more granular outputs without
+coding-level stratification; its one distinct idea, pooling across levels,
+now lives in `robustness_check.py`).
 
 ## Preprocessing Pipeline Summary
 
@@ -144,8 +150,7 @@ benchmarking_dogwhistles/
 		stage4_tier12/
 		stage5/                                  # publication-ready figures
 		stage5_tier12/
-		rq_reporting/                            # RQ1/RQ2/RQ3 figures, tables, appendix
-		rq_reporting_tier12/                     # same, restricted to tiers 1+2
+		robustness_check/                        # full-vs-tier12 comparison table (see below)
 		group_labels.tsv                         # canonical group label reference
 ```
 
@@ -364,45 +369,24 @@ Figures are split by view:
 | `s5_els_coverage_delta.png` | Coverage rate delta per group |
 | `s5_els_pairwise_delta.png` | Pairwise DI delta per group pair |
 
-### RQ reporting outputs ([outputs/rq_reporting/](outputs/rq_reporting/))
+### Robustness check output ([outputs/robustness_check/](outputs/robustness_check/))
 
-Final publication-ready figures and tables organized by research question:
-
-**RQ1 — Coverage** (`rq1/`):
-
-| File | Contents |
-|---|---|
-| `main/rq1_presence_vs_type_collapsed.png` | Main figure: presence vs. type coverage rates collapsed across groups |
-| `tables/rq1_coverage_collapsed.tsv` | Underlying data table for the main RQ1 figure |
-| `appendix/rq1_token_frequency_top20.png` | Appendix: top-20 most-frequent matched surface forms |
-
-**RQ2 — Annotation Quality** (`rq2/`):
+Written once, after both the `full` and `tier12` variants have completed —
+compares their Stage 4 outputs directly (does not re-run Stage 1-4 or
+re-derive anything from raw preprocessed data):
 
 | File | Contents |
 |---|---|
-| `main/rq2_correct_vs_failure_rates.png` | Main figure: correct vs. failure annotation rates per group |
-| `supporting/rq2_case_ab_counts_top20.png` | Supporting: case A/B count breakdown for top-20 groups |
-| `tables/rq2_annotation_collapsed.tsv` | Annotation rates table (all groups) |
-| `tables/rq2_case_b_over_a_plus_b_by_group.tsv` | Case B / (A+B) ratio per group — key audit metric |
+| `robustness_comparison.tsv` | One row per (pair, level, metric): full-glossary value, tier-1+2 value, whether the pair passes the 4/5 rule under each, whether that conclusion changes, and the direction of the shift. Covers both fine-grained/raw-taxonomy-target pairs and collapsed reporting-group pairs, at every coding level plus one pooled-coverage-DI row per pair. |
+| `README.md` | Column reference and the pooled-DI methodology note (see below). |
 
-**RQ3 — Disparity** (`rq3/`):
-
-| File | Contents |
-|---|---|
-| `main/rq3_di_ratio_histograms.png` | Main figure: histogram of pairwise DI ratios across all group pairs |
-| `supporting/rq3_worst_di_and_label_gap_two_panel.png` | Supporting: worst-case DI and label-gap two-panel view |
-| `tables/rq3_pairwise_disparity_collapsed.tsv` | Pairwise disparity table (all group pairs) |
-| `tables/rq3_pass_fail_summary_by_group.tsv` | Per-group pass/fail summary across all audit dimensions |
-
-**ElSherief appendix** (`appendix/elsherief/`):
-
-| File | Contents |
-|---|---|
-| `rq1_coverage_delta_vs_union.tsv` | RQ1 coverage delta: ElSherief-only vs. union |
-| `rq2_annotation_delta_vs_union.tsv` | RQ2 annotation delta |
-| `rq3_pairwise_delta_vs_union.tsv` | RQ3 pairwise disparity delta |
-
-The `outputs/rq_reporting_tier12/` directory mirrors this structure exactly, computed on the tier-1+2-only glossary variant.
+**Pooled DI:** computed by summing each group's raw counts across *all*
+coding levels first, then computing one DI ratio from the pooled rates —
+not by taking `min()` of each level's own ratio (a different, older
+methodology used by `generate_figures_final.py`'s now-deprecated
+`appD_worst_di_and_label_gap_pooled`, which gives a different number for
+the same pair). See `audit_pipeline/robustness_check.py`'s module
+docstring for the full explanation and a concrete example.
 
 ### Annotation results ([annotation_results/](annotation_results/))
 
