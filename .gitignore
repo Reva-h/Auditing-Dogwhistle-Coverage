@@ -4,6 +4,7 @@ outputs
 .DS_Store
 __pycache__/
 scratch/
+paper/
 
 *.tsv
 *.csv
