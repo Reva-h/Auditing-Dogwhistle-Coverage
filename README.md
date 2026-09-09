@@ -10,10 +10,10 @@ annotation, and programmatic RQ analysis.
 | [`data_preprocessing/`](data_preprocessing/README.md) | Notebook pipeline: parse glossary → standardize datasets → union/dedup → apply annotations |
 | [`annotations/`](annotations/README.md) | Annotator TSVs, merge notebook, IAA notebook |
 | [`annotation_results/`](annotation_results/) | Raw annotation output TSVs from each annotator (Ryan's glossary and label files) |
-| [`audit_pipeline/`](audit_pipeline/README.md) | Python pipeline: coverage → annotation quality → disparity → rollup → figures → robustness check |
-| [`auditing/`](auditing/README.md) | Exploratory notebook audits (coverage, annotation quality, disparity, visualizations) |
+| [`audit_pipeline/`](audit_pipeline/README.md) | Python pipeline: coverage → annotation quality → disparity → rollup → robustness check |
 | [`fpr_annotation/`](fpr_annotation/) | False-positive-rate annotation task: sampler script, annotator worksheets, and collected judgments |
-| [`scripts/`](scripts/README.md) | Shell entry point for running the data-preprocessing notebooks end-to-end |
+| [`scripts/`](scripts/README.md) | Shell entry points for running the data-preprocessing and audit pipelines end-to-end |
+| [`deprecated/`](deprecated/README.md) | Superseded/orphaned code kept for reference only — not part of the reproducible pipeline |
 | `scratch/` | Personal working notes and exploratory drafts — not part of the reproducible pipeline |
 
 ## End-to-End Workflow
@@ -36,8 +36,8 @@ Or run the annotation merge separately (needed before notebook `06`):
 
 Reads from Step 1 outputs.  Runs two passes by default, then compares them:
 
-- **Primary analysis** (all glossary tiers) → `outputs/stage1/` … `outputs/stage5/`
-- **Tier-1+2 robustness check** (explicit slurs and stereotype-based terms only) → `outputs/stage1_tier12/` … `outputs/stage5_tier12/`
+- **Primary analysis** (all glossary tiers) → `outputs/stage1/` … `outputs/stage4/`
+- **Tier-1+2 robustness check** (explicit slurs and stereotype-based terms only) → `outputs/stage1_tier12/` … `outputs/stage4_tier12/`
 - **Comparison** — once both passes have run, `audit_pipeline/robustness_check.py` compares their Stage 4 outputs pair-by-pair, per level and pooled → `outputs/robustness_check/`
 
 ```bash
@@ -57,11 +57,6 @@ python -m audit_pipeline.stage1_coverage
 python -m audit_pipeline.stage1_coverage --variant tier12
 python -m audit_pipeline.robustness_check
 ```
-
-`audit_pipeline/rq_reporting.py` is deprecated — see that module's docstring
-for why (it duplicated stage1-4's more granular outputs without
-coding-level stratification; its one distinct idea, pooling across levels,
-now lives in `robustness_check.py`).
 
 ## Preprocessing Pipeline Summary
 
@@ -107,9 +102,9 @@ benchmarking_dogwhistles/
 	annotations/              # annotator TSVs + merge + IAA notebooks
 	annotation_results/       # raw per-annotator output TSVs
 	audit_pipeline/           # Python RQ analysis pipeline
-	auditing/                 # exploratory audit notebooks
 	fpr_annotation/           # FPR annotation task (sampler, worksheets, judgments)
-	scripts/                  # shell entry point for data_preprocessing
+	scripts/                  # shell entry points for data_preprocessing and audit_pipeline
+	deprecated/               # superseded/orphaned code, kept for reference only
 	scratch/                  # personal working notes (gitignored)
 	data/
 		glossary.md
@@ -148,8 +143,6 @@ benchmarking_dogwhistles/
 		stage3_tier12/
 		stage4/                                  # rollup outputs (group and level×group)
 		stage4_tier12/
-		stage5/                                  # publication-ready figures
-		stage5_tier12/
 		robustness_check/                        # full-vs-tier12 comparison table (see below)
 		group_labels.tsv                         # canonical group label reference
 ```
@@ -184,18 +177,6 @@ Use the stage-by-stage notebooks in [data_preprocessing](data_preprocessing):
 6. Run [data_preprocessing/05_target_label_analysis_and_filtering.ipynb](data_preprocessing/05_target_label_analysis_and_filtering.ipynb)
 
 For detailed stage behavior and inputs/outputs, see [data_preprocessing/README.md](data_preprocessing/README.md).
-
-## Auditing Notebooks
-
-Exploratory audit notebooks live in [auditing](auditing) and are documented in [auditing/README.md](auditing/README.md).
-
-Recommended run order:
-1. [auditing/00_coverage_audit.ipynb](auditing/00_coverage_audit.ipynb)
-2. [auditing/01_annotation_quality_audit.ipynb](auditing/01_annotation_quality_audit.ipynb)
-3. [auditing/02_disparity_audit.ipynb](auditing/02_disparity_audit.ipynb)
-4. [auditing/03_audit_visualizations.ipynb](auditing/03_audit_visualizations.ipynb)
-
-The programmatic equivalent is [audit_pipeline/](audit_pipeline/README.md), which runs the same analyses as a reproducible Python pipeline.
 
 ## Annotation Agreement
 
@@ -336,38 +317,6 @@ Rollup outputs are organized into three sub-directories:
 | `s4c_annotation_delta_union_vs_elsherief.tsv` | Per-group annotation rate delta between union and ElSherief-only |
 | `s4c_coverage_delta_union_vs_elsherief.tsv` | Per-group coverage rate delta |
 | `s4c_pairwise_delta_union_vs_elsherief.tsv` | Pairwise DI delta |
-
-#### Stage 5 — Figures ([outputs/stage5/](outputs/stage5/))
-
-Figures are split by view:
-
-**`group_collapsed/`** — group-level summary figures:
-
-| File | Contents |
-|---|---|
-| `s5_grp_annotation_rates.png` | Bar chart of annotation rates per group |
-| `s5_grp_case_ab_counts.png` | Case A vs. Case B annotation counts per group |
-| `s5_grp_coverage_scatter.png` | Coverage scatter: presence rate vs. type rate per group |
-| `s5_grp_di_histograms.png` | Histogram of pairwise DI values across all group pairs |
-| `s5_grp_worst_di_and_label_gap.png` | Worst-case DI and label gap two-panel comparison |
-
-**`level_stratified/`** — figures stratified by coding level (L2/L3/L4):
-
-| File | Contents |
-|---|---|
-| `s5_lev_annotation_case_ab.png` | Case A/B counts by coding level |
-| `s5_lev_annotation_label_gap.png` | Label gap by coding level |
-| `s5_lev_annotation_rates.png` | Annotation rates by coding level |
-| `s5_lev_coverage_presence_vs_type.png` | Presence vs. type coverage by coding level |
-| `s5_lev_coverage_token_frequency.png` | Token-frequency distribution of matched terms by level |
-
-**`elsherief/`** — delta figures (union vs. ElSherief-only):
-
-| File | Contents |
-|---|---|
-| `s5_els_annotation_delta.png` | Annotation rate delta per group |
-| `s5_els_coverage_delta.png` | Coverage rate delta per group |
-| `s5_els_pairwise_delta.png` | Pairwise DI delta per group pair |
 
 ### Robustness check output ([outputs/robustness_check/](outputs/robustness_check/))
 

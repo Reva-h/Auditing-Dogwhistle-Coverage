@@ -25,8 +25,6 @@ def _make_variant(tmp_path: Path) -> PipelineVariant:
         out_s2=tmp_path / "stage2",
         out_s3=tmp_path / "stage3",
         out_s4=tmp_path / "stage4",
-        out_s5=tmp_path / "stage5",
-        rq_out=tmp_path / "rq_reporting",
     )
 
 

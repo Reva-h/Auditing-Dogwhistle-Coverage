@@ -20,8 +20,8 @@ skips the comparison, since it has nothing to compare against).
 
 | Variant | Tiers | Output directories |
 |---|---|---|
-| `full` (primary) | All (1, 2, 3) | `outputs/stage1/` … `outputs/stage5/` |
-| `tier12` (robustness) | 1 and 2 only | `outputs/stage1_tier12/` … `outputs/stage5_tier12/` |
+| `full` (primary) | All (1, 2, 3) | `outputs/stage1/` … `outputs/stage4/` |
+| `tier12` (robustness) | 1 and 2 only | `outputs/stage1_tier12/` … `outputs/stage4_tier12/` |
 | — (comparison) | both, compared | `outputs/robustness_check/` |
 
 ### Execution order (per variant)
@@ -32,15 +32,11 @@ skips the comparison, since it has nothing to compare against).
 | stage2 | `audit_pipeline.stage2_annotation` | `outputs/stage2/` | `outputs/stage2_tier12/` |
 | stage3 | `audit_pipeline.stage3_disparity` | `outputs/stage3/` | `outputs/stage3_tier12/` |
 | stage4 | `audit_pipeline.stage4_rollup` | `outputs/stage4/` | `outputs/stage4_tier12/` |
-| stage5 | `audit_pipeline.stage5_figures` | `outputs/stage5/` | `outputs/stage5_tier12/` |
 
 `robustness_check` (`audit_pipeline.robustness_check`) is **not** part of
 this per-variant table — it runs once, after both variants above have
 completed, comparing their Stage 4 outputs. It writes a single output,
 `outputs/robustness_check/`, not a per-variant pair of directories.
-
-`audit_pipeline.rq_reporting` is deprecated (see that module's docstring)
-and is no longer part of this script's execution order.
 
 ### Usage
 
@@ -65,7 +61,7 @@ scripts/run_audit_pipeline.sh --no-robustness --from stage1 --to stage3
 scripts/run_audit_pipeline.sh --from robustness_check --to robustness_check
 ```
 
-Stage values accepted by `--from`/`--to`: `stage1`, `stage2`, `stage3`, `stage4`, `stage5`, `robustness_check`.
+Stage values accepted by `--from`/`--to`: `stage1`, `stage2`, `stage3`, `stage4`, `robustness_check`.
 
 ---
 

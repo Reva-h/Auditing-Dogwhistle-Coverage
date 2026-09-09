@@ -32,7 +32,6 @@ OUT_S1 = WORKDIR / "outputs/stage1"
 OUT_S2 = WORKDIR / "outputs/stage2"
 OUT_S3 = WORKDIR / "outputs/stage3"
 OUT_S4 = WORKDIR / "outputs/stage4"
-OUT_S5 = WORKDIR / "outputs/stage5"
 
 # ---------------------------------------------------------------------------
 # Audit parameters
@@ -67,10 +66,8 @@ class PipelineVariant(NamedTuple):
         tier entries count toward the ``total_glossary_dogwhistles`` denominator.
         Filtering after matching would leave tier-3 tokens in the regex and
         produce artificially inflated match counts for the restricted variants.
-    out_s1 … out_s5 : Path
+    out_s1 … out_s4 : Path
         Stage output directories.
-    rq_out : Path
-        Output directory for rq_reporting.
     """
 
     name: str
@@ -79,8 +76,6 @@ class PipelineVariant(NamedTuple):
     out_s2: Path
     out_s3: Path
     out_s4: Path
-    out_s5: Path
-    rq_out: Path
 
 
 # Primary analysis: all glossary tiers, standard output paths.
@@ -91,8 +86,6 @@ VARIANT_FULL = PipelineVariant(
     out_s2=OUT_S2,
     out_s3=OUT_S3,
     out_s4=OUT_S4,
-    out_s5=OUT_S5,
-    rq_out=WORKDIR / "outputs/rq_reporting",
 )
 
 # Robustness check: tier-1 (explicit slurs / direct labels) and tier-2
@@ -107,8 +100,6 @@ VARIANT_TIER12 = PipelineVariant(
     out_s2=WORKDIR / "outputs/stage2_tier12",
     out_s3=WORKDIR / "outputs/stage3_tier12",
     out_s4=WORKDIR / "outputs/stage4_tier12",
-    out_s5=WORKDIR / "outputs/stage5_tier12",
-    rq_out=WORKDIR / "outputs/rq_reporting_tier12",
 )
 
 # Ordered tuple of all variants; run_all.py and the shell script iterate over

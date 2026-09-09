@@ -148,8 +148,6 @@ def _variant(name: str, tmp_path: Path) -> PipelineVariant:
         out_s2=tmp_path / name / "stage2",
         out_s3=tmp_path / name / "stage3",
         out_s4=tmp_path / name / "stage4",
-        out_s5=tmp_path / name / "stage5",
-        rq_out=tmp_path / name / "rq_reporting",
     )
 
 

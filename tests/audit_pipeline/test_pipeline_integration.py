@@ -35,8 +35,6 @@ def _variant(name: str, tmp_path: Path, allowed_tiers) -> PipelineVariant:
         out_s2=root / "stage2",
         out_s3=root / "stage3",
         out_s4=root / "stage4",
-        out_s5=root / "stage5",
-        rq_out=root / "rq_reporting",
     )
 
 

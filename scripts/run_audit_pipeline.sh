@@ -4,9 +4,9 @@ set -euo pipefail
 # Run the audit pipeline stages end-to-end in a deterministic order.
 #
 # By default two passes are executed, followed by a comparison step:
-#   1. Primary analysis  – all glossary tiers (outputs/stage1/ … outputs/stage5/)
+#   1. Primary analysis  – all glossary tiers (outputs/stage1/ … outputs/stage4/)
 #   2. Robustness check  – tier-1 and tier-2 terms only
-#                          (outputs/stage1_tier12/ … outputs/stage5_tier12/)
+#                          (outputs/stage1_tier12/ … outputs/stage4_tier12/)
 #   3. robustness_check  – compares (1) and (2) once both have run;
 #                          writes outputs/robustness_check/
 #
@@ -15,19 +15,16 @@ set -euo pipefail
 # both (step 3 is skipped in that case too, since it has nothing to compare).
 #
 # What this script does:
-# 1. Runs audit_pipeline stages 1-5 as Python modules, once per active variant.
+# 1. Runs audit_pipeline stages 1-4 as Python modules, once per active variant.
 # 2. Each stage reads from the previous stage's outputs under outputs/.
 # 3. If (and only if) both the full and tier12 variants ran in this
 #    invocation, runs audit_pipeline.robustness_check once afterward,
 #    comparing their Stage 4 outputs -- it is not a per-variant stage, so it
 #    is not part of the per-variant loop below.
 # 4. Artifact layout per variant:
-#    full    → outputs/stage1/  … outputs/stage5/
-#    tier12  → outputs/stage1_tier12/ … outputs/stage5_tier12/
+#    full    → outputs/stage1/  … outputs/stage4/
+#    tier12  → outputs/stage1_tier12/ … outputs/stage4_tier12/
 #    (both)  → outputs/robustness_check/
-#
-# rq_reporting is deprecated (see audit_pipeline/rq_reporting.py) and is no
-# longer part of this script's default execution order.
 #
 # Prerequisites:
 #   The data-preprocessing pipeline must have run successfully first:
@@ -44,8 +41,8 @@ set -euo pipefail
 #   scripts/run_audit_pipeline.sh --from stage1 --to stage3
 #
 # Options:
-#   --from <stage>     Start stage (inclusive). One of: stage1 stage2 stage3 stage4 stage5 robustness_check
-#   --to   <stage>     End stage (inclusive).   One of: stage1 stage2 stage3 stage4 stage5 robustness_check
+#   --from <stage>     Start stage (inclusive). One of: stage1 stage2 stage3 stage4 robustness_check
+#   --to   <stage>     End stage (inclusive).   One of: stage1 stage2 stage3 stage4 robustness_check
 #   --no-robustness    Run only the primary (full-tier) analysis; skip tier-1+2 pass
 #   --variant <name>   Run a single variant only (full | tier12)
 #   --help             Show help text
@@ -109,7 +106,6 @@ STAGE_IDS=(
   "stage2"
   "stage3"
   "stage4"
-  "stage5"
   "robustness_check"
 )
 
@@ -121,7 +117,6 @@ stage_to_module() {
     stage2)             echo "audit_pipeline.stage2_annotation" ;;
     stage3)             echo "audit_pipeline.stage3_disparity" ;;
     stage4)             echo "audit_pipeline.stage4_rollup" ;;
-    stage5)             echo "audit_pipeline.stage5_figures" ;;
     robustness_check)   echo "audit_pipeline.robustness_check" ;;
     *)                  return 1 ;;
   esac
@@ -248,21 +243,10 @@ run_variant() {
     local module
     module="$(stage_to_module "$stage")"
 
-    # stage5_figures.py is deprecated in favour of
-    # audit_pipeline/notebooks/figures_consolidated.ipynb and refuses to run
-    # via its __main__ entry point (which is exactly how this script invokes
-    # it) without an explicit opt-in. This script is a legitimate,
-    # intentional orchestrator -- not an accidental direct run -- so it
-    # always passes the opt-in flag for this one stage.
-    local module_args="$variant_args"
-    if [[ "$stage" == "stage5" ]]; then
-      module_args="$module_args --i-know-this-is-deprecated"
-    fi
-
     echo ""
     echo "[RUN] $module  (variant: $variant)"
     # shellcheck disable=SC2086
-    python3 -m "$module" $module_args
+    python3 -m "$module" $variant_args
     echo "[OK ] $module"
   done
 }
@@ -301,9 +285,9 @@ fi
 echo ""
 echo "Audit pipeline completed successfully."
 echo ""
-echo "Primary outputs:      $ROOT_DIR/outputs/{stage1..stage5}/"
+echo "Primary outputs:      $ROOT_DIR/outputs/{stage1..stage4}/"
 if [[ " ${VARIANTS[*]} " == *" tier12 "* ]]; then
-  echo "Robustness outputs:   $ROOT_DIR/outputs/{stage1_tier12..stage5_tier12}/"
+  echo "Robustness outputs:   $ROOT_DIR/outputs/{stage1_tier12..stage4_tier12}/"
 fi
 if (( BOTH_VARIANTS_RAN && TO_INDEX >= ROBUSTNESS_CHECK_INDEX )); then
   echo "Comparison output:    $ROOT_DIR/outputs/robustness_check/"

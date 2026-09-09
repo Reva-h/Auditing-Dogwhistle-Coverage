@@ -10,16 +10,12 @@ Execution order per variant:
   stage2_annotation – case A/B annotation quality metrics
   stage3_disparity  – pairwise disparate-impact ratios
   stage4_rollup     – group-level rollup tables
-  stage5_figures    – publication figures from rolled-up data
 
 When both variants are run in the same invocation (the default, no-flag
 case), ``robustness_check`` runs once afterward -- comparing the two
 variants' Stage 4 outputs -- since it is inherently a full-vs-tier12
 comparison, not a per-variant stage. It does not run under ``--variant``
 (only one variant exists to compare against in that case).
-
-``rq_reporting`` is deprecated (see ``audit_pipeline/rq_reporting.py`` for
-why) and is no longer part of this pipeline's default execution order.
 
 Each module can also be run independently, e.g.::
 
@@ -38,7 +34,6 @@ from audit_pipeline import (
     stage2_annotation,
     stage3_disparity,
     stage4_rollup,
-    stage5_figures,
 )
 from audit_pipeline.config import ALL_VARIANTS, PipelineVariant, _VARIANT_BY_NAME
 
@@ -52,7 +47,6 @@ def run_variant(variant: PipelineVariant) -> None:
     stage2_annotation.run(variant)
     stage3_disparity.run(variant)
     stage4_rollup.run(variant)
-    stage5_figures.run(variant)
 
 
 def _parse_args(argv: list[str] | None = None) -> list[PipelineVariant]:

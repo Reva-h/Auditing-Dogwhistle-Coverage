@@ -24,10 +24,10 @@ All stages read from the outputs of the data-preprocessing pipeline:
 | `stage2_annotation.py` | Case A/B annotation quality metrics per group |
 | `stage3_disparity.py` | Pairwise disparate-impact ratios within taxonomy levels |
 | `stage4_rollup.py` | Group-level rollup tables from stage1–3 outputs |
-| `stage5_figures.py` | Publication-ready figures from rolled-up data |
 | `robustness_check.py` | Compares the `full` and `tier12` variants' Stage 4 outputs pair-by-pair, per level and pooled |
-| `rq_reporting.py` | **Deprecated** — see the module docstring. Superseded by stage1-4 (more granular) and `robustness_check.py` (the one thing it uniquely computed) |
-| `run_all.py` | Orchestrator: runs stages 1–5 for all active variants, then `robustness_check.py` once if both variants ran |
+| `run_all.py` | Orchestrator: runs stages 1–4 for all active variants, then `robustness_check.py` once if both variants ran |
+
+Publication figures are generated separately from this pipeline (see the root [README.md](../README.md) for the current figure-generation scripts). `deprecated/` (repo root) holds superseded modules (`rq_reporting.py`, `stage5_figures.py`) kept for reference/rollback only; see [deprecated/README.md](../deprecated/README.md).
 
 ## Pipeline Variants
 
@@ -35,8 +35,8 @@ The pipeline runs in two *variants*:
 
 | Variant | Tiers included | Output directories |
 |---|---|---|
-| `full` (primary) | All glossary tiers (1, 2, 3) | `outputs/stage1/` … `outputs/stage5/` |
-| `tier12` (robustness check) | Tiers 1 and 2 only | `outputs/stage1_tier12/` … `outputs/stage5_tier12/` |
+| `full` (primary) | All glossary tiers (1, 2, 3) | `outputs/stage1/` … `outputs/stage4/` |
+| `tier12` (robustness check) | Tiers 1 and 2 only | `outputs/stage1_tier12/` … `outputs/stage4_tier12/` |
 
 `robustness_check.py` compares the two variants once both have run and writes
 to `outputs/robustness_check/` — it is not itself a per-variant stage.
@@ -68,7 +68,6 @@ The `full` variant uses the primary paths; the `tier12` variant appends `_tier12
 | stage2 | `outputs/stage2/` | `outputs/stage2_tier12/` |
 | stage3 | `outputs/stage3/` | `outputs/stage3_tier12/` |
 | stage4 | `outputs/stage4/` | `outputs/stage4_tier12/` |
-| stage5 | `outputs/stage5/` | `outputs/stage5_tier12/` |
 
 `robustness_check.py` writes to a single directory, `outputs/robustness_check/`,
 covering both variants at once (it compares them; it does not have a
@@ -124,7 +123,7 @@ python -m audit_pipeline.robustness_check
 
 - `name` — short identifier (`"full"` or `"tier12"`)
 - `allowed_tiers` — `frozenset[int] | None` (None = all tiers)
-- `out_s1` … `out_s5`, `rq_out` — output path for each stage
+- `out_s1` … `out_s4` — output path for each stage
 
 Pass a `PipelineVariant` to any stage's `run()` function to control which
 tiers are active and where outputs land.  The `resolve_variant()` helper parses
@@ -152,14 +151,3 @@ across all coding levels first, then computes one DI ratio — see the module
 docstring for why this specific methodology was chosen (it's the one that
 reproduces the paper's cited pooled figures; a naive `min()` of each level's
 own ratio does not).
-
-## Note on `rq_reporting.py` (deprecated)
-
-`rq_reporting.py` computed RQ metrics directly from the stage-06 preprocessed
-outputs (not from stage1–5 intermediate files), with no coding-level
-stratification. It retained local copies of four helpers whose signatures
-differed from the canonical `helpers.py` versions rather than importing them
-directly — the pattern `robustness_check.py` deliberately avoids by reusing
-`helpers.py`'s `safe_di_ratio`/`write_tsv`/`ensure_dirs` outright. Kept in
-the repo for reference/rollback only; see the module's own docstring for the
-full deprecation rationale.
