@@ -26,11 +26,13 @@ Runs notebooks `00` through `06` in order.  Output: cleaned, annotated corpus un
 scripts/run_data_preprocessing.sh
 ```
 
-Or run the annotation merge separately (needed before notebook `06`):
-
-```bash
-# In Jupyter: annotations/merge_annotation_union.ipynb
-```
+Notebook `06` reads the raw per-annotator files (`annotations/reva_labels.tsv`,
+`ryan_labels.tsv`, `reva_glossary.tsv`, `ryan_glossary.tsv`) directly and
+derives its own union — `annotations/merge_annotation_union.ipynb` is **not**
+a prerequisite for this step. That notebook is a separate analysis producing
+`merged_*.tsv` / `merged_*_resolved.tsv`, consumed only by
+`annotations/inter_annotator_agreement.ipynb` (see
+[Annotation Agreement](#annotation-agreement) below).
 
 ### Step 2 — Audit Pipeline (RQ metrics and figures)
 
@@ -69,8 +71,7 @@ Run order:
 4. [data_preprocessing/03_elsherief_formatting.ipynb](data_preprocessing/03_elsherief_formatting.ipynb)
 5. [data_preprocessing/04_union_and_dedup.ipynb](data_preprocessing/04_union_and_dedup.ipynb)
 6. [data_preprocessing/05_target_label_analysis_and_filtering.ipynb](data_preprocessing/05_target_label_analysis_and_filtering.ipynb)
-7. `annotations/merge_annotation_union.ipynb` (merge annotator files)
-8. [data_preprocessing/06_apply_annotations.ipynb](data_preprocessing/06_apply_annotations.ipynb)
+7. [data_preprocessing/06_apply_annotations.ipynb](data_preprocessing/06_apply_annotations.ipynb) — reads the raw per-annotator files directly and derives its own union; does not depend on `annotations/merge_annotation_union.ipynb`
 
 At a high level, this pipeline:
 1. Builds glossary artifacts from glossary source files into [outputs/glossary](outputs/glossary).
@@ -199,13 +200,14 @@ The task samples 75 posts per coding level (L2 / L3 / L4) from `outputs/stage1/s
 
 | File | Contents |
 |---|---|
-| `sample_fpr.py` | Sampler script: draws the 75-per-level budget, seeds locked rows from a prior annotator's completed worksheet, and writes the outputs below |
-| `fpr_annotation_worksheet.csv` | Annotator-facing worksheet: `row_id`, `post_text`, `matched_surface_form`, `benchmark_label`, blank `judgment` and `annotator_notes` columns |
-| `fpr_annotation_raw_v1.csv` | Collected raw annotations including `coding_level`, `target_group`, `dogwhistle_term`, `judgment`, and `annotator_notes` |
-| `fpr_join_table.csv` | Join table linking each `row_id` to its glossary metadata (`dogwhistle`, `coding_level`, `all_target_groups`, `binary_hate`, `dataset`) |
-| `fpr_annotator_instructions.md` / `.pdf` | Annotator briefing sheet explaining the judgment task and options |
-| `jing_inprogress.tsv` | Locked completed annotations from the secondary annotator (Jing) — seeded into new worksheet versions |
-| `jing_inprogress_new.tsv` | Updated worksheet for Jing with her prior judgments pre-filled |
+| `sample_fpr.py` | Sampler script: draws the 75-per-level budget, seeds locked rows from a prior annotator's completed worksheet, and writes the worksheet/join-table outputs |
+| `worksheet_materials/fpr_annotation_worksheet_blank.csv` | Annotator-facing worksheet: `row_id`, `post_text`, `matched_surface_form`, `benchmark_label`, blank `judgment` and `annotator_notes` columns |
+| `worksheet_materials/fpr_annotator_instructions.md` / `.pdf` | Annotator briefing sheet explaining the judgment task and options |
+| `fpr_join_table.csv` | Join table linking each `row_id` to its glossary metadata (`row_id`, `text_dedup_key`, `dogwhistle`, `matched_surface_form`, `coding_level`, `all_target_groups`, `binary_hate`, `dataset`) |
+| `completed_labels/annotator1.tsv`, `annotator2.tsv` | Collected raw annotations: `row_id`, `text_dedup_key`, `dataset`, `benchmark_label`, `matched_surface_form`, `post_text`, `judgment`, `annotator_notes` |
+| `fpr_iaa_analysis.ipynb` | Computes FPR rates and inter-annotator agreement from `completed_labels/`; produces the paper's FPR figures and numbers (see below) |
+| `outputs/fpr_iaa_fig1_fpr_by_level.pdf`, `fpr_iaa_fig2_agreement_matrix.pdf`, `fpr_iaa_fig4_annotator_vs_benchmark.pdf` | Figures cited in the paper (`fpr_iaa_fig3_unclear_rate.pdf` is also generated but currently commented out in the paper) |
+| `outputs/fpr_reportable_metrics.txt` | Headline FPR/agreement numbers cited in the paper's text |
 
 ## Glossary Stage
 
@@ -217,7 +219,7 @@ Outputs written to [outputs/glossary/](outputs/glossary/):
 
 | File | Contents |
 |---|---|
-| `glossary.tsv` | Master term list: dogwhistle term, coding level (L2/L3/L4), target groups, persona, tier |
+| `glossary.tsv` | Master term list: dogwhistle term, surface forms, persona/covert meaning, type, register, description + provenance, and tier |
 | `glossary_persona_by_tier.tsv` | Persona and target-group breakdown aggregated by tier |
 | `glossary_pipeline_groups_by_tier.tsv` | Mapping of pipeline-normalized group names by tier |
 | `glossary_sparse_t12.tsv` | Glossary restricted to tiers 1+2 — input to the robustness (`tier12`) pipeline variant |
@@ -253,12 +255,12 @@ From [outputs/unioned_data/](outputs/unioned_data/):
 |---|---|
 | `04_union_primary.tsv` | All three datasets unioned before deduplication |
 | `04_dedup_primary.tsv` | Deduplicated corpus — canonical input to all downstream stages |
-| `04_union_dedup_summary.tsv` | Dedup statistics: collision counts and resolution breakdown by dataset pair |
+| `04_union_dedup_summary.tsv` | Dedup statistics: per-dataset row counts, ElSherief inclusion, cross-dataset conflict-key/row counts, deduplicated row count, and label-conflict count (flat metric/value table, not broken out by dataset pair) |
 | `05_union_primary_filtered.tsv` | Union after filtering out target groups below the support threshold |
 | `05_dedup_primary_filtered.tsv` | Deduplicated version of the filtered union |
 | `05_raw_label_counts_for_annotation.tsv` | Per-label counts extracted for the human annotation task |
 | `06_cleaned_labels.tsv` | Normalized target labels after applying human annotation decisions |
-| `06_cleaned_labels_glossary_mapped.tsv` | Labels joined to glossary term metadata (term, tier, coding level) |
+| `06_cleaned_labels_glossary_mapped.tsv` | `06_cleaned_labels.tsv` plus `glossary_mapped_taxonomy_levels`, `glossary_mapped_targets`, `glossary_mapped_types` |
 | `06_glossary_label_reference.tsv` | Reference table mapping each raw corpus label to its canonical glossary term |
 
 ### Audit pipeline outputs
@@ -270,7 +272,7 @@ Each stage writes to `outputs/stageN/` for the primary (all-tier) run and `outpu
 | File | Contents |
 |---|---|
 | `s1_matches.tsv` | All matches of glossary terms against corpus posts: one row per (post, term, surface form) match |
-| `s1_coverage_detailed.tsv` | Per-glossary-term coverage detail: match counts, datasets matched, presence/type breakdown |
+| `s1_coverage_detailed.tsv` | Per-(level, target, dogwhistle) match detail: matched-post count and a self-referential flag. (Presence-rate/type-coverage figures live in `s1_coverage_by_level_target.tsv`, not here.) |
 | `s1_coverage_by_level_target.tsv` | Coverage aggregated by coding level × target group |
 | `s1_coverage_missing.tsv` | Glossary terms with zero corpus matches |
 
@@ -279,7 +281,7 @@ Each stage writes to `outputs/stageN/` for the primary (all-tier) run and `outpu
 | File | Contents |
 |---|---|
 | `s2_annotation_by_level_target.tsv` | Annotation rates (% labeled, correct, failure) by coding level × target group |
-| `s2_form_labeling_detail.tsv` | Per-surface-form annotation label breakdown (case A/B/neither counts) |
+| `s2_form_labeling_detail.tsv` | Per-dogwhistle annotation label breakdown (case A/B counts; all matched surface forms for that dogwhistle collapsed into one semicolon-joined row) |
 
 #### Stage 3 — Disparity ([outputs/stage3/](outputs/stage3/))
 

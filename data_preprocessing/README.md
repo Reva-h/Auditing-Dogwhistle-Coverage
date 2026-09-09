@@ -30,7 +30,11 @@ What it does:
 
 Outputs:
 
-- `outputs/glossary/glossary.tsv`
+- `outputs/glossary/glossary.tsv` — master term list (columns: `term`, `surface_forms`, `persona_in_group`, `covert_meaning`, `type`, `register`, `description`, `description_source`, `example_count`, `examples`, `example_sources`, `example_speakers`, `example_dates`, `source_domain`, `tier`)
+- `outputs/glossary/glossary_tier_summary.txt` — human-readable term/target counts per tier
+- `outputs/glossary/glossary_pipeline_groups_by_tier.tsv` — pipeline-normalized group names by tier
+- `outputs/glossary/glossary_sparse_t12.tsv` — glossary restricted to tiers 1+2 (input to the `tier12` robustness variant)
+- `outputs/glossary/glossary_persona_by_tier.tsv` — persona/target breakdown aggregated by tier
 
 ## Shared Schema
 
@@ -144,14 +148,14 @@ Outputs:
 Inputs:
 
 - `outputs/unioned_data/05_union_primary_filtered.tsv`
-- `annotation_results/*_label_annotations.tsv`
-- `annotation_results/*_glossary_annotations.tsv`
+- `annotations/reva_labels.tsv`, `annotations/ryan_labels.tsv`
+- `annotations/reva_glossary.tsv`, `annotations/ryan_glossary.tsv`
 - `outputs/glossary/glossary.tsv`
 - `outputs/group_labels.tsv`
 
 What it does:
 
-1. Loads all available annotator TSVs from `annotation_results/`.
+1. Loads the raw per-annotator label and glossary TSVs directly from `annotations/` (not the pre-merged `merged_*.tsv` files there — this notebook derives its own union independently of `annotations/merge_annotation_union.ipynb`).
 2. Aggregates direct raw-target annotations and glossary-term annotations into a future-proof annotator-aware structure.
 3. Resolves disagreements by taking the union of assigned labels.
 4. Applies those annotations into a new `cleaned_label` column.
@@ -161,7 +165,7 @@ What it does:
 Outputs:
 
 - `outputs/unioned_data/06_cleaned_labels.tsv`
-- `outputs/unioned_data/06_cleaned_labels_glossary_mapped.tsv`
+- `outputs/unioned_data/06_cleaned_labels_glossary_mapped.tsv` — `06_cleaned_labels.tsv` plus `glossary_mapped_taxonomy_levels`, `glossary_mapped_targets`, `glossary_mapped_types`
 - `outputs/unioned_data/06_glossary_label_reference.tsv`
 
 ## Typical Execution Order

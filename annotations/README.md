@@ -56,12 +56,24 @@ glossary task.
 
 | File | Description |
 |---|---|
-| `merged_labels.tsv` | Union-merged label annotations for the labels task |
-| `merged_glossary.tsv` | Union-merged inferred-target annotations + `source_domain` and `tier` columns from `outputs/glossary/glossary.tsv` |
+| `merged_labels.tsv` | Naive union-merged label annotations for the labels task |
+| `merged_glossary.tsv` | Naive union-merged inferred-target annotations + `source_domain` and `tier` columns from `outputs/glossary/glossary.tsv` |
+
+**Disagreement resolution (same notebook, later section):** the naive union
+handles several disagreement patterns poorly (e.g. specificity explosion,
+transgender-label granularity mismatches). A set of rule-based resolutions
+is applied on top of the naive merge, plus manual, hand-filled-in decisions
+for the small number of cases (~30) no rule resolves. Writes:
+
+| File | Description |
+|---|---|
+| `merged_glossary_resolved.tsv` | `merged_glossary.tsv` with `inferred_target_merged` replaced by the rule/manual resolution, plus `merge_method` and `merge_flag` columns |
+| `merged_labels_resolved.tsv` | Same, for the labels task |
 
 ### `inter_annotator_agreement.ipynb`
 
 Computes inter-annotator agreement (IAA) between Reva and Ryan for both tasks.
+Reads the raw `reva_*.tsv`/`ryan_*.tsv` files directly (not the merged files).
 
 **Metrics computed:**
 
@@ -72,6 +84,13 @@ Computes inter-annotator agreement (IAA) between Reva and Ryan for both tasks.
 
 Also reports a top-20 per-label κ breakdown and sanity checks against
 benchmark values.
+
+**Resolution before/after diff (later section):** reads `merged_labels.tsv`,
+`merged_glossary.tsv`, and their `_resolved` counterparts (all four, written
+by `merge_annotation_union.ipynb`) to quantify how much the rule/manual
+resolution changed the naive union merge. Running this section requires
+`merge_annotation_union.ipynb` to have been run first; the headline IAA
+metrics above do not.
 
 ## Merged Output Schema
 
@@ -99,7 +118,13 @@ Columns from `reva_glossary.tsv` plus:
 
 ## Downstream Use
 
-`merged_labels.tsv` and `merged_glossary.tsv` are consumed by
-`data_preprocessing/06_apply_annotations.ipynb`, which applies the merged
-annotation schemas to the full corpus and produces
+`data_preprocessing/06_apply_annotations.ipynb` does **not** read the merged
+files in this directory — it reads `reva_labels.tsv`, `ryan_labels.tsv`,
+`reva_glossary.tsv`, and `ryan_glossary.tsv` directly and derives its own
+union in-notebook, then applies the result to the full corpus to produce
 `outputs/unioned_data/06_cleaned_labels.tsv`.
+
+`merged_labels.tsv`, `merged_glossary.tsv`, and their `_resolved`
+counterparts are consumed only by `inter_annotator_agreement.ipynb`'s
+resolution before/after diff section (see above) — they are not an input to
+the main preprocessing pipeline.
