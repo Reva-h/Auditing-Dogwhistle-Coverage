@@ -42,10 +42,16 @@ def run(variant: PipelineVariant = VARIANT_FULL) -> None:
     ensure_dirs(variant.out_s2)
 
     matches = pd.read_csv(variant.out_s1 / "s1_matches.tsv", sep="\t", low_memory=False)
-    _ = pd.read_csv(
+    coverage = pd.read_csv(
         variant.out_s1 / "s1_coverage_by_level_target.tsv", sep="\t", low_memory=False
     )
     data = pd.read_csv(DATA_PATH, sep="\t", low_memory=False)
+
+    # Keyed by (taxonomy_level, target, coding_level) for O(1) lookup inside the loop.
+    coverage_lookup = {
+        (r.taxonomy_level, r.target, r.coding_level): r
+        for _, r in coverage.iterrows()
+    }
 
     if matches.empty:
         annotation = pd.DataFrame(
@@ -105,14 +111,22 @@ def run(variant: PipelineVariant = VARIANT_FULL) -> None:
                 .apply(lambda row_targets: _target_contains(row_targets, str(target)))
             )
             target_group_posts = data[target_mask]
-            posts_with_hits = set(group["text_dedup_key"].astype(str))
-            case_c = int(
-                (
-                    ~target_group_posts["text_dedup_key"]
-                    .astype(str)
-                    .isin(posts_with_hits)
-                ).sum()
-            )
+
+            # case_c counts glossary TERMS (not posts) with zero corpus matches for
+            # this (taxonomy_level, target, coding_level) cell.  It is a term-level
+            # count and is incommensurable with case_a / case_b (which are post-level
+            # counts): do not add A + B + C into a single total.
+            cov_row = coverage_lookup.get((level, target, coding_level))
+            if cov_row is not None:
+                case_c = int(cov_row["total_glossary_dogwhistles"]) - int(
+                    cov_row["distinct_dogwhistles_found"]
+                )
+            else:
+                # Coverage file has no entry for this cell (can happen for cells
+                # whose glossary type is unmapped).  Fall back to zero; the
+                # discrepancy will already be visible in the coverage audit.
+                case_c = 0
+
             # q_a is the actual prevalence of hateful ground truth inside the
             # target-group population, not a rate derived from matched hits.
             base_rate_q_a = (
@@ -123,7 +137,9 @@ def run(variant: PipelineVariant = VARIANT_FULL) -> None:
 
             correct_rate = case_a / total_matches if total_matches > 0 else pd.NA
             failure_rate = case_b / total_matches if total_matches > 0 else pd.NA
-            b_c_ratio = case_b / (case_b + case_c) if (case_b + case_c) > 0 else pd.NA
+            # case_b (posts) and case_c (terms) are different units; their sum is
+            # not meaningful.  Set to NA so downstream tables don't silently mix units.
+            b_c_ratio = pd.NA
 
             rows.append(
                 {

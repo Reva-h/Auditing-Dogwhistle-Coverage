@@ -423,12 +423,9 @@ def compute_rollup(
         ab_sum > 0, pd.NA
     )
     annotation["stable_n"] = annotation["total_matches"] >= N_MIN
-    annotation["case_b_c_ratio"] = annotation["case_b_present_nonhateful"] / (
-        annotation["case_b_present_nonhateful"] + annotation["case_c_absent"]
-    ).where(
-        (annotation["case_b_present_nonhateful"] + annotation["case_c_absent"]) > 0,
-        pd.NA,
-    )
+    # case_b (posts) and case_c (terms) are different units; their sum is not
+    # meaningful.  Preserve the column for schema compatibility but leave it NA.
+    annotation["case_b_c_ratio"] = pd.NA
 
     merged = coverage.merge(
         annotation[
