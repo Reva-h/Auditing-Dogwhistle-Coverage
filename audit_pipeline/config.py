@@ -32,6 +32,7 @@ OUT_S1 = WORKDIR / "outputs/stage1"
 OUT_S2 = WORKDIR / "outputs/stage2"
 OUT_S3 = WORKDIR / "outputs/stage3"
 OUT_S4 = WORKDIR / "outputs/stage4"
+OUT_S5 = WORKDIR / "outputs/stage5"
 
 # ---------------------------------------------------------------------------
 # Audit parameters
@@ -68,6 +69,11 @@ class PipelineVariant(NamedTuple):
         produce artificially inflated match counts for the restricted variants.
     out_s1 … out_s4 : Path
         Stage output directories.
+    out_s5 : Path
+        Output directory for stage5-shaped figure writers (``audit_pipeline/
+        notebooks/figures_consolidated.ipynb`` sandboxes this via
+        ``variant._replace(out_s5=...)``; ``stage5_figures.py`` itself is
+        archived, see ``deprecated/README.md``).
     """
 
     name: str
@@ -76,6 +82,7 @@ class PipelineVariant(NamedTuple):
     out_s2: Path
     out_s3: Path
     out_s4: Path
+    out_s5: Path
 
 
 # Primary analysis: all glossary tiers, standard output paths.
@@ -86,6 +93,7 @@ VARIANT_FULL = PipelineVariant(
     out_s2=OUT_S2,
     out_s3=OUT_S3,
     out_s4=OUT_S4,
+    out_s5=OUT_S5,
 )
 
 # Robustness check: tier-1 (explicit slurs / direct labels) and tier-2
@@ -100,6 +108,7 @@ VARIANT_TIER12 = PipelineVariant(
     out_s2=WORKDIR / "outputs/stage2_tier12",
     out_s3=WORKDIR / "outputs/stage3_tier12",
     out_s4=WORKDIR / "outputs/stage4_tier12",
+    out_s5=WORKDIR / "outputs/stage5_tier12",
 )
 
 # Ordered tuple of all variants; run_all.py and the shell script iterate over
