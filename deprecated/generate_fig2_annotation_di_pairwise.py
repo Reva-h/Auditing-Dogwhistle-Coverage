@@ -1,4 +1,21 @@
 #!/usr/bin/env python3
+# ============================================================================
+# DEPRECATED (as of 2026-07-03): DO NOT RUN THIS FILE DIRECTLY.
+#
+# audit_pipeline/notebooks/figures_consolidated.ipynb is now the canonical,
+# permanent figure generator for this project. This file writes to the same
+# output paths that notebook owns (outputs/figures_final/**), so running it
+# directly will SILENTLY OVERWRITE the notebook's current styled output with
+# a stale, unstyled version -- no error, no visible sign anything went wrong.
+# The figure this file produces is the paper's actual Figure 2 -- live,
+# currently-used content, not legacy dead code.
+#
+# Kept in the repo for reference/rollback only, not for regular use. Direct
+# execution (`python generate_fig2_annotation_di_pairwise.py`) now requires
+# an explicit opt-in -- see the `if __name__ == "__main__":` guard at the
+# bottom of this file. Importing from this module is unaffected and
+# continues to work normally.
+# ============================================================================
 """
 generate_fig2_annotation_di_pairwise.py
 Pairwise annotation DI ratio figure for all stable group pairs at each coding level.
@@ -250,5 +267,44 @@ def main() -> None:
     make_figure(table, level_counts)
 
 
+def _deprecation_guard() -> None:
+    """Abort before writing anything unless the caller explicitly opts in.
+
+    audit_pipeline/notebooks/figures_consolidated.ipynb now owns
+    outputs/figures_final/**; running this script unattended would silently
+    overwrite the paper's actual Figure 2 with a stale, unstyled version.
+    """
+    import os
+    import sys
+
+    opt_in_flag = "--i-know-this-is-deprecated"
+    opt_in_env = "I_KNOW_THIS_IS_DEPRECATED"
+    if opt_in_flag in sys.argv:
+        sys.argv.remove(opt_in_flag)
+        return
+    if os.environ.get(opt_in_env) == "1":
+        return
+    print(
+        "\n"
+        "#################################################################\n"
+        "# DEPRECATED: generate_fig2_annotation_di_pairwise.py should not #\n"
+        "# be run directly.                                               #\n"
+        "#                                                                 #\n"
+        "# audit_pipeline/notebooks/figures_consolidated.ipynb is now the  #\n"
+        "# canonical figure generator. Running this script would silently  #\n"
+        "# overwrite its current styled output for the paper's actual      #\n"
+        "# Figure 2 with a stale, unstyled version -- no error, no visible #\n"
+        "# sign anything went wrong.                                       #\n"
+        "#                                                                 #\n"
+        "# Aborting WITHOUT writing anything. To run anyway (e.g. for a    #\n"
+        "# rollback/diff check), pass --i-know-this-is-deprecated or set   #\n"
+        "# I_KNOW_THIS_IS_DEPRECATED=1.                                    #\n"
+        "#################################################################\n",
+        file=sys.stderr,
+    )
+    sys.exit(1)
+
+
 if __name__ == "__main__":
+    _deprecation_guard()
     main()

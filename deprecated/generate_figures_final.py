@@ -1,4 +1,24 @@
 #!/usr/bin/env python3
+# ============================================================================
+# DEPRECATED (as of 2026-07-03): DO NOT RUN THIS FILE DIRECTLY.
+#
+# audit_pipeline/notebooks/figures_consolidated.ipynb is now the canonical,
+# permanent figure generator for this project. This file writes to the same
+# output paths that notebook owns (outputs/figures_final/**), so running it
+# directly will SILENTLY OVERWRITE the notebook's current styled output with
+# a stale, unstyled version -- no error, no visible sign anything went wrong.
+# This matters more than for a typical deprecated script: the figures this
+# file produces are live, actively-used figures in the paper right now, not
+# legacy dead code.
+#
+# Kept in the repo for reference/rollback only, not for regular use. Direct
+# execution (`python generate_figures_final.py`) now requires an explicit
+# opt-in -- see the `if __name__ == "__main__":` guard at the bottom of this
+# file. Importing from this module (e.g.
+# `from generate_figures_final import STYLE, _read, _save, apply_style`, as
+# generate_fig2_annotation_di_pairwise.py does) is unaffected and continues
+# to work normally.
+# ============================================================================
 """
 generate_figures_final.py
 Publication-ready figures for the dogwhistle benchmarking audit.
@@ -394,10 +414,17 @@ def fig1_coverage_heatmap(data_dir: str = "outputs/") -> None:
     _save(fig, base / "figures_final/fig1_coverage_heatmap.pdf")
 
 
-# ── Figure 2 — Annotation rates by coding level ───────────────────────────────
+# ── Annotation rates by coding level ──────────────────────────────────────────
+# Renamed from fig2_annotation_rates_by_level (2026-07-03): the fig2_ prefix
+# collided with generate_fig2_annotation_di_pairwise.py's
+# fig2_annotation_di_by_pair_level.pdf, the paper's actual Figure 2. This
+# figure is currently Figure 1 in the main body (confirmed against the
+# current .tex draft), but the output name is deliberately position-
+# independent rather than "fig1_..." since the paper's figure order has
+# already shifted more than once during this project.
 
 
-def fig2_annotation_rates_by_level(data_dir: str = "outputs/") -> None:
+def annotation_rates_by_level(data_dir: str = "outputs/") -> None:
     """
     Three-panel horizontal bar chart: correct vs. failure rates per group × level.
 
@@ -414,7 +441,7 @@ def fig2_annotation_rates_by_level(data_dir: str = "outputs/") -> None:
     apply_style()
     base = Path(data_dir)
     s2_p = base / "stage2/s2_annotation_by_level_target.tsv"
-    if not _need([s2_p], "fig2"):
+    if not _need([s2_p], "annotation_rates_by_level"):
         return
 
     s2 = _read(s2_p)
@@ -491,7 +518,7 @@ def fig2_annotation_rates_by_level(data_dir: str = "outputs/") -> None:
         frameon=False,
     )
 
-    _save(fig, base / "figures_final/fig2_annotation_rates_by_level.pdf")
+    _save(fig, base / "figures_final/annotation_rates_by_level.pdf")
 
 
 # ── Figure 3 — Case A vs B absolute counts by coding level ───────────────────
@@ -1694,7 +1721,7 @@ def appG_elsherief_pairwise_di_delta(data_dir: str = "outputs/") -> None:
 
 ALL_FIGURES: dict[str, tuple[str, callable]] = {
     "1": ("fig1_coverage_heatmap.pdf", fig1_coverage_heatmap),
-    "2": ("fig2_annotation_rates_by_level.pdf", fig2_annotation_rates_by_level),
+    "2": ("annotation_rates_by_level.pdf", annotation_rates_by_level),
     "3": ("fig3_case_ab_counts_by_level.pdf", fig3_case_ab_counts_by_level),
     "4": ("fig4_di_histograms_by_level.pdf", fig4_di_histograms_by_level),
     "5": ("fig5_worst_di_by_pair_level.pdf", fig5_worst_di_by_pair_level),
@@ -1759,5 +1786,45 @@ def main(argv: list[str] | None = None) -> None:
     print(f"\n{n_ok}/{len(selected)} figures attempted → {out_dir}")
 
 
+def _deprecation_guard() -> None:
+    """Abort before writing anything unless the caller explicitly opts in.
+
+    audit_pipeline/notebooks/figures_consolidated.ipynb now owns
+    outputs/figures_final/**; running this script unattended would silently
+    overwrite its current styled output -- including live, currently-used
+    paper figures -- with a stale, unstyled version.
+    """
+    import os
+
+    opt_in_flag = "--i-know-this-is-deprecated"
+    opt_in_env = "I_KNOW_THIS_IS_DEPRECATED"
+    if opt_in_flag in sys.argv:
+        sys.argv.remove(opt_in_flag)
+        return
+    if os.environ.get(opt_in_env) == "1":
+        return
+    print(
+        "\n"
+        "################################################################\n"
+        "# DEPRECATED: generate_figures_final.py should not be run       #\n"
+        "# directly.                                                     #\n"
+        "#                                                                #\n"
+        "# audit_pipeline/notebooks/figures_consolidated.ipynb is now the #\n"
+        "# canonical figure generator. Running this script would silently #\n"
+        "# overwrite its current styled output at the same paths under   #\n"
+        "# outputs/figures_final/** with a stale, unstyled version --     #\n"
+        "# including figures that are LIVE and currently used in the      #\n"
+        "# paper -- with no error and no visible sign anything went wrong.#\n"
+        "#                                                                #\n"
+        "# Aborting WITHOUT writing anything. To run anyway (e.g. for a   #\n"
+        "# rollback/diff check), pass --i-know-this-is-deprecated or set  #\n"
+        "# I_KNOW_THIS_IS_DEPRECATED=1.                                   #\n"
+        "################################################################\n",
+        file=sys.stderr,
+    )
+    sys.exit(1)
+
+
 if __name__ == "__main__":
+    _deprecation_guard()
     main()
