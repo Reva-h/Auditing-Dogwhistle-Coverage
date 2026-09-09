@@ -27,7 +27,7 @@ All stages read from the outputs of the data-preprocessing pipeline:
 | `robustness_check.py` | Compares the `full` and `tier12` variants' Stage 4 outputs pair-by-pair, per level and pooled |
 | `run_all.py` | Orchestrator: runs stages 1–4 for all active variants, then `robustness_check.py` once if both variants ran |
 
-Publication figures are generated separately from this pipeline (see the root [README.md](../README.md) for the current figure-generation scripts). `deprecated/` (repo root) holds superseded modules (`rq_reporting.py`, `stage5_figures.py`) kept for reference/rollback only; see [deprecated/README.md](../deprecated/README.md).
+Publication figures are generated separately from this pipeline, by [`audit_pipeline/notebooks/figures_consolidated.ipynb`](notebooks/figures_consolidated.ipynb) (see the root [README.md](../README.md#regenerating-the-paper-figures) for the regeneration command). `deprecated/` (repo root) holds superseded modules (`rq_reporting.py`, `stage5_figures.py`, and the pre-2026-09-09 figure scripts) kept for reference/rollback only; see [deprecated/README.md](../deprecated/README.md).
 
 ## Pipeline Variants
 
