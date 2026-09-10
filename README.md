@@ -58,6 +58,7 @@ Individual stages can be rerun independently (defaults to full variant):
 python -m audit_pipeline.stage1_coverage
 python -m audit_pipeline.stage1_coverage --variant tier12
 python -m audit_pipeline.robustness_check
+python -m audit_pipeline.generate_robustness_table_for_paper  # after robustness_check
 ```
 
 ### Step 3 — Regenerating the Paper Figures
@@ -352,6 +353,7 @@ re-derive anything from raw preprocessed data):
 | File | Contents |
 |---|---|
 | `robustness_comparison.tsv` | One row per (pair, level, metric): full-glossary value, tier-1+2 value, whether the pair passes the 4/5 rule under each, whether that conclusion changes, and the direction of the shift. Covers both fine-grained/raw-taxonomy-target pairs and collapsed reporting-group pairs, at every coding level plus one pooled-coverage-DI row per pair. |
+| `robustness_table_for_paper.tsv` / `robustness_table_for_paper.tex` | Written by `audit_pipeline/generate_robustness_table_for_paper.py`, run after `robustness_check.py`. Selects the pair/level/metric rows the paper discusses by name out of `robustness_comparison.tsv` above and renders them as the paper's Appendix A Table 3 — derived from the comparison table, not hand-typed. |
 | `README.md` | Column reference and the pooled-DI methodology note (see below). |
 
 **Pooled DI:** computed by summing each group's raw counts across *all*

@@ -25,6 +25,7 @@ All stages read from the outputs of the data-preprocessing pipeline:
 | `stage3_disparity.py` | Pairwise disparate-impact ratios within taxonomy levels |
 | `stage4_rollup.py` | Group-level rollup tables from stage1–3 outputs |
 | `robustness_check.py` | Compares the `full` and `tier12` variants' Stage 4 outputs pair-by-pair, per level and pooled |
+| `generate_robustness_table_for_paper.py` | Selects the paper-discussed subset of `robustness_check.py`'s output and renders it as paper-ready LaTeX (Appendix A, Table 3) |
 | `run_all.py` | Orchestrator: runs stages 1–4 for all active variants, then `robustness_check.py` once if both variants ran |
 
 Publication figures are generated separately from this pipeline, by [`audit_pipeline/notebooks/figures_consolidated.ipynb`](notebooks/figures_consolidated.ipynb) (see the root [README.md](../README.md#regenerating-the-paper-figures) for the regeneration command). `deprecated/` (repo root) holds superseded modules (`rq_reporting.py`, `stage5_figures.py`, and the pre-2026-09-09 figure scripts) kept for reference/rollback only; see [deprecated/README.md](../deprecated/README.md).
@@ -107,6 +108,12 @@ already exist on disk (no `--variant` flag — it always compares both):
 python -m audit_pipeline.robustness_check
 ```
 
+Then generate the paper's Table 3 (Appendix A) from that comparison:
+
+```bash
+python -m audit_pipeline.generate_robustness_table_for_paper
+```
+
 ## Key Constants (`config.py`)
 
 | Constant | Default | Meaning |
@@ -151,3 +158,16 @@ across all coding levels first, then computes one DI ratio — see the module
 docstring for why this specific methodology was chosen (it's the one that
 reproduces the paper's cited pooled figures; a naive `min()` of each level's
 own ratio does not).
+
+## Note on `generate_robustness_table_for_paper.py`
+
+Reads `robustness_comparison.tsv` and re-derives the paper's Appendix A
+table (values, pass/fail verdicts, bolded flips, and the row/flip counts
+quoted in the caption) instead of it being hand-typed. The one thing that
+still has to be maintained by hand is `PAPER_ROWS`, the list of which
+pair/level/metric combinations the paper actually discusses by name — that's
+an editorial choice, not something derivable from the data. It looks each
+row up in `robustness_comparison.tsv` order-insensitively on `target_a` /
+`target_b` and raises if a row can't be found or is ambiguous, so a stale or
+renamed pair breaks the script loudly rather than silently dropping a row
+from the paper.
