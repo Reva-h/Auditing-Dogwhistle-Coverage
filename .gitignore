@@ -5,6 +5,7 @@ outputs
 __pycache__/
 scratch/
 paper/
+deprecated/legacy_outputs/
 
 *.tsv
 *.csv
