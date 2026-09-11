@@ -1,11 +1,14 @@
 data/*
 scratch/*
 outputs
+outputs_*_backup/
 .DS_Store
 __pycache__/
 scratch/
 paper/
-deprecated/legacy_outputs/
+deprecated/
+
+hirave_oet_proposal.pdf
 
 *.tsv
 *.csv
