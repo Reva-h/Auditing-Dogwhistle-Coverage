@@ -84,8 +84,8 @@ class PipelineVariant(NamedTuple):
     out_s5 : Path
         Output directory for stage5-shaped figure writers (``audit_pipeline/
         notebooks/figures_consolidated.ipynb`` sandboxes this via
-        ``variant._replace(out_s5=...)``; ``stage5_figures.py`` itself is
-        archived, see ``deprecated/README.md``).
+        ``variant._replace(out_s5=...)``; ``stage5_figures.py`` itself has
+        been superseded and removed from this repository).
     """
 
     name: str

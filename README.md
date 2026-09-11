@@ -13,7 +13,6 @@ annotation, and programmatic RQ analysis.
 | [`audit_pipeline/`](audit_pipeline/README.md) | Python pipeline: coverage → annotation quality → disparity → rollup → robustness check |
 | [`fpr_annotation/`](fpr_annotation/) | False-positive-rate annotation task: sampler script, annotator worksheets, and collected judgments |
 | [`scripts/`](scripts/README.md) | Shell entry points for running the data-preprocessing and audit pipelines end-to-end |
-| [`deprecated/`](deprecated/README.md) | Superseded/orphaned code kept for reference only — not part of the reproducible pipeline |
 | `scratch/` | Personal working notes and exploratory drafts — not part of the reproducible pipeline |
 
 ## End-to-End Workflow
@@ -79,10 +78,10 @@ notebook also regenerates as part of its full inventory; not cited in the
 paper). Safe to re-run — every figure is overwritten unconditionally, so
 re-running after upstream data changes updates the canonical files in place
 rather than accumulating stale duplicates. See the notebook's own final
-"Production promotion" cell for the verification method, and
-[`deprecated/README.md`](deprecated/README.md) for the two now-superseded
-scripts (`generate_figures_final.py`, `generate_fig2_annotation_di_pairwise.py`)
-this notebook replaced.
+"Production promotion" cell for the verification method. This notebook
+replaces two earlier standalone scripts (`generate_figures_final.py`,
+`generate_fig2_annotation_di_pairwise.py`), since superseded and removed
+from this repository.
 
 ## Preprocessing Pipeline Summary
 
@@ -129,7 +128,6 @@ benchmarking_dogwhistles/
 	audit_pipeline/           # Python RQ analysis pipeline
 	fpr_annotation/           # FPR annotation task (sampler, worksheets, judgments)
 	scripts/                  # shell entry points for data_preprocessing and audit_pipeline
-	deprecated/               # superseded/orphaned code, kept for reference only
 	scratch/                  # personal working notes (gitignored)
 	data/
 		glossary.md
@@ -359,10 +357,10 @@ re-derive anything from raw preprocessed data):
 **Pooled DI:** computed by summing each group's raw counts across *all*
 coding levels first, then computing one DI ratio from the pooled rates —
 not by taking `min()` of each level's own ratio (a different, older
-methodology used by `appD_worst_di_and_label_gap_pooled` in
-[`deprecated/generate_figures_final.py`](deprecated/generate_figures_final.py),
-which gives a different number for the same pair; that figure is generated
-but not embedded in the paper). See `audit_pipeline/robustness_check.py`'s
+methodology used by `appD_worst_di_and_label_gap_pooled` in a since-removed
+legacy figure script, which gives a different number for the same pair;
+that figure was generated but never embedded in the paper). See
+`audit_pipeline/robustness_check.py`'s
 module docstring for the full explanation and a concrete example.
 
 ### Annotation results ([annotation_results/](annotation_results/))

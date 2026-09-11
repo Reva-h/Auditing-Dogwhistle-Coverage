@@ -28,7 +28,7 @@ All stages read from the outputs of the data-preprocessing pipeline:
 | `generate_robustness_table_for_paper.py` | Selects the paper-discussed subset of `robustness_check.py`'s output and renders it as paper-ready LaTeX (Appendix A, Table 3) |
 | `run_all.py` | Orchestrator: runs stages 1–4 for all active variants, then `robustness_check.py` once if both variants ran |
 
-Publication figures are generated separately from this pipeline, by [`audit_pipeline/notebooks/figures_consolidated.ipynb`](notebooks/figures_consolidated.ipynb) (see the root [README.md](../README.md#regenerating-the-paper-figures) for the regeneration command). `deprecated/` (repo root) holds superseded modules (`rq_reporting.py`, `stage5_figures.py`, and the pre-2026-09-09 figure scripts) kept for reference/rollback only; see [deprecated/README.md](../deprecated/README.md).
+Publication figures are generated separately from this pipeline, by [`audit_pipeline/notebooks/figures_consolidated.ipynb`](notebooks/figures_consolidated.ipynb) (see the root [README.md](../README.md#regenerating-the-paper-figures) for the regeneration command). Earlier modules this pipeline superseded (`rq_reporting.py`, `stage5_figures.py`, and the pre-2026-09-09 figure scripts) have been removed from this repository.
 
 ## Pipeline Variants
 
