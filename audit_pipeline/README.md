@@ -13,6 +13,7 @@ All stages read from the outputs of the data-preprocessing pipeline:
 | `outputs/unioned_data/06_cleaned_labels_glossary_mapped.tsv` | `data_preprocessing/06_apply_annotations.ipynb` |
 | `outputs/unioned_data/06_glossary_label_reference.tsv` | `data_preprocessing/06_apply_annotations.ipynb` |
 | `outputs/glossary/glossary.tsv` | `data_preprocessing/00_glossary_formatter.ipynb` |
+| `outputs/unioned_data/06_cleaned_labels_glossary_mapped_with_elsherief.tsv`, `outputs/stage1_with_elsherief/` | `audit_pipeline/build_elsherief_comparison_data.py` (only needed for `stage4_rollup.py`'s Section 5.4 / Appendix G union-vs-ElSherief comparison; see below) |
 
 ## Modules
 
@@ -26,9 +27,10 @@ All stages read from the outputs of the data-preprocessing pipeline:
 | `stage4_rollup.py` | Group-level rollup tables from stage1–3 outputs |
 | `robustness_check.py` | Compares the `full` and `tier12` variants' Stage 4 outputs pair-by-pair, per level and pooled |
 | `generate_robustness_table_for_paper.py` | Selects the paper-discussed subset of `robustness_check.py`'s output and renders it as paper-ready LaTeX (Appendix A, Table 3) |
+| `build_elsherief_comparison_data.py` | Builds a second, ElSherief-inclusive corpus (in memory, via the 04–06 preprocessing notebooks with `include_elsherief=True`) and runs Stage 1 matching against it, so `stage4_rollup.py` has ElSherief-only data for its Section 5.4 / Appendix G comparison — not run by `run_all.py`; see below |
 | `run_all.py` | Orchestrator: runs stages 1–4 for all active variants, then `robustness_check.py` once if both variants ran |
 
-Publication figures are generated separately from this pipeline, by [`audit_pipeline/notebooks/figures_consolidated.ipynb`](notebooks/figures_consolidated.ipynb) (see the root [README.md](../README.md#regenerating-the-paper-figures) for the regeneration command). Earlier modules this pipeline superseded (`rq_reporting.py`, `stage5_figures.py`, and the pre-2026-09-09 figure scripts) have been removed from this repository.
+Publication figures are generated separately from this pipeline, by [`audit_pipeline/figures_consolidated.ipynb`](figures_consolidated.ipynb) (see the root [README.md](../README.md#regenerating-the-paper-figures) for the regeneration command). Earlier modules this pipeline superseded (`rq_reporting.py`, `stage5_figures.py`, and the pre-2026-09-09 figure scripts) have been removed from this repository.
 
 ## Pipeline Variants
 
@@ -114,6 +116,17 @@ Then generate the paper's Table 3 (Appendix A) from that comparison:
 python -m audit_pipeline.generate_robustness_table_for_paper
 ```
 
+To populate the Section 5.4 / Appendix G union-vs-ElSherief comparison
+(otherwise `outputs/stage4/by_group/s4c_*_delta_union_vs_elsherief.tsv` comes
+out all-NaN on the ElSherief side — the primary corpus never includes
+ElSherief), run this once before `stage4_rollup.py` (or before `run_all.py`/
+`run_audit_pipeline.sh`, which don't call it automatically):
+
+```bash
+python -m audit_pipeline.build_elsherief_comparison_data
+python -m audit_pipeline.stage4_rollup
+```
+
 ## Key Constants (`config.py`)
 
 | Constant | Default | Meaning |
@@ -131,6 +144,8 @@ python -m audit_pipeline.generate_robustness_table_for_paper
 - `name` — short identifier (`"full"` or `"tier12"`)
 - `allowed_tiers` — `frozenset[int] | None` (None = all tiers)
 - `out_s1` … `out_s4` — output path for each stage
+- `out_s5` — output path for stage5-shaped figure writers; sandboxed by
+  `figures_consolidated.ipynb` via `variant._replace(out_s5=...)`
 
 Pass a `PipelineVariant` to any stage's `run()` function to control which
 tiers are active and where outputs land.  The `resolve_variant()` helper parses
@@ -171,3 +186,23 @@ row up in `robustness_comparison.tsv` order-insensitively on `target_a` /
 `target_b` and raises if a row can't be found or is ambiguous, so a stale or
 renamed pair breaks the script loudly rather than silently dropping a row
 from the paper.
+
+## Note on `build_elsherief_comparison_data.py`
+
+The primary analysis deliberately excludes ElSherief (`include_elsherief`
+defaults to `False` in `04_union_and_dedup.ipynb`, per the paper's Methods:
+the primary audit is HateXplain+MHS only). But `stage4_rollup.py`'s Section
+5.4 / Appendix G comparison needs ElSherief's own Stage 1 matches to compare
+against, and nothing in the primary corpus ever contains ElSherief posts for
+it to filter for.
+
+This module builds a second, fully separate corpus that *does* include
+ElSherief — running `04_union_and_dedup.ipynb`, `05_target_label_analysis_and_filtering.ipynb`,
+and `06_apply_annotations.ipynb` in memory with `include_elsherief=True` and
+alternate output paths, then running Stage 1 matching against the result —
+without ever touching the primary (ElSherief-excluded) files those notebooks
+normally produce. It is a standalone, manually-run step: `run_all.py` and
+`scripts/run_audit_pipeline.sh` do not call it, so skipping it doesn't break
+the primary pipeline — it just leaves the Section 5.4 / Appendix G delta
+tables all-NaN on the ElSherief side. See the command in "Running the
+Pipeline" above.
