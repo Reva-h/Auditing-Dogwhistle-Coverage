@@ -17,10 +17,12 @@ import pandas as pd
 
 from audit_pipeline.config import (
     DATA_PATH,
+    DATA_PATH_WITH_ELSHERIEF,
     DI_THRESHOLD,
     ELSHERIEF_DATASET_NAME,
     GLOSSARY_PATH,
     N_MIN,
+    OUT_S1_WITH_ELSHERIEF,
     VARIANT_FULL,
     PipelineVariant,
     resolve_variant,
@@ -604,15 +606,66 @@ def run(variant: PipelineVariant = VARIANT_FULL) -> None:
     write_tsv(ann_b, by_level_group_dir / "s4b_annotation_by_level_group.tsv")
     write_tsv(pair_b, by_level_group_dir / "s4b_pairwise_disparity_by_level_group.tsv")
 
-    # 4c ElSherief deltas.
-    cov_e, ann_e, pair_e = compute_rollup(
-        dataset_filter=ELSHERIEF_DATASET_NAME,
-        include_taxonomy_level=False,
-        s1_dir=variant.out_s1,
-        allowed_tiers=variant.allowed_tiers,
-    )
+    # 4c ElSherief deltas. The primary corpus (DATA_PATH / variant.out_s1)
+    # excludes ElSherief entirely -- see 04_union_and_dedup.ipynb's
+    # include_elsherief config -- so it has no ElSherief rows to filter for.
+    # This one call is instead pointed at the ElSherief-inclusive corpus
+    # built by `python -m audit_pipeline.build_elsherief_comparison_data`,
+    # via a scoped swap of the module-level DATA_PATH that
+    # _dataset_row_count/_build_target_posts read internally. Restored
+    # immediately after so every other call in this function (and every
+    # other stage) keeps using the primary, ElSherief-excluded corpus.
+    #
+    # Only wired up for the all-tier scope: OUT_S1_WITH_ELSHERIEF was built
+    # with allowed_tiers=None (matching VARIANT_FULL), so pairing it with a
+    # tier-restricted glossary denominator (e.g. VARIANT_TIER12) would mix
+    # all-tier matches with a tier-1+2-only denominator -- the same
+    # inconsistency this module's docstring warns against for Stage 1/4
+    # tier filtering generally. The paper's Section 5.4 / Appendix G
+    # ElSherief comparison is only ever reported at the primary (all-tier)
+    # scope, so other variants keep the prior (empty/NaN) behavior rather
+    # than a silently tier-mismatched one.
+    # The "union" side of *this* comparison is not cov_a/ann_a/pair_a above
+    # (the primary, two-way HateXplain+MHS union used for s4a/s4b) -- per
+    # Figure 4/6's caption ("Effect of adding HateXplain and MHS to the
+    # Implicit Hate corpus"), it has to be the three-way union (HateXplain+
+    # MHS+ElSherief). That's dataset_filter=None against the ElSherief-
+    # inclusive corpus, computed here as cov_a3/ann_a3/pair_a3 -- a separate
+    # call from cov_a/ann_a/pair_a, which must keep meaning the primary
+    # two-way union for every other output this function writes.
+    if variant.allowed_tiers is None:
+        global DATA_PATH
+        _primary_data_path = DATA_PATH
+        DATA_PATH = DATA_PATH_WITH_ELSHERIEF
+        try:
+            cov_a3, ann_a3, pair_a3 = compute_rollup(
+                dataset_filter=None,
+                include_taxonomy_level=False,
+                s1_dir=OUT_S1_WITH_ELSHERIEF,
+                allowed_tiers=variant.allowed_tiers,
+            )
+            cov_e, ann_e, pair_e = compute_rollup(
+                dataset_filter=ELSHERIEF_DATASET_NAME,
+                include_taxonomy_level=False,
+                s1_dir=OUT_S1_WITH_ELSHERIEF,
+                allowed_tiers=variant.allowed_tiers,
+            )
+        finally:
+            DATA_PATH = _primary_data_path
+    else:
+        # Guarded off (see note above) -- no ElSherief-inclusive Stage 1
+        # output exists at this tier scope, so both sides stay on the
+        # primary corpus and the merge below still yields the prior
+        # (empty/NaN) result rather than a tier-mismatched one.
+        cov_a3, ann_a3, pair_a3 = cov_a, ann_a, pair_a
+        cov_e, ann_e, pair_e = compute_rollup(
+            dataset_filter=ELSHERIEF_DATASET_NAME,
+            include_taxonomy_level=False,
+            s1_dir=variant.out_s1,
+            allowed_tiers=variant.allowed_tiers,
+        )
 
-    cov_d = cov_a.merge(
+    cov_d = cov_a3.merge(
         cov_e,
         on=["coding_level", "report_level", "report_target"],
         how="outer",
@@ -625,7 +678,7 @@ def run(variant: PipelineVariant = VARIANT_FULL) -> None:
         cov_d["type_coverage_union"] - cov_d["type_coverage_elsherief"]
     )
 
-    ann_d = ann_a.merge(
+    ann_d = ann_a3.merge(
         ann_e,
         on=["coding_level", "report_level", "report_target"],
         how="outer",
@@ -638,7 +691,7 @@ def run(variant: PipelineVariant = VARIANT_FULL) -> None:
         ann_d["failure_rate_union"] - ann_d["failure_rate_elsherief"]
     )
 
-    pair_d = pair_a.merge(
+    pair_d = pair_a3.merge(
         pair_e,
         on=["coding_level", "report_level", "target_a", "target_b"],
         how="outer",

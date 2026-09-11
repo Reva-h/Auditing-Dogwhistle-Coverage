@@ -24,6 +24,18 @@ WORKDIR = Path(__file__).resolve().parent.parent
 DATA_PATH = WORKDIR / "outputs/unioned_data/06_cleaned_labels_glossary_mapped.tsv"
 GLOSSARY_PATH = WORKDIR / "outputs/unioned_data/06_glossary_label_reference.tsv"
 
+# ElSherief-inclusive counterpart of DATA_PATH, built by
+# audit_pipeline.build_elsherief_comparison_data (which re-runs the 04-06
+# preprocessing notebooks in memory with include_elsherief=True, writing to
+# these paths rather than the primary, ElSherief-excluded ones above). Used
+# only by stage4_rollup.py's Section 5.4 / Appendix G "union vs. Implicit
+# Hate alone" comparison -- never by the primary analysis.
+DATA_PATH_WITH_ELSHERIEF = (
+    WORKDIR
+    / "outputs/unioned_data/06_cleaned_labels_glossary_mapped_with_elsherief.tsv"
+)
+OUT_S1_WITH_ELSHERIEF = WORKDIR / "outputs/stage1_with_elsherief"
+
 # ---------------------------------------------------------------------------
 # Primary output roots  (shared by VARIANT_FULL and used as defaults)
 # ---------------------------------------------------------------------------
