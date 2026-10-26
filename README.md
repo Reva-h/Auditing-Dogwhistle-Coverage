@@ -223,6 +223,8 @@ The IAA notebook computes agreement between Reva and Ryan for both target-label 
 
 It also includes a top-20 per-label kappa breakdown and built-in sanity checks against expected benchmark values.
 
+**Note on disagreement resolution:** the paper describes disagreements as resolved by four named rules plus lead-annotator adjudication. The audit pipeline does not apply those resolutions: `data_preprocessing/06_apply_annotations.ipynb` uses the plain union of both annotators' raw labels, and the paper's audit results were computed from that union. The rule-based and adjudicated labels are produced separately by `annotations/merge_annotation_union.ipynb`. See [annotations/README.md](annotations/README.md#note-on-disagreement-resolution-vs-the-paper) for which items differ.
+
 ## FPR Annotation
 
 The `fpr_annotation/` directory contains the false-positive-rate (FPR) annotation task, which asks human annotators to judge whether each corpus post is using a matched dogwhistle term genuinely (as coded hate speech), as counter-speech, journalistically, or in an unclear way.

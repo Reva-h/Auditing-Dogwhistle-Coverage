@@ -23,6 +23,12 @@ Two annotators (Reva and Ryan) independently labeled two tasks:
 Labels are comma-separated schema strings (e.g. `race_black, origin_specific country`).
 Blank or NaN entries are treated as `_unknown`.
 
+`ryan_labels.tsv` and `ryan_glossary.tsv` match the annotator's original
+worksheets except that blank cells are recorded as `_unknown` (116 items in
+the labels task, 10 in the glossary task). No resolution rule has been
+applied to them, so the inter-annotator agreement computed from them is on
+pre-resolution labels.
+
 ## Notebooks
 
 ### `merge_annotation_union.ipynb`
@@ -128,3 +134,30 @@ union in-notebook, then applies the result to the full corpus to produce
 counterparts are consumed only by `inter_annotator_agreement.ipynb`'s
 resolution before/after diff section (see above) — they are not an input to
 the main preprocessing pipeline.
+
+## Note on Disagreement Resolution vs. the Paper
+
+The paper (§3 and the inter-annotator agreement appendix) describes
+disagreements as resolved by four named rules, with remaining disjoint cases
+adjudicated by the lead annotator, and all other disagreements by superset
+union. That procedure is implemented in `merge_annotation_union.ipynb` and
+its result is written to `merged_*_resolved.tsv`.
+
+**The audit results in the paper were not computed from those resolved
+labels.** `06_apply_annotations.ipynb`, which feeds every downstream stage,
+takes the plain union of both annotators' raw labels (keeping `_unknown`
+alongside any real labels). The released code reproduces the paper's numbers
+exactly because it uses this plain union.
+
+The two label sets differ on the following items:
+
+| Task | Items | Differ | Resolution path of the differing items |
+|---|---|---|---|
+| Glossary inference | 340 | 34 | 15 transgender granularity (Rule 2), 12 adjudicated, 7 self-referential vs. target (Rule 3) |
+| Label mapping | 587 | 26 | 18 adjudicated, 6 specificity explosion (Rule 4), 2 self-referential vs. target (Rule 3) |
+
+Counts compare label sets with `_unknown` removed; Rule 1 (unknown vs.
+specific) and `both_unknown` items differ only in whether `_unknown` is
+kept, which is not counted above. The inter-annotator agreement metrics are
+unaffected: they are computed on the raw per-annotator files, as the paper
+states.
