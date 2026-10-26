@@ -1,0 +1,588 @@
+dataset	raw_target_label	dest_label	annotator notes
+elsherief	aliens	origin_undocumented	
+elsherief	unemployed people	_unknown	
+elsherief	homossexuals and transgenders	gender_transgender unspecified, sexuality_bisexual, sexuality_gay, sexuality_lesbian	
+elsherief	illegal/undocumented people.	origin_undocumented	
+elsherief	color people	unknown_minority	
+elsherief	older people	age_seniors	
+elsherief	multiracials	_unknown	*should be a mixed race category
+elsherief	gay folks	sexuality_bisexual, sexuality_gay, sexuality_lesbian	
+elsherief	khazars	_unknown	* this is straight up a dog whistle for Jewish people
+elsherief	white americans	race_white, origin_specific country	
+elsherief	right wing conservatives	politics_conservative	
+elsherief	non-white immigrants	race_asian, race_black, race_latinx, race_middle eastern, origin_immigrant	
+elsherief	socialists	politics_socialist	
+elsherief	latino immigrants	race_latinx, origin_immigrant	
+elsherief	muslims (people who worship allah).	religion_muslim	
+elsherief	french people	origin_specific country	
+elsherief	white people and black people	race_white, race_black	
+elsherief	conservatives	politics_conservative	
+elsherief	trans folks	gender_transgender unspecified	
+elsherief	white conservatives	race_white, politics_conservative	
+elsherief	semites	religion_jewish	
+elsherief	italians	origin_specific country	
+elsherief	lefties	politics_leftist	
+elsherief	immigrants and refugees	origin_immigrant	
+elsherief	white nationalism	_unknown	*
+elsherief	brown people	race_black, race_latinx, race_middle eastern, race_native american, race_pacific islander	
+elsherief	white children	race_white, age_children	
+elsherief	jewish and muslim people	religion_jewish, religion_muslim	
+elsherief	police	_unknown	
+elsherief	muslim	religion_muslim	
+elsherief	white progressives	race_white, politics_leftist	
+elsherief	terrorists.	_unknown	
+elsherief	non-christian minorities	religion_atheist, religion_buddhist, religion_hindu, religion_jewish, religion_mormon, religion_muslim	
+elsherief	fat white women	race_white, gender_women	
+elsherief	womanists	gender_women	
+elsherief	northern people	_unknown	
+elsherief	fat women	gender_women	
+elsherief	people who wear glasses.	_unknown	
+elsherief	not specified in this tweet	_unknown	
+hatexplain	indian	race_asian, origin_specific country	
+elsherief	yankees	_unknown	
+elsherief	atheists	religion_atheist	
+elsherief	feminists	gender_women, politics_leftist	
+hatexplain	asian	race_asian	
+elsherief	european	origin_specific country	
+elsherief	arabians	race_middle eastern	
+elsherief	anti-white supporters	_unknown	*
+elsherief	capitalists	politics_other	
+hatexplain	men	gender_men	
+elsherief	white liberals	race_white, politics_liberal	
+elsherief	terrorists	_unknown	
+elsherief	indian folks	race_asian, origin_specific country	
+elsherief	southerners	_unknown	
+elsherief	black south africans	race_black, origin_specific country	
+elsherief	white nationalists	race_white, politics_alt right	
+elsherief	muslim and black folks	race_black, religion_muslim	
+elsherief	immigrants	origin_immigrant	
+elsherief	people from middle east	race_middle eastern	
+elsherief	asian folks	race_asian	
+elsherief	muslims	religion_muslim	
+elsherief	fair complected people	_unknown	
+elsherief	bible publishers	religion_christian	
+elsherief	jew	religion_jewish	
+elsherief	boy scout leaders	_unknown	
+elsherief	white lives matter protesters	race_white, politics_conservative	
+elsherief	non-white folks	unknown_minority	
+elsherief	white people who adopt other races	race_white	
+hatexplain	economic	_unknown	
+elsherief	american indians	race_native american	
+elsherief	mainstream conservatives	politics_conservative	
+elsherief	islamic	religion_muslim	
+elsherief	jews	religion_jewish	
+elsherief	non-believers	_unknown	
+elsherief	anti gay people	sexuality_bisexual, sexuality_gay, sexuality_lesbian	*
+elsherief	outsiders	_unknown	
+elsherief	politicians and journalists	_unknown	
+elsherief	catholics	religion_christian	
+elsherief	millennials	age_young adults	
+elsherief	religious groups	religion_other, religion_atheist, religion_buddhist, religion_christian, religion_hindu, religion_jewish, religion_mormon, religion_muslim	*
+elsherief	swedish folks	origin_specific country	
+elsherief	islamic cultures	race_middle eastern, religion_muslim	
+elsherief	anti-whites	_unknown	*
+elsherief	jews and gays	religion_jewish, sexuality_gay, sexuality_bisexual, sexuality_lesbian	
+elsherief	africans	race_black	
+elsherief	poor people	_unknown	
+elsherief	progressive males	politics_leftist, gender_men	
+elsherief	middle easterners	race_middle eastern	
+elsherief	killers	_unknown	
+elsherief	american gun owner	origin_specific country	
+elsherief	mixed race	_unknown	*
+elsherief	non-americans	origin_specific country	
+elsherief	male conservatives	gender_men, politics_conservative	
+elsherief	activists	_unknown	
+elsherief	conservative folks	politics_conservative	
+elsherief	nationalist	_unknown	
+elsherief	anti-lgbtq organizations	gender_transgender unspecified, sexuality_bisexual, sexuality_gay, sexuality_lesbian, sexuality_other	
+elsherief	fatherless people	_unknown	*
+elsherief	illegal hispanics	race_latinx, origin_undocumented	
+elsherief	mexicans	race_latinx, origin_specific country	
+elsherief	white anti-white people	race_white, politics_alt right	
+elsherief	mentally ill people	disability_cognitive, disability_neurological	
+elsherief	journalists	_unknown	
+elsherief	muslim and jews	religion_jewish, religion_muslim	
+elsherief	hispanic people	race_latinx	
+elsherief	left	politics_leftist	
+elsherief	pro-white people	race_white	
+elsherief	ethnomasochists	_unknown	
+elsherief	ommogrants	origin_immigrant	
+elsherief	non-white women	unknown_minority, gender_women	
+elsherief	people in chicago	_unknown	
+elsherief	women who get abortions	gender_women	
+elsherief	anti-white people	politics_alt right	
+elsherief	mexicans and poor people	origin_specific country, race_latinx	
+elsherief	immigrants and black people	race_black, origin_immigrant	
+elsherief	degenerates	_unknown	
+elsherief	white women and girls	gender_women, race_white, age_children	
+elsherief	yankee womens	gender_women	
+elsherief	lgbt community	sexuality_bisexual, sexuality_gay, sexuality_lesbian, sexuality_other, gender_transgender unspecified	
+elsherief	non-aryans	_unknown	*
+elsherief	anti-gun activist.	politics_leftist	
+elsherief	white handicapped people	race_white, disability_unspecific	
+elsherief	christians and jews	religion_jewish, religion_christian	
+elsherief	christians	religion_christian	
+elsherief	sanctuary cities	_unknown	
+elsherief	the government	_unknown	
+elsherief	mixed races	_unknown	
+elsherief	ngos	_unknown	
+hatexplain	heterosexual	sexuality_straight	
+elsherief	the right	politics_conservative	
+elsherief	meat eaters	_unknown	
+elsherief	palestinians	origin_specific country, race_middle eastern	
+elsherief	intellectuals	_unknown	
+elsherief	moderate conservatives	politics_conservative	
+elsherief	white supremacists	race_white, politics_alt right	
+hatexplain	bisexual	sexuality_bisexual	
+elsherief	older whites	age_seniors, race_white	
+elsherief	handicaped people	disability_unspecific	
+elsherief	planned parenthood	_unknown	
+elsherief	probably lgbt	sexuality_bisexual, sexuality_gay, sexuality_lesbian, sexuality_other, gender_transgender unspecified	
+elsherief	heterosexual whites	sexuality_straight, race_white	
+elsherief	zionists	religion_jewish, origin_specific country	
+hatexplain	hindu	religion_hindu	
+elsherief	radicals	_unknown	
+elsherief	vandals	_unknown	
+elsherief	muslim children	age_children, religion_muslim	
+elsherief	handicapped	disability_unspecific	
+elsherief	left-wing progressives	politics_leftist	
+elsherief	normal folks	_unknown	
+elsherief	lefty	politics_leftist	
+elsherief	furries	_unknown	
+elsherief	alt-leftists	politics_leftist	
+elsherief	mexican people	race_latinx, origin_specific country	
+elsherief	fair immigration members	origin_immigrant	
+elsherief	gat people	sexuality_bisexual, sexuality_gay, sexuality_lesbian	
+elsherief	colored people	unknown_minority	
+elsherief	black athletes	race_black	
+elsherief	mainstream christians	religion_christian	
+elsherief	alt-right	politics_alt right	
+elsherief	liberals and muslims	politics_liberal, religion_muslim	
+elsherief	ideologues	_unknown	
+elsherief	non-whites	unknown_minority	
+elsherief	white women	race_white, gender_women	
+elsherief	poor countries	_unknown	
+elsherief	leftists	politics_leftist	
+elsherief	muslims refugees	race_middle eastern, religion_muslim, origin_immigrant	
+elsherief	transgender people	gender_transgender unspecified	
+elsherief	middle-easterners	race_middle eastern	
+elsherief	irish and polish immigrants	origin_specific country, origin_immigrant	
+elsherief	nazists	politics_alt right	
+elsherief	white people.	race_white	
+elsherief	gay	sexuality_bisexual, sexuality_gay, sexuality_lesbian	
+elsherief	blacks	race_black	
+elsherief	not specfied	_unknown	
+elsherief	rich minorities	unknown_minority	
+hatexplain	women	gender_women	
+elsherief	isralis	religion_jewish, origin_specific country	
+elsherief	people of color	unknown_minority	
+elsherief	iraqis	race_middle eastern, origin_specific country	
+elsherief	homeless people	_unknown	
+elsherief	third world citizens	origin_specific country	*
+elsherief	norwegians	origin_specific country	
+elsherief	iranian	origin_specific country, race_middle eastern	
+elsherief	black folks	race_black	
+elsherief	non-christian whites	race_white, religion_atheist, religion_buddhist, religion_hindu, religion_jewish, religion_mormon, religion_muslim, religion_other	
+elsherief	spanish people	origin_specific country	
+elsherief	a woman	gender_women	
+elsherief	young white men	race_white, gender_men, age_young adults	
+elsherief	syrians	origin_specific country, race_middle eastern	
+elsherief	muslims and latinos	race_latinx, religion_muslim	
+elsherief	mexican nationalists	race_latinx, origin_specific country	
+elsherief	israel	origin_specific country, religion_jewish	
+elsherief	confederates	politics_alt right	
+elsherief	immmigrants	origin_immigrant	
+elsherief	white folks	race_white	
+elsherief	mideasterners	race_middle eastern	
+elsherief	hispanics	race_latinx	
+elsherief	robert	_unknown	
+elsherief	non-muslims	religion_atheist, religion_buddhist, religion_christian, religion_hindu, religion_jewish, religion_mormon, religion_other	
+hatexplain	african	race_black	
+elsherief	supremacists	_unknown	*
+elsherief	politicians?	_unknown	
+elsherief	jewish activists	religion_jewish	
+elsherief	black men	race_black, gender_men	
+elsherief	refugees	origin_immigrant	
+elsherief	james craig	_unknown	
+elsherief	jewish people.	religion_jewish	
+elsherief	obama	_unknown	
+elsherief	politician	_unknown	
+elsherief	specially transsexuals.	gender_transgender unspecified	
+elsherief	lesbians	sexuality_lesbian	
+elsherief	white/rich liberals	race_white, politics_liberal	
+elsherief	non-white people	unknown_minority	
+hatexplain	disability	disability_unspecific	
+elsherief	msulims	religion_muslim	
+elsherief	white police	race_white	
+elsherief	muslim women	religion_muslim, gender_women	
+elsherief	twitter	_unknown	
+elsherief	liberal black people	race_black, politics_liberal	
+elsherief	jews and blacks	religion_jewish, race_black	
+hatexplain	nonreligious	religion_other	
+elsherief	no specific group	_unknown	
+elsherief	indian journalists	race_asian, origin_specific country	
+elsherief	secular people	religion_other	
+elsherief	non-white	unknown_minority	
+elsherief	illegal immigrant	origin_immigrant, origin_undocumented	
+elsherief	working class white people	race_white	
+elsherief	poor minorities	unknown_minority	
+elsherief	north people	_unknown	
+elsherief	minority immigrants	unknown_minority, origin_immigrant	
+elsherief	native american	race_native american	
+elsherief	muslim people	religion_muslim	
+elsherief	latin americans	race_latinx	
+elsherief	heterosexual christian republicans	religion_christian, sexuality_straight	
+elsherief	minority marxists	unknown_minority, politics_communist	
+elsherief	al-queda	_unknown	
+elsherief	islamic people	religion_muslim	
+elsherief	white christians	race_white, religion_christian	
+elsherief	poor uneducated people	_unknown	
+elsherief	liberians	origin_specific country	
+elsherief	political criminals	_unknown	
+elsherief	keralites	race_asian, origin_specific country	
+elsherief	blacks and mexicans	race_black, race_latinx, origin_specific country	
+elsherief	british bankers	origin_specific country	
+elsherief	queers	gender_transgender unspecified, sexuality_bisexual, sexuality_gay, sexuality_lesbian	
+elsherief	cross-straddlers	_unknown	
+elsherief	people with aids	_unknown	
+elsherief	scottish people play the bagpipes.	origin_specific country	
+elsherief	white males in interracial couples	race_white, gender_men	
+elsherief	lbgt	sexuality_bisexual, sexuality_gay, sexuality_lesbian, gender_transgender unspecified	
+elsherief	people of color/immigrants	unknown_minority, origin_immigrant	
+elsherief	africans and pakistanis	race_black, race_asian, origin_specific country	
+elsherief	trump supporters	politics_conservative	
+elsherief	third world people	origin_specific country	*
+elsherief	black and asian people.	race_asian, race_black	
+elsherief	african folks	race_black	
+elsherief	black activists	race_black, politics_leftist	
+elsherief	brown and white people	unknown_minority	
+elsherief	white europeans	race_white, origin_specific country	
+elsherief	white rich people	race_white	
+elsherief	whites and blacks	race_black, race_white	
+elsherief	russians	origin_specific country	
+elsherief	hillary clinton	_unknown	
+elsherief	young atheists	religion_atheist, age_young adults	
+hatexplain	refugee	origin_immigrant	
+elsherief	white people	race_white	
+elsherief	nazi	politics_alt right	
+elsherief	neocons	_unknown	
+elsherief	criminals	_unknown	
+elsherief	old white men	race_white, age_seniors, gender_men	
+elsherief	racist	unknown_minority	*
+elsherief	liberals	politics_liberal	
+elsherief	harvard	_unknown	
+elsherief	black panthers	race_black, politics_leftist	
+elsherief	antifa members	politics_leftist	
+elsherief	mualims	religion_muslim	
+elsherief	india	origin_specific country	
+elsherief	americans	origin_specific country	
+elsherief	white males	gender_men, race_white	
+elsherief	minorities	unknown_minority	
+elsherief	natives	race_native american	
+elsherief	southern white men	race_white, gender_men	
+elsherief	israelites	religion_jewish, origin_specific country	
+elsherief	idealists	_unknown	
+elsherief	progressive whites	race_white, politics_leftist	
+hatexplain	caucasian	race_white	
+elsherief	white democrats	race_white, politics_democrat	
+elsherief	black conservative	race_black, politics_conservative	
+hatexplain	buddhism	religion_buddhist	
+elsherief	muslim immigrants	race_middle eastern, religion_muslim, origin_immigrant	
+elsherief	pakistani	race_asian, origin_specific country	
+elsherief	blacks and hispanics	race_black, race_latinx	
+elsherief	non-christians	religion_atheist, religion_buddhist, religion_hindu, religion_jewish, religion_mormon, religion_muslim	
+elsherief	conservative jews	religion_jewish, politics_conservative	
+elsherief	white america	race_white, origin_specific country	
+elsherief	swedans	origin_specific country	
+elsherief	black immigrants	race_black, origin_immigrant	
+elsherief	religious people	religion_other, religion_atheist, religion_buddhist, religion_christian, religion_hindu, religion_jewish, religion_mormon, religion_muslim	*
+elsherief	blacks folks	race_black	
+elsherief	immigrant	origin_immigrant	
+elsherief	illegal crop migrants	origin_undocumented, origin_migrant worker	
+elsherief	protestors	_unknown	
+elsherief	moderates	politics_other	
+elsherief	minorites	unknown_minority	
+elsherief	zionist	religion_jewish, origin_specific country	
+elsherief	women	gender_women	
+elsherief	fat men	gender_men	
+elsherief	aap	_unknown	
+elsherief	mexicans and mestizos	race_latinx, origin_specific country	
+elsherief	black and white people	race_black, race_white	
+elsherief	gays and communists	sexuality_gay, sexuality_bisexual, sexuality_lesbian, politics_communist	
+elsherief	people working for the new york times	_unknown	
+elsherief	corporate leaders	_unknown	
+elsherief	progressive indians	race_asian, politics_leftist	
+elsherief	democrates	politics_democrat	
+elsherief	australians aboriginals	race_other, origin_specific country	
+elsherief	missourians and immigrants	origin_immigrant	
+elsherief	antifas	politics_leftist	
+elsherief	blacks and jews	race_black, religion_jewish	
+elsherief	lesbian	sexuality_lesbian	
+elsherief	immigrants.	origin_immigrant	
+elsherief	muslim refugees	origin_immigrant, religion_muslim	
+elsherief	black folks.	race_black	
+elsherief	white men	race_white, gender_men	
+elsherief	society	_unknown	
+elsherief	chinese guards	race_asian, origin_specific country	
+elsherief	turks	origin_specific country	
+elsherief	young	age_young adults	
+elsherief	latinos and black girls	race_latinx, race_black, gender_women	
+elsherief	neo nazis and white supremacist	race_white, politics_alt right	
+hatexplain	other	_unknown	
+elsherief	white antifa members	race_white, politics_leftist	
+elsherief	white working class people	race_white	
+elsherief	religious conservatives	politics_conservative, religion_christian	
+elsherief	right-wing extremists	politics_alt right	
+elsherief	conservative males	politics_conservative, gender_men	
+elsherief	gender crisis people	gender_transgender unspecified	
+elsherief	alt-left	politics_leftist	
+elsherief	gays	sexuality_bisexual, sexuality_gay, sexuality_lesbian	
+hatexplain	minority	unknown_minority	
+elsherief	elder	age_seniors	
+elsherief	indian people	race_asian, origin_specific country	
+elsherief	pedophiles	_unknown	
+elsherief	catholics & jews	religion_jewish, religion_christian	
+elsherief	skinny white kids	race_white, age_children	
+elsherief	white jews	race_white, religion_jewish	
+elsherief	islamic followers	race_middle eastern	
+elsherief	heterosexual white men	race_white, gender_men, sexuality_straight	
+elsherief	hindus	religion_hindu	
+elsherief	spanish and mexicans	race_latinx, origin_specific country	
+elsherief	"says ""them"" but context is missing."	_unknown	
+elsherief	illegal aliens	origin_undocumented	
+elsherief	democrats	politics_democrat	
+elsherief	homosexuals	sexuality_bisexual, sexuality_gay, sexuality_lesbian	
+elsherief	gay jews	religion_jewish, sexuality_gay, sexuality_bisexual, sexuality_lesbian	
+elsherief	islam and muslims	religion_muslim	
+elsherief	facists	politics_alt right	
+elsherief	germans	origin_specific country	
+elsherief	social justice warriors	politics_leftist	
+elsherief	islam people.	religion_muslim	
+elsherief	young black men	race_black, gender_men	
+elsherief	albino asians	race_asian	
+elsherief	isis	_unknown	
+elsherief	pakistan	race_asian, origin_specific country	
+elsherief	somalis	race_black, origin_specific country	
+elsherief	african migrants	race_black, origin_immigrant	
+elsherief	people with hiv/aids	_unknown	
+elsherief	splc members	_unknown	
+elsherief	israelis	origin_specific country	
+elsherief	white group	race_white	
+hatexplain	jewish	religion_jewish	
+hatexplain	arab	race_middle eastern	
+elsherief	progressive people	politics_leftist	
+elsherief	white boys	race_white, gender_men, age_children	
+elsherief	non muslims	religion_atheist, religion_buddhist, religion_christian, religion_hindu, religion_jewish, religion_mormon, religion_other	
+elsherief	rich white people	race_white	
+elsherief	people in the tech field	_unknown	
+elsherief	democratics.	politics_democrat	
+elsherief	politicians	_unknown	
+elsherief	minority groups	unknown_minority	
+elsherief	progressive westerners	politics_leftist	
+elsherief	media	_unknown	
+elsherief	anti-nationals	_unknown	
+elsherief	secularists	_unknown	
+elsherief	mexicans and asians	race_latinx, race_asian, origin_specific country	
+hatexplain	hispanic	race_latinx	
+elsherief	female politicians	gender_women	
+elsherief	migrants	origin_immigrant	
+elsherief	right wing protesters	politics_conservative	
+elsherief	syrian immigrants	origin_specific country, origin_immigrant	
+elsherief	color people.	unknown_minority	
+elsherief	communists	politics_communist	
+elsherief	black people.	race_black	
+elsherief	non-hindus	religion_atheist, religion_buddhist, religion_christian, religion_jewish, religion_mormon, religion_muslim, religion_other	*
+elsherief	indigenous people	race_native american	
+elsherief	muslims and liberals	politics_liberal, religion_muslim	
+elsherief	elderly people.	age_seniors	
+elsherief	federal government	_unknown	
+elsherief	alt-right journalists	politics_alt right	
+elsherief	doctors	_unknown	
+elsherief	hispanics and indigenous	race_latinx, race_native american	
+elsherief	chuck e cheese	_unknown	lol
+elsherief	common people	_unknown	
+elsherief	pakistani people	origin_specific country, race_asian	
+elsherief	rich people	_unknown	
+elsherief	america	origin_specific country	
+elsherief	unknown	_unknown	
+elsherief	white liberal women	race_white, politics_liberal, gender_women	
+elsherief	arabian muslims	race_middle eastern, religion_muslim	
+elsherief	non-patriotic people	_unknown	
+elsherief	asian people	race_asian	
+elsherief	mexican immigrants	origin_immigrant, origin_specific country, race_latinx	
+elsherief	alt-right followers	politics_alt right	
+elsherief	refugees and black people	race_black, origin_immigrant	
+elsherief	people of color/everyone else	unknown_minority	
+elsherief	rural people	_unknown	
+elsherief	feminism	gender_women, politics_leftist	
+elsherief	these folks	_unknown	
+elsherief	gay people	sexuality_gay, sexuality_bisexual, sexuality_lesbian, sexuality_other	
+elsherief	jewish	religion_jewish	
+elsherief	impossible to determine without more information or context	_unknown	
+elsherief	nazis	politics_alt right	*
+elsherief	english white jew	race_white, origin_specific country, religion_jewish	
+elsherief	islam followers	religion_muslim	
+elsherief	black lives matter	race_black	
+hatexplain	homosexual	sexuality_gay, sexuality_lesbian, sexuality_bisexual	
+elsherief	chinese	race_asian	
+elsherief	arabs	race_middle eastern	
+hatexplain	asexual	sexuality_other	
+elsherief	blacks and mestizos	race_black, race_latinx	
+elsherief	black jews	race_black, religion_jewish	
+elsherief	islanders	race_pacific islander	
+elsherief	working class people	_unknown	
+elsherief	chinese people	race_asian, origin_specific country	
+elsherief	black people	race_black	
+elsherief	communist	politics_communist	
+hatexplain	indigenous	race_native american	
+elsherief	white immigrants	race_white, origin_immigrant	
+elsherief	antifa	politics_leftist	
+elsherief	mainly black people.	race_black	
+elsherief	muslim people.	religion_muslim	
+elsherief	albanians	origin_specific country	
+elsherief	anti-liberals	politics_liberal	*
+elsherief	old people	age_seniors	
+elsherief	lgbt people	sexuality_bisexual, sexuality_gay, sexuality_lesbian, sexuality_other, gender_transgender unspecified	
+elsherief	northerners and jews	religion_jewish	
+elsherief	homossexuals	sexuality_gay, sexuality_bisexual, sexuality_lesbian	
+elsherief	aryans	_unknown	*
+elsherief	republicans	politics_republican	
+elsherief	solmalis	origin_specific country	
+elsherief	jews and muslims	religion_jewish, religion_muslim	
+elsherief	protestants	religion_christian	
+elsherief	white person	race_white	
+elsherief	lgbtq	sexuality_bisexual, sexuality_gay, sexuality_lesbian, gender_transgender unspecified	
+elsherief	old white guys	race_white, gender_men, age_seniors	
+elsherief	lgbqti	gender_transgender unspecified, sexuality_bisexual, sexuality_gay, sexuality_lesbian, sexuality_other	
+elsherief	white cops	race_white	
+elsherief	illegal people	origin_undocumented	
+elsherief	indian	race_asian, origin_specific country	
+elsherief	christian leaders	religion_christian	
+elsherief	southern poverty law center	_unknown	
+elsherief	right-wing americans	politics_conservative, origin_specific country	
+elsherief	canadians	origin_specific country	
+elsherief	islamists	religion_muslim	
+elsherief	us citizens	origin_specific country	
+elsherief	men	gender_men	
+elsherief	illegal immigrants	origin_immigrant, origin_undocumented	
+elsherief	lgbt people.	gender_transgender unspecified, sexuality_bisexual, sexuality_gay, sexuality_lesbian, sexuality_other	
+elsherief	right wing	politics_conservative	
+elsherief	illegals	origin_undocumented	
+elsherief	indians	race_asian, origin_specific country	
+elsherief	fascists	politics_alt right	
+elsherief	liberal	politics_liberal	
+elsherief	jews and arabs	race_middle eastern, religion_jewish	
+elsherief	gypsies	race_other	* that's a slur, whoops
+elsherief	south africans	origin_specific country	
+elsherief	felons	_unknown	
+elsherief	syrian refugees	origin_specific country, origin_immigrant	
+elsherief	latinos	race_latinx	
+elsherief	people from nigerian	origin_specific country	
+elsherief	transexual	gender_transgender unspecified	
+elsherief	social democrats	politics_democrat	
+elsherief	black muslims	race_black, religion_muslim	
+elsherief	rancids	_unknown	
+elsherief	latino folks	race_latinx	
+elsherief	islamist	religion_muslim	
+elsherief	splc	_unknown	
+elsherief	libertarians	politics_libertarian	
+elsherief	progressive journalists	politics_leftist	
+elsherief	white people in south africa	race_white, origin_specific country	
+elsherief	people of portland	_unknown	
+elsherief	lgbtq people	gender_transgender unspecified, sexuality_bisexual, sexuality_gay, sexuality_lesbian, sexuality_other	
+elsherief	asians	race_asian	
+elsherief	middle east people	race_middle eastern	
+elsherief	black folks and jewish folks	race_black, religion_jewish	
+elsherief	transracials	_unknown	*
+elsherief	progressives	politics_leftist	
+elsherief	black	race_black	
+elsherief	racists	_unknown	*
+elsherief	islam	religion_muslim	
+elsherief	muslims and blacks	race_black, race_middle eastern, religion_muslim	
+elsherief	they (group is not specified)	_unknown	
+elsherief	cops	_unknown	
+elsherief	usa	origin_specific country	
+elsherief	stubborn people	_unknown	
+elsherief	alt-right people	politics_alt right	
+elsherief	poor white people	race_white	
+elsherief	right-wing whites	race_white, politics_conservative	
+elsherief	black lives matter supporters	race_black, politics_leftist	*
+elsherief	trans people	gender_transgender unspecified	
+elsherief	minority workers	unknown_minority	*
+elsherief	leftists and blacks	race_black, politics_leftist	
+elsherief	an individual	_unknown	
+elsherief	muslins	religion_muslim	
+elsherief	autist	disability_neurological	
+hatexplain	christian	religion_christian	
+elsherief	biharis	origin_specific country	
+elsherief	white people. as the person addresses is white.	race_white	
+elsherief	white south africans	origin_specific country, race_white	
+elsherief	womens	gender_women	
+elsherief	non white people	unknown_minority	
+elsherief	rohingyas	origin_specific country	
+elsherief	progressive egyptians	origin_specific country, race_middle eastern	* racial category?
+elsherief	sharia	religion_muslim	
+elsherief	religious people.	religion_atheist, religion_buddhist, religion_christian, religion_hindu, religion_jewish, religion_mormon, religion_muslim, religion_other	*
+elsherief	whites	race_white	
+elsherief	whit supremacists.	self_referential_white_supremacist	
+elsherief	liberal people	politics_liberal	
+elsherief	indian-muslims	race_asian, religion_muslim	
+elsherief	black women	race_black, gender_women	
+elsherief	atheist	religion_atheist	
+elsherief	not specified	_unknown	
+elsherief	obese people	_unknown	
+elsherief	disabled people	disability_unspecific	
+elsherief	mexican	race_latinx, origin_specific country	
+elsherief	kkk	_unknown	*
+elsherief	jewish people	religion_jewish	
+elsherief	us government	_unknown	
+elsherief	non-jews	_unknown	*
+elsherief	marxists	politics_communist	
+elsherief	dutch people	origin_specific country, race_white	
+elsherief	millenials	age_young adults	
+elsherief	old white people	race_white, age_seniors	
+elsherief	people with left political views	politics_leftist	
+elsherief	iranians	origin_specific country, race_middle eastern	
+elsherief	biracials	_unknown	*
+elsherief	white genocide	_unknown	*
+elsherief	transgeners	gender_transgender unspecified	
+elsherief	conservative whites	politics_conservative, race_white	
+elsherief	polish people	origin_specific country, race_white	
+elsherief	protesters	_unknown	
+elsherief	gingers	_unknown	
+elsherief	homosexual	sexuality_gay	
+elsherief	stupid people	_unknown	
+elsherief	europeans	origin_specific country, race_white	*
+elsherief	californians	_unknown	*
+elsherief	conservative men	gender_men, politics_conservative	
+elsherief	aryan people	religion_jewish	
+elsherief	welsh people	origin_specific country	
+elsherief	african immigrants	race_black, origin_immigrant	
+elsherief	kkk and blm	_unknown	*
+elsherief	dwarves	disability_physical	
+elsherief	pakistanis	race_asian, origin_specific country	
+elsherief	mexican folks	race_latinx, origin_specific country	
+elsherief	immigrants and other minority groups.	origin_immigrant	*
+elsherief	aclu	_unknown	
+elsherief	left-wing liberals	politics_leftist, politics_liberal	
+elsherief	refugees immigrants	origin_immigrant	
+elsherief	blm	race_black	
+elsherief	mormons	religion_mormon	
+elsherief	white nationalist	politics_alt right, race_white	*
+elsherief	sfgfsfgf	_unknown	
+elsherief	democratics	politics_democrat	
+elsherief	poor whites	race_white	
+elsherief	haitians	race_black, origin_specific country	
+elsherief	latino/latina immigrants	race_latinx, origin_immigrant	
+elsherief	white	race_white	
+elsherief	hinduists	religion_hindu	
+elsherief	nationalists	politics_alt right	*
+hatexplain	islam	religion_muslim	
+elsherief	arabian people	race_middle eastern	
+elsherief	indian women	gender_women, race_asian	
+elsherief	southern whites	race_white	
+elsherief	foreigners	origin_immigrant	
+elsherief	black and latino/latina folks	race_black	
+elsherief	immigrants and their children	origin_immigrant	
+elsherief	illegal muslim immigrants	origin_immigrant, religion_muslim	
+elsherief	lgbts supporters	gender_transgender unspecified, sexuality_bisexual, sexuality_gay, sexuality_lesbian, sexuality_other	

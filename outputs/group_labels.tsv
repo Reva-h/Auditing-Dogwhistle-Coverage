@@ -1,0 +1,58 @@
+coarse	fine_grained	mhs_column
+race	asian	target_race_asian
+race	black	target_race_black
+race	latinx	target_race_latinx
+race	middle eastern	target_race_middle_eastern
+race	native american	target_race_native_american
+race	pacific islander	target_race_pacific_islander
+race	white	target_race_white
+race	other	target_race_other
+religion	atheist	target_religion_atheist
+religion	buddhist	target_religion_buddhist
+religion	christian	target_religion_christian
+religion	hindu	target_religion_hindu
+religion	jewish	target_religion_jewish
+religion	mormon	target_religion_mormon
+religion	muslim	target_religion_muslim
+religion	other	target_religion_other
+origin	immigrant	target_origin_immigrant
+origin	migrant worker	target_origin_migrant_worker
+origin	specific country	target_origin_specific_country
+origin	undocumented	target_origin_undocumented
+origin	other	target_origin_other
+gender	men	target_gender_men
+gender	non binary	target_gender_non_binary
+gender	transgender men	target_gender_transgender_men
+gender	transgender unspecified	target_gender_transgender_unspecified
+gender	transgender women	target_gender_transgender_women
+gender	women	target_gender_women
+gender	other	target_gender_other
+sexuality	bisexual	target_sexuality_bisexual
+sexuality	gay	target_sexuality_gay
+sexuality	lesbian	target_sexuality_lesbian
+sexuality	straight	target_sexuality_straight
+sexuality	other	target_sexuality_other
+age	children	target_age_children
+age	teenagers	target_age_teenagers
+age	young adults	target_age_young_adults
+age	middle aged	target_age_middle_aged
+age	seniors	target_age_seniors
+age	other	target_age_other
+disability	physical	target_disability_physical
+disability	cognitive	target_disability_cognitive
+disability	neurological	target_disability_neurological
+disability	visually impaired	target_disability_visually_impaired
+disability	hearing impaired	target_disability_hearing_impaired
+disability	unspecific	target_disability_unspecific
+disability	other	target_disability_other
+politics	alt right	target_politics_alt_right
+politics	communist	target_politics_communist
+politics	conservative	target_politics_conservative
+politics	democrat	target_politics_democrat
+politics	green party	target_politics_green_party
+politics	leftist	target_politics_leftist
+politics	liberal	target_politics_liberal
+politics	libertarian	target_politics_libertarian
+politics	republican	target_politics_republican
+politics	socialist	target_politics_socialist
+politics	other	target_politics_other

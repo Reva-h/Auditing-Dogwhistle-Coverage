@@ -1,16 +1,37 @@
-data/*
-scratch/*
-outputs
-outputs_*_backup/
-.DS_Store
-__pycache__/
+# Local environment and OS files
 .venv/
-scratch/
-paper/
-deprecated/
+__pycache__/
+.DS_Store
 
+# Source datasets (downloaded by each user; see README) -- data/glossary.md is tracked
+data/*
+!data/glossary.md
+
+# Pipeline outputs are regenerated locally; the public, ID-only subset lives in release/
+outputs/*
+!outputs/group_labels.tsv
+fpr_annotation/outputs/
+outputs_*_backup/
+
+# Personal working files, archived code, and paper sources
+scratch/
+deprecated/
+paper/
 hirave_oet_proposal.pdf
 
+# Tabular data is private by default: most of it contains post text.
+# Exceptions below are files verified to contain none.
 *.tsv
 *.csv
 *.parquet
+!release/**
+!annotations/reva_labels.tsv
+!annotations/ryan_labels.tsv
+!annotations/reva_glossary.tsv
+!annotations/ryan_glossary.tsv
+!annotations/merged_labels_resolved.tsv
+!annotations/merged_glossary_resolved.tsv
+!outputs/group_labels.tsv
+
+# Superseded export of one annotator's worksheets; not used by any code
+annotation_results/

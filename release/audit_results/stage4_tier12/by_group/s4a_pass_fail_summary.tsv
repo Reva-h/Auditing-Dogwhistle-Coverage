@@ -1,0 +1,34 @@
+coding_level	report_level	report_target	worst_pairwise_coverage_di_ratio	worst_pairwise_annotation_di_ratio	passes_four_fifths_coverage	passes_four_fifths_annotation	unstable_small_n_any	worst_coverage_pair_note	worst_annotation_pair_note	total_matches
+L2	gender	men					True	no_stable_pairs	no_stable_pairs	78
+L2	gender	women					True	no_stable_pairs	no_stable_pairs	6
+L2	lgbtq	LGB					True	no_stable_pairs	no_stable_pairs	22
+L2	lgbtq	Trans/NB					True	no_stable_pairs	no_stable_pairs	4
+L2	origin	specific country					True	no_stable_pairs	no_stable_pairs	0
+L2	origin	undocumented					True	no_stable_pairs	no_stable_pairs	74
+L2	politics	leftist	0.8	0.9411764705882354	True	True	False	leftist vs liberal	leftist vs liberal	32
+L2	politics	liberal	0.8	0.9411764705882354	True	True	False	leftist vs liberal	leftist vs liberal	34
+L2	race	asian					True	no_stable_pairs	no_stable_pairs	0
+L2	race	black	0.6	0.6223194012278193	False	False	True	black vs latinx	black vs middle eastern	1081
+L2	race	latinx	0.6	0.7371007371007371	False	False	True	black vs latinx	latinx vs middle eastern	74
+L2	race	middle eastern	0.6	0.6223194012278193	False	False	True	black vs middle eastern	black vs middle eastern	40
+L2	religion	jewish	0.6696428571428571	0.8289855072463768	False	True	False	jewish vs muslim	jewish vs muslim	130
+L2	religion	muslim	0.6696428571428571	0.8289855072463768	False	True	False	jewish vs muslim	jewish vs muslim	75
+L3	gender	men					True	no_stable_pairs	no_stable_pairs	0
+L3	gender	women					True	no_stable_pairs	no_stable_pairs	0
+L3	lgbtq	LGB	0.5	0.9658536585365854	False	True	False	LGB vs Trans/NB	LGB vs Trans/NB	41
+L3	lgbtq	Trans/NB	0.5	0.9658536585365854	False	True	False	LGB vs Trans/NB	LGB vs Trans/NB	33
+L3	origin	immigrant					True	no_stable_pairs	no_stable_pairs	0
+L3	origin	migrant worker					True	no_stable_pairs	no_stable_pairs	0
+L3	race	black	0.48	0.9598086124401913	False	True	False	black vs middle eastern	black vs middle eastern	59
+L3	race	latinx	0.6666666666666666	0.9394736842105263	False	True	False	latinx vs middle eastern	latinx vs middle eastern	42
+L3	race	middle eastern	0.48	0.9394736842105263	False	True	False	black vs middle eastern	latinx vs middle eastern	95
+L3	religion	jewish	0.75	0.9624999999999999	False	True	False	jewish vs muslim	jewish vs muslim	60
+L3	religion	muslim	0.75	0.9624999999999999	False	True	False	jewish vs muslim	jewish vs muslim	99
+L4	gender	men					True	no_stable_pairs	no_stable_pairs	363
+L4	lgbtq	Trans/NB					True	no_stable_pairs	no_stable_pairs	57
+L4	politics	liberal	1.0	0.9699088789997882	True	True	False	liberal vs republican	liberal vs republican	363
+L4	politics	republican	1.0	0.9699088789997882	True	True	False	liberal vs republican	liberal vs republican	230
+L4	race	black					True	no_stable_pairs	no_stable_pairs	0
+L4	race	middle eastern					True	no_stable_pairs	no_stable_pairs	4
+L4	religion	jewish					True	no_stable_pairs	no_stable_pairs	3
+L4	religion	muslim					True	no_stable_pairs	no_stable_pairs	4

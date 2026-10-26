@@ -1,0 +1,51 @@
+coding_level	report_level	report_target	worst_pairwise_coverage_di_ratio	worst_pairwise_annotation_di_ratio	passes_four_fifths_coverage	passes_four_fifths_annotation	unstable_small_n_any	worst_coverage_pair_note	worst_annotation_pair_note	total_matches
+L2	gender	men					True	no_stable_pairs	no_stable_pairs	80
+L2	gender	women					True	no_stable_pairs	no_stable_pairs	7
+L2	lgbtq	LGB					True	no_stable_pairs	no_stable_pairs	22
+L2	lgbtq	Trans/NB					True	no_stable_pairs	no_stable_pairs	12
+L2	origin	specific country					True	no_stable_pairs	no_stable_pairs	0
+L2	origin	undocumented					True	no_stable_pairs	no_stable_pairs	229
+L2	politics	leftist	0.6666666666666666	0.9411764705882354	False	True	False	leftist vs liberal	leftist vs liberal	32
+L2	politics	liberal	0.6666666666666666	0.9411764705882354	False	True	False	leftist vs liberal	leftist vs liberal	34
+L2	race	asian					True	no_stable_pairs	no_stable_pairs	0
+L2	race	black	0.6956521739130435	0.6608610726784405	False	False	True	black vs latinx	black vs middle eastern	1117
+L2	race	latinx	0.6956521739130435	0.6510520047637951	False	False	True	black vs latinx	latinx vs middle eastern	229
+L2	race	middle eastern	0.6956521739130435	0.6510520047637951	False	False	True	black vs middle eastern	latinx vs middle eastern	40
+L2	race	white					True	no_stable_pairs	no_stable_pairs	1
+L2	religion	jewish	0.625	0.7471698113207547	False	False	False	jewish vs muslim	jewish vs muslim	270
+L2	religion	muslim	0.625	0.7471698113207547	False	False	False	jewish vs muslim	jewish vs muslim	75
+L3	disability	unspecific					True	no_stable_pairs	no_stable_pairs	0
+L3	gender	men					True	no_stable_pairs	no_stable_pairs	0
+L3	gender	women					True	no_stable_pairs	no_stable_pairs	0
+L3	lgbtq	LGB	0.5555555555555556	0.8553459119496855	False	True	False	LGB vs Trans/NB	LGB vs Trans/NB	48
+L3	lgbtq	Trans/NB	0.5555555555555556	0.8553459119496855	False	True	False	LGB vs Trans/NB	LGB vs Trans/NB	53
+L3	origin	immigrant					True	no_stable_pairs	no_stable_pairs	31
+L3	origin	migrant worker					True	no_stable_pairs	no_stable_pairs	4
+L3	origin	undocumented					True	no_stable_pairs	no_stable_pairs	4
+L3	politics	conservative					True	no_stable_pairs	no_stable_pairs	4
+L3	politics	liberal					True	no_stable_pairs	no_stable_pairs	0
+L3	politics	republican					True	no_stable_pairs	no_stable_pairs	4
+L3	race	black	0.4835164835164835	0.8796741947426878	False	True	False	black vs middle eastern	black vs middle eastern	73
+L3	race	latinx	0.6666666666666666	0.8122586872586871	False	True	False	latinx vs middle eastern	latinx vs middle eastern	56
+L3	race	middle eastern	0.4835164835164835	0.8122586872586871	False	True	False	black vs middle eastern	latinx vs middle eastern	99
+L3	religion	jewish	0.75	0.9903846153846154	False	True	False	jewish vs muslim	jewish vs muslim	72
+L3	religion	muslim	0.75	0.9903846153846154	False	True	False	jewish vs muslim	jewish vs muslim	103
+L4	gender	men					True	no_stable_pairs	no_stable_pairs	365
+L4	gender	women					True	no_stable_pairs	no_stable_pairs	2
+L4	lgbtq	LGB					True	no_stable_pairs	no_stable_pairs	2
+L4	lgbtq	Trans/NB					True	no_stable_pairs	no_stable_pairs	84
+L4	origin	specific country					True	no_stable_pairs	no_stable_pairs	3
+L4	politics	communist					True	no_stable_pairs	no_stable_pairs	0
+L4	politics	conservative					True	no_stable_pairs	no_stable_pairs	7
+L4	politics	democrat					True	no_stable_pairs	no_stable_pairs	0
+L4	politics	leftist					True	no_stable_pairs	no_stable_pairs	10
+L4	politics	liberal	0.8333333333333334	0.9697655285890581	True	True	True	liberal vs republican	liberal vs republican	374
+L4	politics	libertarian					True	no_stable_pairs	no_stable_pairs	0
+L4	politics	republican	0.8333333333333334	0.9697655285890581	True	True	True	liberal vs republican	liberal vs republican	230
+L4	race	asian					True	no_stable_pairs	no_stable_pairs	8
+L4	race	black					True	no_stable_pairs	no_stable_pairs	106
+L4	race	latinx					True	no_stable_pairs	no_stable_pairs	4
+L4	race	middle eastern					True	no_stable_pairs	no_stable_pairs	4
+L4	race	white					True	no_stable_pairs	no_stable_pairs	2
+L4	religion	jewish					True	no_stable_pairs	no_stable_pairs	64
+L4	religion	muslim					True	no_stable_pairs	no_stable_pairs	4

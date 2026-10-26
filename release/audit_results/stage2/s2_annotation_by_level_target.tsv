@@ -1,0 +1,60 @@
+taxonomy_level	target	coding_level	case_a_present_hateful	case_b_present_nonhateful	case_c_absent	correct_labeling_rate	failure_rate	total_matches	total_target_group_posts	base_rate_q_a	stable_n	case_b_c_ratio	is_self_referential
+gender	men	L2	30	50	4	0.375	0.625	80	51	0.0	True		False
+gender	men	L4	201	164	0	0.5506849315068493	0.44931506849315067	365	51	0.0	True		False
+gender	non binary	L2	1	0	0	1.0	0.0	1	0		False		False
+gender	non binary	L3	15	24	0	0.38461538461538464	0.6153846153846154	39	0		True		False
+gender	non binary	L4	3	9	0	0.25	0.75	12	0		False		True
+gender	transgender men	L2	0	1	1	0.0	1.0	1	0		False		False
+gender	transgender men	L4	1	1	2	0.5	0.5	2	0		False		True
+gender	transgender unspecified	L2	2	5	5	0.2857142857142857	0.7142857142857143	7	0		False		False
+gender	transgender unspecified	L3	16	36	12	0.3076923076923077	0.6923076923076923	52	0		True		False
+gender	transgender unspecified	L4	5	64	22	0.07246376811594203	0.927536231884058	69	0		True		True
+gender	transgender women	L2	0	7	9	0.0	1.0	7	0		False		False
+gender	transgender women	L3	1	0	4	1.0	0.0	1	0		False		False
+gender	transgender women	L4	5	15	9	0.25	0.75	20	0		False		True
+gender	women	L2	3	4	0	0.42857142857142855	0.5714285714285714	7	999	0.031031031031031032	False		False
+gender	women	L4	2	0	0	1.0	0.0	2	999	0.031031031031031032	False		False
+origin	immigrant	L3	9	22	1	0.2903225806451613	0.7096774193548387	31	0		True		False
+origin	migrant worker	L3	0	4	1	0.0	1.0	4	0		False		False
+origin	specific country	L4	2	1	0	0.6666666666666666	0.3333333333333333	3	0		False		False
+origin	undocumented	L2	41	188	0	0.17903930131004367	0.8209606986899564	229	0		True		False
+origin	undocumented	L3	0	4	0	0.0	1.0	4	0		False		False
+politics	conservative	L3	1	3	0	0.25	0.75	4	0		False		False
+politics	conservative	L4	1	6	1	0.14285714285714285	0.8571428571428571	7	0		False		False
+politics	leftist	L2	22	10	0	0.6875	0.3125	32	0		True		False
+politics	leftist	L4	5	5	0	0.5	0.5	10	0		False		False
+politics	liberal	L2	22	12	2	0.6470588235294118	0.35294117647058826	34	0		True		False
+politics	liberal	L4	205	169	1	0.5481283422459893	0.45187165775401067	374	0		True		False
+politics	republican	L3	1	3	0	0.25	0.75	4	0		False		False
+politics	republican	L4	130	100	0	0.5652173913043478	0.43478260869565216	230	0		True		False
+race	asian	L4	4	4	0	0.5	0.5	8	231	0.27705627705627706	False		False
+race	black	L2	203	914	7	0.18173679498657117	0.8182632050134289	1117	0		True		False
+race	black	L3	24	49	15	0.3287671232876712	0.6712328767123288	73	0		True		False
+race	black	L4	32	74	3	0.3018867924528302	0.6981132075471698	106	0		True		False
+race	latinx	L2	41	188	0	0.17903930131004367	0.8209606986899564	229	0		True		False
+race	latinx	L3	17	39	4	0.30357142857142855	0.6964285714285714	56	0		True		False
+race	latinx	L4	0	4	0	0.0	1.0	4	0		False		False
+race	middle eastern	L2	11	29	0	0.275	0.725	40	0		True		False
+race	middle eastern	L3	37	62	1	0.37373737373737376	0.6262626262626263	99	0		True		False
+race	middle eastern	L4	4	0	1	1.0	0.0	4	0		False		False
+race	white	L2	0	1	0	0.0	1.0	1	0		False		False
+race	white	L4	2	0	0	1.0	0.0	2	0		False		False
+religion	jewish	L2	106	164	22	0.3925925925925926	0.6074074074074074	270	970	0.6597938144329897	True		False
+religion	jewish	L3	27	45	5	0.375	0.625	72	970	0.6597938144329897	True		False
+religion	jewish	L4	36	28	8	0.5625	0.4375	64	970	0.6597938144329897	True		True
+religion	muslim	L2	22	53	1	0.29333333333333333	0.7066666666666667	75	0		True		False
+religion	muslim	L3	39	64	1	0.3786407766990291	0.6213592233009708	103	0		True		False
+religion	muslim	L4	4	0	2	1.0	0.0	4	0		False		False
+self	referential_white_supremacist	L3	86	172	5	0.3333333333333333	0.6666666666666666	258	0		True		False
+self	referential_white_supremacist	L4	66	282	23	0.1896551724137931	0.8103448275862069	348	0		True		True
+sexuality	bisexual	L2	16	6	1	0.7272727272727273	0.2727272727272727	22	0		False		False
+sexuality	bisexual	L3	18	30	2	0.375	0.625	48	0		True		False
+sexuality	gay	L2	16	6	1	0.7272727272727273	0.2727272727272727	22	0		False		False
+sexuality	gay	L3	18	30	2	0.375	0.625	48	0		True		False
+sexuality	gay	L4	1	1	0	0.5	0.5	2	0		False		False
+sexuality	lesbian	L2	16	6	1	0.7272727272727273	0.2727272727272727	22	0		False		False
+sexuality	lesbian	L3	18	30	2	0.375	0.625	48	0		True		False
+sexuality	other	L2	16	6	1	0.7272727272727273	0.2727272727272727	22	1139	0.03511852502194908	False		False
+sexuality	other	L3	18	30	1	0.375	0.625	48	1139	0.03511852502194908	True		False
+unknown	minority	L3	62	156	14	0.28440366972477066	0.7155963302752294	218	3	0.0	True		False
+unknown	minority	L4	2	7	3	0.2222222222222222	0.7777777777777778	9	3	0.0	False		True

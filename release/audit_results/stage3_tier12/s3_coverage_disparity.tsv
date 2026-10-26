@@ -1,0 +1,56 @@
+taxonomy_level	coding_level	target_a	target_b	presence_rate_a	presence_rate_b	presence_rate_di_ratio	type_coverage_a	type_coverage_b	type_coverage_di_ratio	worst_di_ratio	total_matches_a	total_matches_b	unstable_small_n	base_rate_q_a_a	base_rate_q_a_b	base_rate_gap	base_rate_gap_abs	impossibility_tradeoff_flag	impossibility_tradeoff_note
+race	L3	black	middle eastern	0.4	0.8333333333333334	0.48	0.75	0.6666666666666666	0.8888888888888888	0.48	59	95	False					False	
+gender	L3	non binary	transgender unspecified	1.0	0.5	0.5	1.0	1.0	1.0	0.5	32	33	False					False	
+race	L2	black	latinx	0.6	1.0	0.6	1.0	1.0	1.0	0.6	1081	74	False					False	
+race	L2	black	middle eastern	0.6	1.0	0.6	1.0	1.0	1.0	0.6	1081	40	False					False	
+gender	L4	men	transgender unspecified	1.0	0.6	0.6	1.0	0.6666666666666666	0.6666666666666666	0.6	363	56	False	0.0				False	
+race	L3	latinx	middle eastern	0.6	0.8333333333333334	0.72	1.0	0.6666666666666666	0.6666666666666666	0.6666666666666666	42	95	False					False	
+race	L3	black	latinx	0.4	0.6	0.6666666666666667	0.75	1.0	0.75	0.6666666666666667	59	42	False					False	
+religion	L2	jewish	muslim	0.5357142857142857	0.8	0.6696428571428571	1.0	1.0	1.0	0.6696428571428571	130	75	False	0.6597938144329897				False	
+religion	L3	jewish	muslim	0.7692307692307693	0.8571428571428571	0.8974358974358976	1.0	0.75	0.75	0.75	60	99	False	0.6597938144329897				False	
+politics	L2	leftist	liberal	1.0	0.8	0.8	1.0	1.0	1.0	0.8	32	34	False					False	
+politics	L4	liberal	republican	1.0	1.0	1.0	1.0	1.0	1.0	1.0	363	230	False					False	
+race	L2	latinx	middle eastern	1.0	1.0	1.0	1.0	1.0	1.0	1.0	74	40	False					False	
+sexuality	L3	gay	other	1.0	1.0	1.0	1.0	1.0	1.0	1.0	41	41	False		0.035118525021949			False	
+sexuality	L3	bisexual	gay	1.0	1.0	1.0	1.0	1.0	1.0	1.0	41	41	False					False	
+sexuality	L3	bisexual	lesbian	1.0	1.0	1.0	1.0	1.0	1.0	1.0	41	41	False					False	
+sexuality	L3	bisexual	other	1.0	1.0	1.0	1.0	1.0	1.0	1.0	41	41	False		0.035118525021949			False	
+sexuality	L3	gay	lesbian	1.0	1.0	1.0	1.0	1.0	1.0	1.0	41	41	False					False	
+sexuality	L3	lesbian	other	1.0	1.0	1.0	1.0	1.0	1.0	1.0	41	41	False		0.035118525021949			False	
+gender	L2	men	non binary	0.5	1.0		1.0	1.0			78	1	True	0.0				False	
+gender	L2	men	transgender unspecified	0.5	1.0		1.0	1.0			78	4	True	0.0				False	
+gender	L2	men	transgender women	0.5	1.0		1.0	1.0			78	3	True	0.0				False	
+gender	L2	men	women	0.5	1.0		1.0	1.0			78	6	True	0.0	0.031031031031031	-0.031031031031031	0.031031031031031	True	Base rates differ across groups; calibration and equalized-odds parity cannot generally be simultaneously satisfied.
+gender	L2	non binary	transgender unspecified	1.0	1.0		1.0	1.0			1	4	True					False	
+gender	L2	non binary	transgender women	1.0	1.0		1.0	1.0			1	3	True					False	
+gender	L2	non binary	women	1.0	1.0		1.0	1.0			1	6	True		0.031031031031031			False	
+gender	L2	transgender unspecified	transgender women	1.0	1.0		1.0	1.0			4	3	True					False	
+gender	L2	transgender unspecified	women	1.0	1.0		1.0	1.0			4	6	True		0.031031031031031			False	
+gender	L2	transgender women	women	1.0	1.0		1.0	1.0			3	6	True		0.031031031031031			False	
+gender	L3	men	non binary	0.0	1.0		0.0	1.0			0	32	True					False	
+gender	L3	men	transgender unspecified	0.0	0.5		0.0	1.0			0	33	True					False	
+gender	L3	men	transgender women	0.0	0.0		0.0	0.0			0	0	True					False	
+gender	L3	men	women	0.0	0.0		0.0	0.0			0	0	True					False	
+gender	L3	non binary	transgender women	1.0	0.0		1.0	0.0			32	0	True					False	
+gender	L3	non binary	women	1.0	0.0		1.0	0.0			32	0	True					False	
+gender	L3	transgender unspecified	transgender women	0.5	0.0		1.0	0.0			33	0	True					False	
+gender	L3	transgender unspecified	women	0.5	0.0		1.0	0.0			33	0	True					False	
+gender	L3	transgender women	women	0.0	0.0		0.0	0.0			0	0	True					False	
+gender	L4	men	transgender men	1.0	1.0		1.0	1.0			363	1	True	0.0				False	
+gender	L4	men	transgender women	1.0	1.0		1.0	1.0			363	3	True	0.0				False	
+gender	L4	transgender men	transgender unspecified	1.0	0.6		1.0	0.6666666666666666			1	56	True					False	
+gender	L4	transgender men	transgender women	1.0	1.0		1.0	1.0			1	3	True					False	
+gender	L4	transgender unspecified	transgender women	0.6	1.0		0.6666666666666666	1.0			56	3	True					False	
+origin	L2	specific country	undocumented	0.0	1.0		0.0	1.0			0	74	True					False	
+origin	L3	immigrant	migrant worker	0.0	0.0		0.0	0.0			0	0	True					False	
+race	L2	asian	black	0.0	0.6		0.0	1.0			0	1081	True					False	
+race	L2	asian	latinx	0.0	1.0		0.0	1.0			0	74	True					False	
+race	L2	asian	middle eastern	0.0	1.0		0.0	1.0			0	40	True					False	
+race	L4	black	middle eastern	0.0	1.0		0.0	1.0			0	4	True					False	
+religion	L4	jewish	muslim	0.5	1.0		0.5	1.0			3	4	True	0.6597938144329897				False	
+sexuality	L2	bisexual	gay	1.0	1.0		1.0	1.0			22	22	True					False	
+sexuality	L2	bisexual	lesbian	1.0	1.0		1.0	1.0			22	22	True					False	
+sexuality	L2	bisexual	other	1.0	1.0		1.0	1.0			22	22	True		0.035118525021949			False	
+sexuality	L2	gay	lesbian	1.0	1.0		1.0	1.0			22	22	True					False	
+sexuality	L2	gay	other	1.0	1.0		1.0	1.0			22	22	True		0.035118525021949			False	
+sexuality	L2	lesbian	other	1.0	1.0		1.0	1.0			22	22	True		0.035118525021949			False	

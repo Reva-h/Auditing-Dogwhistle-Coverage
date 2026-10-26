@@ -1,0 +1,51 @@
+taxonomy_level	coding_level	report_level	report_target	is_self_referential	case_a_present_hateful	case_b_present_nonhateful	total_matches	total_target_group_posts	case_c_absent	correct_labeling_rate	failure_rate	stable_n	case_b_c_ratio
+disability	L3	disability	unspecific	False	0	0	0	149	149			False	
+gender	L2	gender	men	False	30	50	80	2019	1939	0.375	0.625	True	
+gender	L2	gender	women	False	3	4	7	3887	3880	0.42857142857142855	0.5714285714285714	False	
+gender	L2	lgbtq	Trans/NB	False	2	10	12	144	132	0.16666666666666666	0.8333333333333334	False	
+gender	L3	gender	men	False	0	0	0	2019	2019			False	
+gender	L3	gender	women	False	0	0	0	3887	3887			False	
+gender	L3	lgbtq	Trans/NB	False	17	36	53	144	91	0.32075471698113206	0.6792452830188679	True	
+gender	L4	gender	men	False	201	164	365	2019	1654	0.5506849315068493	0.44931506849315067	True	
+gender	L4	gender	women	False	2	0	2	3887	3885	1.0	0.0	False	
+gender	L4	lgbtq	Trans/NB	True	9	75	84	144	60	0.10714285714285714	0.8928571428571429	True	
+origin	L2	origin	specific country	False	0	0	0	4391	4391			False	
+origin	L2	origin	undocumented	False	41	188	229	230	1	0.17903930131004367	0.8209606986899564	True	
+origin	L3	origin	immigrant	False	9	22	31	1684	1653	0.2903225806451613	0.7096774193548387	True	
+origin	L3	origin	migrant worker	False	0	4	4	4	0	0.0	1.0	False	
+origin	L3	origin	undocumented	False	0	4	4	230	226	0.0	1.0	False	
+origin	L4	origin	specific country	False	2	1	3	4391	4388	0.6666666666666666	0.3333333333333333	False	
+politics	L2	politics	leftist	False	22	10	32	41	9	0.6875	0.3125	True	
+politics	L2	politics	liberal	False	22	12	34	375	341	0.6470588235294118	0.35294117647058826	True	
+politics	L3	politics	conservative	False	1	3	4	11	7	0.25	0.75	False	
+politics	L3	politics	liberal	False	0	0	0	375	375			False	
+politics	L3	politics	republican	False	1	3	4	234	230	0.25	0.75	False	
+politics	L4	politics	communist	False	0	0	0	0	0			False	
+politics	L4	politics	conservative	False	1	6	7	11	4	0.14285714285714285	0.8571428571428571	False	
+politics	L4	politics	democrat	False	0	0	0	0	0			False	
+politics	L4	politics	leftist	False	5	5	10	41	31	0.5	0.5	False	
+politics	L4	politics	liberal	False	205	169	374	375	1	0.5481283422459893	0.45187165775401067	True	
+politics	L4	politics	libertarian	False	0	0	0	0	0			False	
+politics	L4	politics	republican	False	130	100	230	234	4	0.5652173913043478	0.43478260869565216	True	
+race	L2	race	asian	False	0	0	0	703	703			False	
+race	L2	race	black	False	203	914	1117	4942	3825	0.18173679498657117	0.8182632050134289	True	
+race	L2	race	latinx	False	41	188	229	968	739	0.17903930131004367	0.8209606986899564	True	
+race	L2	race	middle eastern	False	11	29	40	1858	1818	0.275	0.725	True	
+race	L2	race	white	False	0	1	1	1613	1612	0.0	1.0	False	
+race	L3	race	black	False	24	49	73	4942	4869	0.3287671232876712	0.6712328767123288	True	
+race	L3	race	latinx	False	17	39	56	968	912	0.30357142857142855	0.6964285714285714	True	
+race	L3	race	middle eastern	False	37	62	99	1858	1759	0.37373737373737376	0.6262626262626263	True	
+race	L4	race	asian	False	4	4	8	703	695	0.5	0.5	False	
+race	L4	race	black	False	32	74	106	4942	4836	0.3018867924528302	0.6981132075471698	True	
+race	L4	race	latinx	False	0	4	4	968	964	0.0	1.0	False	
+race	L4	race	middle eastern	False	4	0	4	1858	1854	1.0	0.0	False	
+race	L4	race	white	False	2	0	2	1613	1611	1.0	0.0	False	
+religion	L2	religion	jewish	False	106	164	270	2758	2488	0.3925925925925926	0.6074074074074074	True	
+religion	L2	religion	muslim	False	22	53	75	3223	3148	0.29333333333333333	0.7066666666666667	True	
+religion	L3	religion	jewish	False	27	45	72	2758	2686	0.375	0.625	True	
+religion	L3	religion	muslim	False	39	64	103	3223	3120	0.3786407766990291	0.6213592233009708	True	
+religion	L4	religion	jewish	True	36	28	64	2758	2694	0.5625	0.4375	True	
+religion	L4	religion	muslim	False	4	0	4	3223	3219	1.0	0.0	False	
+sexuality	L2	lgbtq	LGB	False	16	6	22	2633	2611	0.7272727272727273	0.2727272727272727	False	
+sexuality	L3	lgbtq	LGB	False	18	30	48	2633	2585	0.375	0.625	True	
+sexuality	L4	lgbtq	LGB	False	1	1	2	2633	2631	0.5	0.5	False	

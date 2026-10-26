@@ -1,0 +1,226 @@
+row_id	post_ids	dogwhistle	matched_surface_form	coding_level	all_target_groups	binary_hate	dataset	judgment_annotator1	notes_annotator1	judgment_annotator2	notes_annotator2
+1	25802611_gab	ghetto	ghetto	L2	black	0	hatexplain	Hateful		Hateful	
+2	16031	identify as	identify as	L4	transgender unspecified	0	mhs	Not Hateful		Not Hateful	
+3	17268	islamic extremism	islamic extremism	L3	middle eastern|muslim	0	mhs	Hateful	white supremacists is a stretch	Not Hateful	
+4	9117641_gab	google	google	L4	black	0	hatexplain	Hateful		Not Hateful	
+5	44981	affirmative action	affirmative action	L3	black|latinx	0	mhs	Not Hateful		Not Hateful	
+6	12782	cuck	cuck	L4	liberal|men|republican	0	elsherief	Not Hateful		Hateful	
+7	7120	cuck	cuck	L4	liberal|men|republican	0	elsherief	Not Hateful		Hateful	
+8	17536576_gab	affirmative action	affirmative action	L3	black|latinx	1	hatexplain	Hateful		Hateful	
+9	21155	cuck	cuck	L4	liberal|men|republican	0	mhs	Hateful		Hateful	
+10	6557827_gab	reagan	reagan	L4	conservative	0	hatexplain	Hateful		Hateful	
+11	15281208_gab	ghetto	ghetto	L2	black	1	hatexplain	Hateful		Not Hateful	
+12	24194	skype	skype	L2	jewish	0	mhs	Not Hateful		Not Hateful	
+13	10169	cuck	cuck	L4	liberal|men|republican	1	mhs	Hateful		Hateful	
+14	9505945_gab	ghetto	ghetto	L2	black	0	hatexplain	Hateful		Hateful	
+15	16544694_gab	ghetto	ghetto	L2	black	0	hatexplain	Hateful		Hateful	
+16	1257524237977260032_twitter	ghetto	ghetto	L2	black	0	hatexplain	Hateful		Hateful	
+17	11058354_gab	ghetto	ghetto	L2	black	0	hatexplain	Hateful		Hateful	
+18	816	google	google	L4	black	0	elsherief	Unknown	the video itself potentially but the tweet I don't think so? idk	Not Hateful	
+19	21845	new world order	new world order	L3	jewish	0	mhs	Hateful		Hateful	
+20	2892	beta	beta	L4	liberal|men	1	mhs	Hateful		Hateful	
+21	49548	kalergi plan	kalergi plan	L3	jewish	0	mhs	Hateful		Hateful	
+22	33636	zionist	zionist	L2	jewish	0	mhs	Hateful		Hateful	
+23	8589	cuck	cuck	L4	liberal|men|republican	0	mhs	Not Hateful		Hateful	
+24	11348	bing	bing	L4	asian	0	elsherief	Not Hateful		Unknown	
+25	28557	all lives matter	all lives matter	L3	black	0	mhs	Hateful		Not Hateful	
+26	49267	sharia law	sharia law	L3	middle eastern|muslim	1	mhs	Hateful		Hateful	
+27	2818	cuck	cuck	L4	liberal|men|republican	0	elsherief	Hateful		Hateful	
+28	30601	cuck	cuck	L4	liberal|men|republican	1	mhs	Not Hateful	sounds like porn lol	Not Hateful	
+29	9691	swpl	swpl	L4	liberal	0	elsherief	Not Hateful		Hateful	
+30	18672	multiculturalism	multiculturalism	L3	middle eastern|muslim	0	elsherief	Hateful	I think having a little more of the tweet would be helpful, but leaning hateful	Hateful	
+31	8932	multiculturalism	multiculturalism	L3	middle eastern|muslim	0	mhs	Not Hateful		Not Hateful	
+32	24436328_gab	grooming	grooming	L3	bisexual|gay|lesbian|non binary|other|transgender unspecified	1	hatexplain	Hateful	unfounded accusations against muslims	Not Hateful	
+33	3703256_gab	ghetto	ghetto	L2	black	0	hatexplain	Hateful		Not Hateful	
+34	35722	cuck	cuck	L4	liberal|men|republican	1	mhs	Hateful		Hateful	
+35	25755795_gab	google	google	L4	black	0	hatexplain	Hateful		Not Hateful	
+36	27513	sharia law	sharia law	L3	middle eastern|muslim	0	mhs	Hateful		Hateful	
+37	15434	cuck	cuck	L4	liberal|men|republican	0	mhs	Hateful		Hateful	
+38	2218	george soros	george soros	L3	jewish	0	elsherief	Not Hateful		Not Hateful	
+39	17725003_gab	public school	public school	L3	black|latinx	0	hatexplain	Hateful		Hateful	
+40	3658	white lives matter	white lives matter	L3	black	0	elsherief	Hateful		Unknown	
+41	24016	mass immigration	mass immigration	L3	immigrant	0	mhs	Not Hateful		Not Hateful	
+42	11021	identify as	identify as	L4	transgender unspecified	0	mhs	Hateful		Hateful	
+43	27085	sharia law	sharia law	L3	middle eastern|muslim	1	mhs	Hateful		Hateful	
+44	7772	google	google	L4	black	0	elsherief	Not Hateful		Unknown	
+45	17433253_gab	affirmative action	affirmative action	L3	black|latinx	1	hatexplain	Hateful		Hateful	
+46	5893	cuck	cuck	L4	liberal|men|republican	0	mhs	Hateful		Hateful	
+47	19663357_gab	ghetto	ghetto	L2	black	0	hatexplain	Hateful		Hateful	
+48	1196465289409548288_twitter	ghetto	ghetto	L2	black	0	hatexplain	Hateful		Hateful	
+49	15846	mass immigration	mass immigration	L3	immigrant	1	elsherief	Hateful	it's either this tv report or this tweet itself that is hateful	Hateful	
+50	16123	multiculturalism	multiculturalism	L3	middle eastern|muslim	0	mhs	Not Hateful		Not Hateful	
+51	17065878_gab	shlomo	shlomo	L4	jewish	1	hatexplain	Hateful		Hateful	
+52	40065	secure the border	secure the border	L3	immigrant|latinx|migrant worker|undocumented	0	mhs	Hateful		Not Hateful	
+53	33996	shoah	shoah	L3	jewish	1	mhs	Hateful		Hateful	
+54	6442	white lives matter	white lives matter	L3	black	0	elsherief	Not Hateful		Not Hateful	
+55	29484	sharia law	sharia law	L3	middle eastern|muslim	0	mhs	Hateful		Hateful	
+56	1203927219464294400_twitter	ghetto	ghetto	L2	black	0	hatexplain	Hateful		Hateful	
+57	18294	islamic terrorists	islamic terrorists	L2	muslim	1	mhs	Hateful		Hateful	
+58	20812694_gab	new world order	new world order	L3	jewish	1	hatexplain	Hateful		Hateful	
+59	5136	cuck	cuck	L4	liberal|men|republican	0	mhs	Unknown	I feel like it's highly dependent on context like is this porn or just a random tweet directed towards a random user	Not Hateful	
+60	7463	beta	beta	L4	liberal|men	0	mhs	Not Hateful		Hateful	
+61	37633	male violence	male violence	L2	transgender women	0	mhs	Not Hateful		Not Hateful	
+62	25809573_gab	ghetto	ghetto	L2	black	0	hatexplain	Hateful		Hateful	
+63	1178857682511511552_twitter	ghetto	ghetto	L2	black	0	hatexplain	Not Hateful		Hateful	
+64	10592982_gab	ghetto	ghetto	L2	black	0	hatexplain	Hateful		Hateful	
+65	4688	family values	family values	L3	bisexual|gay|lesbian|other	0	mhs	Not Hateful		Hateful	
+66	20481	radical islam	radical islam	L2	muslim	0	mhs	Not Hateful		Not Hateful	
+67	17367506_gab	ghetto	ghetto	L2	black	0	hatexplain	Hateful		Not Hateful	
+68	5031	thug	thug	L2	black|men	1	elsherief	Hateful		Hateful	
+69	1082709373884026881_twitter	illegal aliens	illegal aliens	L2	latinx|undocumented	0	hatexplain	Not Hateful	sounds ironic and funny	Not Hateful	
+70	12298	islamic terrorism	islamic terrorism	L3	middle eastern|muslim	1	mhs	Unknown	more context?	Unknown	
+71	41849	grooming	grooming	L3	bisexual|gay|lesbian|non binary|other|transgender unspecified	0	mhs	Hateful		Hateful	
+72	20886	george soros	george soros	L3	jewish	1	elsherief	Not Hateful		Not Hateful	
+73	16483212_gab	illegal immigrant	illegal immigrant	L2	latinx|undocumented	0	hatexplain	Unknown		Hateful	
+74	5297	affirmative action	affirmative action	L3	black|latinx	0	mhs	Not Hateful		Not Hateful	
+75	44447	google	google	L4	black	0	mhs	Not Hateful		Not Hateful	
+76	16408	cuck	cuck	L4	liberal|men|republican	1	elsherief	Hateful		Hateful	
+77	1186051255182995456_twitter	ghetto	ghetto	L2	black	0	hatexplain	Hateful		Hateful	
+78	20896139_gab	illegal aliens	illegal aliens	L2	latinx|undocumented	0	hatexplain	Not Hateful		Not Hateful	
+79	1183754634671874049_twitter	ghetto	ghetto	L2	black	0	hatexplain	Not Hateful		Not Hateful	
+80	1179100244300181504_twitter	illegal aliens	illegal aliens	L2	latinx|undocumented	0	hatexplain	Not Hateful		Hateful	
+81	18941504_gab	controlled media	controlled media	L2	jewish	1	hatexplain	Hateful		Hateful	
+82	5666	law and order	law and order	L3	black|latinx	0	elsherief	Not Hateful		Not Hateful	
+83	49849	islamic terrorism	islamic terrorism	L3	middle eastern|muslim	0	mhs	Hateful		Hateful	
+84	14139	reagan	reagan	L4	conservative	0	elsherief	Not Hateful		Hateful	
+85	16607	islamic terrorists	islamic terrorists	L2	muslim	0	mhs	Hateful		Hateful	
+86	16476	cuck	cuck	L4	liberal|men|republican	0	elsherief	Not Hateful		Not Hateful	
+87	11516	cuck	cuck	L4	liberal|men|republican	0	mhs	Not Hateful		Not Hateful	
+88	18904	secure the border	secure the border	L3	immigrant|latinx|migrant worker|undocumented	0	elsherief	Not Hateful	it's a key component of the conservative movement. yes it's controversial, but i don't think it quite goes into hateful	Unknown	
+89	11823648_gab	ghetto	ghetto	L2	black	0	hatexplain	Hateful		Hateful	
+90	14017912_gab	war on drugs	war on drugs	L3	black	1	hatexplain	Not Hateful		Not Hateful	
+91	14848345_gab	affirmative action	affirmative action	L3	black|latinx	1	hatexplain	Hateful		Hateful	
+92	24887	secure the border	secure the border	L3	immigrant|latinx|migrant worker|undocumented	0	mhs	Not Hateful	conservative but not necessarily hateful	Not Hateful	
+93	24700123_gab	coal burner	coal burner	L4	black|men|white|women	1	hatexplain	Hateful		Hateful	
+94	20076954_gab	ghetto	ghetto	L2	black	0	hatexplain	Hateful		Hateful	
+95	27774	cuck	cuck	L4	liberal|men|republican	0	mhs	Not Hateful		Not Hateful	
+96	1697	identify as	identify as	L4	transgender unspecified	0	mhs	Not Hateful		Not Hateful	
+97	43106	all lives matter	all lives matter	L3	black	1	mhs	Not Hateful		Not Hateful	
+98	44106	tras	tras	L2	transgender unspecified	0	mhs	Not Hateful	what is tras? trash? trans?	Unknown	
+99	49439	thug	thug	L2	black|men	0	mhs	Not Hateful	isn't he a rapper lol	Not Hateful	
+100	11147	family values	family values	L3	bisexual|gay|lesbian|other	0	elsherief	Hateful	hateful if claims are unfounded	Hateful	
+101	1273200696658190344_twitter	ghetto	ghetto	L2	black	0	hatexplain	Not Hateful		Not Hateful	
+102	15786	mass immigration	mass immigration	L3	immigrant	1	elsherief	Hateful		Not Hateful	
+103	12352960_gab	federal reserve	federal reserve	L3	jewish	1	hatexplain	Hateful		Not Hateful	
+104	6358	new world order	new world order	L3	jewish	0	mhs	Unknown	idk enough info	Hateful	
+105	22121304_gab	pajeet	pajeet	L4	asian|specific country	0	hatexplain	Hateful		Hateful	
+106	11387	islamic terrorism	islamic terrorism	L3	middle eastern|muslim	0	elsherief	Hateful		Not Hateful	
+107	4274	multiculturalism	multiculturalism	L3	middle eastern|muslim	1	elsherief	Hateful		Not Hateful	
+108	10800	cuck	cuck	L4	liberal|men|republican	1	elsherief	Hateful		Hateful	
+109	6338	deus vult	deus vult	L4	middle eastern|muslim	1	mhs	Unknown	not sure what deus vult really means or if it has any historical context	Unknown	
+110	7543907_gab	shoah	shoah	L3	jewish	0	hatexplain	Hateful		Hateful	
+111	21365	ghetto	ghetto	L2	black	1	elsherief	Hateful		Hateful	
+112	14527061_gab	multiculturalism	multiculturalism	L3	middle eastern|muslim	0	hatexplain	Hateful		Hateful	
+113	19236068_gab	ghetto	ghetto	L2	black	1	hatexplain	Hateful		Hateful	
+114	13836	steroids	steroids	L2	transgender unspecified	0	elsherief	Not Hateful		Not Hateful	
+115	47789	multiculturalism	multiculturalism	L3	middle eastern|muslim	0	mhs	Unknown	hmm sounds sarcastic like they don't like multiculturalism but seems borderline	Hateful	
+116	24264232_gab	cuck	cuck	L4	liberal|men|republican	1	hatexplain	Hateful		Hateful	
+117	1179101403886882816_twitter	illegal aliens	illegal aliens	L2	latinx|undocumented	0	hatexplain	Unknown		Hateful	
+118	1116784484005941249_twitter	illegal aliens	illegal aliens	L2	latinx|undocumented	0	hatexplain	Hateful		Hateful	
+119	906	cuck	cuck	L4	liberal|men|republican	1	mhs	Hateful		Hateful	
+120	3283	cuck	cuck	L4	liberal|men|republican	0	elsherief	Not Hateful		Not Hateful	
+121	38250	snowflake	snowflake	L2	bisexual|gay|leftist|lesbian|liberal|other	1	mhs	Hateful		Hateful	
+122	1983	globalism	globalism	L2	jewish	1	elsherief	Not Hateful		Hateful	
+123	30088	sharia law	sharia law	L3	middle eastern|muslim	1	mhs	Hateful		Hateful	
+124	16911762_gab	cuck	cuck	L4	liberal|men|republican	0	hatexplain	Hateful		Hateful	
+125	17135722_gab	oy vey	oy vey	L4	jewish	1	hatexplain	Hateful		Hateful	
+126	16072473_gab	cuck	cuck	L4	liberal|men|republican	1	hatexplain	Hateful		Hateful	
+127	31966	ghetto	ghetto	L2	black	1	mhs	Unknown	hateful to trump and his family, but also redirecting some of his agenda against himself	Not Hateful	
+128	20892	sharia law	sharia law	L3	middle eastern|muslim	0	mhs	Unknown	more context required	Hateful	
+129	1213227832739946496_twitter	illegal immigrant	illegal immigrant	L2	latinx|undocumented	0	hatexplain	Hateful		Not Hateful	
+130	13380422_gab	pajeet	pajeet	L4	asian|specific country	1	hatexplain	Hateful		Hateful	
+131	23926920_gab	ghetto	ghetto	L2	black	0	hatexplain	Hateful		Hateful	
+132	26278	grooming	grooming	L3	bisexual|gay|lesbian|non binary|other|transgender unspecified	0	mhs	Hateful		Not Hateful	
+133	15165717_gab	google	google	L4	black	1	hatexplain	Hateful		Not Hateful	
+134	1179087143056093185_twitter	dindu nuffin	dindu nuffin	L4	black	0	hatexplain	Hateful	mockery of AAVE	Hateful	
+135	21168353_gab	ghetto	ghetto	L2	black	1	hatexplain	Hateful		Hateful	
+136	11496	cuck	cuck	L4	liberal|men|republican	0	mhs	Hateful	homophobia, racism	Hateful	
+137	5593	deep state	deep state	L2	jewish	0	elsherief	Not Hateful		Not Hateful	
+138	17213526_gab	ghetto	ghetto	L2	black	0	hatexplain	Hateful		Hateful	
+139	15090039_gab	affirmative action	affirmative action	L3	black|latinx	1	hatexplain	Hateful		Hateful	
+140	1178788157111668736_twitter	illegal aliens	illegal aliens	L2	latinx|undocumented	0	hatexplain	Hateful		Hateful	
+141	16159744_gab	george soros	george soros	L3	jewish	1	hatexplain	Hateful		Not Hateful	
+142	1256043493467648000_twitter	ghetto	ghetto	L2	black	0	hatexplain	Hateful		Hateful	
+143	41815	google	google	L4	black	0	mhs	Not Hateful		Not Hateful	
+144	872	beta	beta	L4	liberal|men	0	mhs	Not Hateful		Hateful	
+145	5518575_gab	affirmative action	affirmative action	L3	black|latinx	1	hatexplain	Hateful		Hateful	
+146	20190	ghetto	ghetto	L2	black	0	mhs	Unknown		Hateful	
+147	15708	cuck	cuck	L4	liberal|men|republican	1	mhs	Hateful		Hateful	
+148	1093045508396994560_twitter	ghetto	ghetto	L2	black	0	hatexplain	Not Hateful		Not Hateful	
+149	40798	grooming	grooming	L3	bisexual|gay|lesbian|non binary|other|transgender unspecified	1	mhs	Hateful		Hateful	
+150	4894	google	google	L4	black	0	mhs	Not Hateful		Unknown	
+151	16043434_gab	ghetto	ghetto	L2	black	0	hatexplain	Hateful		Hateful	
+152	13017	sharia law	sharia law	L3	middle eastern|muslim	1	elsherief	Hateful		Hateful	
+153	34961	cuck	cuck	L4	liberal|men|republican	1	mhs	Hateful		Not Hateful	
+154	35337	illegal aliens	illegal aliens	L2	latinx|undocumented	0	mhs	Not Hateful	"gray area because of use of word ""aliens"" dehumanizing undocumented immigrants, but i can see how this can be a legitimate point of confusion for the user"	Not Hateful	
+155	4375	america first	america first	L3	jewish	0	elsherief	Not Hateful		Not Hateful	
+156	14069634_gab	ghetto	ghetto	L2	black	0	hatexplain	Not Hateful		Not Hateful	
+157	4354	george soros	george soros	L3	jewish	0	elsherief	Unknown		Hateful	
+158	1268	beta	beta	L4	liberal|men	0	mhs	Hateful		Hateful	
+159	13691	cuck	cuck	L4	liberal|men|republican	1	mhs	Hateful		Hateful	
+160	17303590_gab	google	google	L4	black	1	hatexplain	Hateful		Not Hateful	
+161	1179082262920466432_twitter	cabal	cabal	L2	jewish	0	hatexplain	Not Hateful		Unknown	
+162	25949	sharia law	sharia law	L3	middle eastern|muslim	1	mhs	Hateful		Not Hateful	
+163	25044230_gab	islamists	islamists	L2	middle eastern|muslim	0	hatexplain	Hateful		Not Hateful	
+164	19404123_gab	we wuz kangz	we wuz kangz	L2	black	1	hatexplain	Hateful		Hateful	
+165	272	all lives matter	all lives matter	L3	black	0	elsherief	Unknown	not necessarily hateful, but could be triggering for someone on the left to hear	Not Hateful	
+166	9359	attacks on or imagery of jewish financial leaders	george soros	L3	jewish	0	elsherief	Not Hateful		Hateful	
+167	34133	sharia law	sharia law	L3	middle eastern|muslim	0	mhs	Not Hateful		Not Hateful	
+168	11216949_gab	cuck	cuck	L4	liberal|men|republican	1	hatexplain	Hateful		Hateful	
+169	14146	cuck	cuck	L4	liberal|men|republican	0	elsherief	Hateful		Hateful	
+170	26600445_gab	grooming	grooming	L3	bisexual|gay|lesbian|non binary|other|transgender unspecified	1	hatexplain	Hateful		Hateful	
+171	14680188_gab	welfare queen	welfare queen	L2	black|women	1	hatexplain	Hateful		Hateful	
+172	22190329_gab	ghetto	ghetto	L2	black	0	hatexplain	Hateful		Hateful	
+173	23644	soy boy	soy boy	L2	leftist|liberal|men	0	mhs	Hateful		Hateful	
+174	9823	cuck	cuck	L4	liberal|men|republican	1	elsherief	Hateful		Hateful	
+175	10300	grooming	grooming	L3	bisexual|gay|lesbian|non binary|other|transgender unspecified	1	mhs	Hateful		Hateful	
+176	40464	zionist	zionist	L2	jewish	0	mhs	Unknown		Unknown	
+177	13946	cuck	cuck	L4	liberal|men|republican	0	elsherief	Not Hateful		Not Hateful	
+178	10605240_gab	ghetto	ghetto	L2	black	0	hatexplain	Hateful		Hateful	
+179	48901	identify as	identify as	L4	transgender unspecified	0	mhs	Hateful		Not Hateful	
+180	16427624_gab	affirmative action	affirmative action	L3	black|latinx	0	hatexplain	Not Hateful		Not Hateful	
+181	12765	cuck	cuck	L4	liberal|men|republican	1	mhs	Unknown		Unknown	
+182	4750859_gab	cuck	cuck	L4	liberal|men|republican	0	hatexplain	Hateful		Hateful	
+183	17213526_gab	gangbanger	gangbanger	L2	black|men	0	hatexplain	Hateful		Hateful	
+184	1179091729435254785_twitter	illegal aliens	illegal aliens	L2	latinx|undocumented	0	hatexplain	Unknown		Not Hateful	
+185	20091959_gab	family values	family values	L3	bisexual|gay|lesbian|other	1	hatexplain	Hateful		Hateful	
+186	1211444261935288320_twitter	zionist	zionist	L2	jewish	0	hatexplain	Not Hateful		Not Hateful	
+187	15870	cuck	cuck	L4	liberal|men|republican	1	elsherief	Unknown		Not Hateful	
+188	12356	google	google	L4	black	0	elsherief	Unknown	more context?	Not Hateful	
+189	1178908889598705664_twitter	beta	beta	L4	liberal|men	0	hatexplain	Not Hateful		Hateful	
+190	2375	google	google	L4	black	0	mhs	Hateful		Not Hateful	
+191	19941	islamists	islamists	L2	middle eastern|muslim	1	elsherief	Hateful		Hateful	
+192	1091439421331656705_twitter	ghetto	ghetto	L2	black	0	hatexplain	Hateful		Hateful	
+193	3607	religious freedom	religious freedom	L3	bisexual|gay|lesbian|non binary|other|transgender unspecified	0	elsherief	Not Hateful		Not Hateful	
+194	6358	zionist	zionist	L2	jewish	0	mhs	Unknown	idk what some of this stuff means ngl	Hateful	
+195	48122	zionist	zionist	L2	jewish	1	mhs	Hateful		Hateful	
+196	20861	yahoo	yahoo	L4	latinx	1	elsherief	Hateful		Not Hateful	
+197	20656774_gab	shlomo	shlomo	L4	jewish	1	hatexplain	Hateful		Hateful	
+198	38823	cuck	cuck	L4	liberal|men|republican	0	mhs	Unknown	not hateful but definitely sounds porn-y	Not Hateful	
+199	33823	cuck	cuck	L4	liberal|men|republican	1	mhs	Hateful		Hateful	
+200	12557	multiculturalism	multiculturalism	L3	middle eastern|muslim	1	elsherief	Hateful		Hateful	
+201	1174197246121979904_twitter	ghetto	ghetto	L2	black	0	hatexplain	Not Hateful		Not Hateful	
+202	13878	cuck	cuck	L4	liberal|men|republican	0	mhs	Hateful		Hateful	
+203	10527108_gab	google	google	L4	black	0	hatexplain	Hateful		Not Hateful	
+204	1083850411235102722_twitter	ghetto	ghetto	L2	black	0	hatexplain	Not Hateful	quoting someone else who was hateful	Hateful	
+205	14500311_gab	ghetto	ghetto	L2	black	0	hatexplain	Hateful		Hateful	
+206	2524	religious freedom	religious freedom	L3	bisexual|gay|lesbian|non binary|other|transgender unspecified	0	elsherief	Not Hateful		Not Hateful	
+207	1238249238456385536_twitter	affirmative action	affirmative action	L3	black|latinx	0	hatexplain	Not Hateful	I think it depends on what the original tweet was, but counterpoint to affirmative action isn't necessarily hateful	Not Hateful	
+208	33823	coal burner	coal burner	L4	black|men|white|women	1	mhs	Hateful		Hateful	
+209	7466	multiculturalism	multiculturalism	L3	middle eastern|muslim	0	mhs	Hateful		Hateful	
+210	33758	judas	judas	L3	jewish	1	mhs	Hateful		Hateful	
+211	21693	mass immigration	mass immigration	L3	immigrant	0	mhs	Hateful		Not Hateful	
+212	10040607_gab	affirmative action	affirmative action	L3	black|latinx	1	hatexplain	Hateful		Hateful	
+213	28571	cuck	cuck	L4	liberal|men|republican	1	mhs	Not Hateful	not hateful but sounds like porn lol	Not Hateful	
+214	154	jogger	jogger	L2	black	1	elsherief	Unknown		Not Hateful	
+215	27026482_gab	google	google	L4	black	0	hatexplain	Hateful		Not Hateful	
+216	3249755_gab	attacks on or imagery of jewish financial leaders	george soros	L3	jewish	0	hatexplain	Hateful		Not Hateful	
+217	25463534_gab	the goyim know	the goyim know	L4	jewish	1	hatexplain	Hateful		Hateful	
+218	7320	thug	thug	L2	black|men	1	elsherief	Hateful		Hateful	
+219	19802718_gab	cuck	cuck	L4	liberal|men|republican	1	hatexplain	Hateful		Hateful	
+220	10348812_gab	illegal immigrant	illegal immigrant	L2	latinx|undocumented	0	hatexplain	Unknown	i feel like this could genuinely be someone trying to understand why people would wanna immigrate here, or it could also be the user saying that immigrants aren't welcome. borderline.	Hateful	
+221	964	white lives matter	white lives matter	L3	black	1	elsherief	Unknown	I don't understand lol	Unknown	
+222	6478984_gab	ghetto	ghetto	L2	black	0	hatexplain	Hateful		Hateful	
+223	7345	family values	family values	L3	bisexual|gay|lesbian|other	0	mhs	Not Hateful		Not Hateful	
+224	5976	13%	13%	L4	black	1	mhs	Hateful		Hateful	
+225	29868	george soros	george soros	L3	jewish	0	mhs	Unknown	hateful if claims are unfounded, otherwise not	Hateful	

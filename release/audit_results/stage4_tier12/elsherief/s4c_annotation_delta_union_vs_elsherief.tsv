@@ -1,0 +1,34 @@
+coding_level	report_level	report_target	is_self_referential_union	case_a_present_hateful_union	case_b_present_nonhateful_union	total_matches_union	total_target_group_posts_union	case_c_absent_union	correct_labeling_rate_union	failure_rate_union	stable_n_union	case_b_c_ratio_union	is_self_referential_elsherief	case_a_present_hateful_elsherief	case_b_present_nonhateful_elsherief	total_matches_elsherief	total_target_group_posts_elsherief	case_c_absent_elsherief	correct_labeling_rate_elsherief	failure_rate_elsherief	stable_n_elsherief	case_b_c_ratio_elsherief	correct_labeling_rate_delta_union_minus_elsherief	failure_rate_delta_union_minus_elsherief
+L2	gender	men	False	30	48	78	2019	1941	0.38461538461538464	0.6153846153846154	True													
+L2	gender	women	False	3	3	6	3887	3881	0.5	0.5	False													
+L2	lgbtq	LGB	False	16	6	22	2633	2611	0.7272727272727273	0.2727272727272727	False													
+L2	lgbtq	Trans/NB	False	1	3	4	144	140	0.25	0.75	False													
+L2	origin	specific country	False	0	0	0	4391	4391			False													
+L2	origin	undocumented	False	15	59	74	230	156	0.20270270270270271	0.7972972972972973	True													
+L2	politics	leftist	False	22	10	32	41	9	0.6875	0.3125	True													
+L2	politics	liberal	False	22	12	34	375	341	0.6470588235294118	0.35294117647058826	True													
+L2	race	asian	False	0	0	0	703	703			False													
+L2	race	black	False	185	896	1081	4942	3861	0.1711378353376503	0.8288621646623496	True													
+L2	race	latinx	False	15	59	74	968	894	0.20270270270270271	0.7972972972972973	True													
+L2	race	middle eastern	False	11	29	40	1858	1818	0.275	0.725	True													
+L2	religion	jewish	False	46	84	130	2758	2628	0.35384615384615387	0.6461538461538462	True													
+L2	religion	muslim	False	22	53	75	3223	3148	0.29333333333333333	0.7066666666666667	True													
+L3	gender	men	False	0	0	0	2019	2019			False													
+L3	gender	women	False	0	0	0	3887	3887			False													
+L3	lgbtq	LGB	False	18	23	41	2633	2592	0.43902439024390244	0.5609756097560976	True													
+L3	lgbtq	Trans/NB	False	15	18	33	144	111	0.45454545454545453	0.5454545454545454	True													
+L3	origin	immigrant	False	0	0	0	1684	1684			False													
+L3	origin	migrant worker	False	0	0	0	4	4			False													
+L3	race	black	False	22	37	59	4942	4883	0.3728813559322034	0.6271186440677966	True													
+L3	race	latinx	False	16	26	42	968	926	0.38095238095238093	0.6190476190476191	True													
+L3	race	middle eastern	False	34	61	95	1858	1763	0.35789473684210527	0.6421052631578947	True													
+L3	religion	jewish	False	21	39	60	2758	2698	0.35	0.65	True													
+L3	religion	muslim	False	36	63	99	3223	3124	0.36363636363636365	0.6363636363636364	True													
+L4	gender	men	False	199	164	363	2019	1656	0.5482093663911846	0.45179063360881544	True													
+L4	lgbtq	Trans/NB	True	1	56	57	144	87	0.017543859649122806	0.9824561403508771	True													
+L4	politics	liberal	False	199	164	363	375	12	0.5482093663911846	0.45179063360881544	True													
+L4	politics	republican	False	130	100	230	234	4	0.5652173913043478	0.43478260869565216	True													
+L4	race	black	False	0	0	0	4942	4942			False													
+L4	race	middle eastern	False	4	0	4	1858	1854	1.0	0.0	False													
+L4	religion	jewish	False	2	1	3	2758	2755	0.6666666666666666	0.3333333333333333	False													
+L4	religion	muslim	False	4	0	4	3223	3219	1.0	0.0	False													

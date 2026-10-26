@@ -1,0 +1,245 @@
+taxonomy_level	target	coding_level	dogwhistle	matched_surface_forms	case_a_count	case_b_count	labeling_accuracy	type	is_self_referential
+gender	men	L2	thug	thug	20	42	0.3225806451612903	stereotype-based target group label	False
+gender	men	L2	soy boy	soy boy	7	4	0.6363636363636364	stereotype-based target group label	False
+gender	men	L2	fatherless	fatherless	3	1	0.75	stereotype-based descriptor	False
+gender	men	L2	baby daddies	baby daddies	0	1	0.0	stereotype-based target group label	False
+gender	men	L2	burning coal	burning coal	0	1	0.0	stereotype-based descriptor	False
+gender	men	L2	gangbanger	gangbanger	0	1	0.0	stereotype-based target group label	False
+gender	men	L4	cuck	cuck	130	100	0.5652173913043478	arbitrary target group label	False
+gender	men	L4	beta	beta	69	64	0.518796992481203	arbitrary target group label	False
+gender	men	L4	coal burner	coal burner	2	0	1.0	arbitrary target group label	False
+gender	non binary	L2	groomers	groomers	1	0	1.0	stereotype-based target group label	False
+gender	non binary	L3	grooming	grooming	15	17	0.46875	concept (other)	False
+gender	non binary	L3	religious freedom	religious freedom	0	7	0.0	concept (values)	False
+gender	non binary	L4	xx	xx	3	9	0.25	persona signal (self-referential)	True
+gender	transgender men	L2	autoandrophile	autoandrophile	0	1	0.0	stereotype-based target group label	False
+gender	transgender men	L4	biological man	biological man	0	1	0.0	persona signal (self-referential)	True
+gender	transgender men	L4	aiden	aiden	1	0	1.0	arbitrary target group label	False
+gender	transgender unspecified	L2	intact	intact	0	3	0.0	stereotype-based target group label	False
+gender	transgender unspecified	L2	genderist	genderist	0	1	0.0	stereotype-based target group label	False
+gender	transgender unspecified	L2	tras	tras	0	1	0.0	stereotype-based target group label	False
+gender	transgender unspecified	L2	groomers	groomers	1	0	1.0	stereotype-based target group label	False
+gender	transgender unspecified	L2	steroids	steroids	1	0	1.0	stereotype-based descriptor	False
+gender	transgender unspecified	L3	grooming	grooming	15	17	0.46875	concept (other)	False
+gender	transgender unspecified	L3	religious freedom	religious freedom	0	7	0.0	concept (values)	False
+gender	transgender unspecified	L3	coin	coin	1	6	0.14285714285714285	concept (values)	False
+gender	transgender unspecified	L3	safeguarding	safeguarding	0	4	0.0	concept (values)	False
+gender	transgender unspecified	L3	gender ideology	gender ideology	0	1	0.0	concept (other)	False
+gender	transgender unspecified	L3	sex-based rights	sex-based rights	0	1	0.0	concept (values)	False
+gender	transgender unspecified	L4	identify as	identify as	1	50	0.0196078431372549	humor/mockery/sarcasm	False
+gender	transgender unspecified	L4	agender	agender	1	5	0.16666666666666666	persona signal (self-referential)	True
+gender	transgender unspecified	L4	gender critical	gender critical	0	3	0.0	persona signal (self-referential)	True
+gender	transgender unspecified	L4	biological woman	biological woman	0	2	0.0	persona signal (self-referential)	True
+gender	transgender unspecified	L4	womyn	womyn	2	1	0.6666666666666666	persona signal (self-referential)	True
+gender	transgender unspecified	L4	goody	goody	1	1	0.5	persona signal (self-referential)	True
+gender	transgender unspecified	L4	41%	41%	0	1	0.0	persona signal (symbol)	False
+gender	transgender unspecified	L4	cherry emoji	cherry emoji	0	1	0.0	persona signal (symbol)	False
+gender	transgender women	L2	male violence	male violence	0	4	0.0	stereotype-based descriptor	False
+gender	transgender women	L2	intact	intact	0	3	0.0	stereotype-based target group label	False
+gender	transgender women	L3	lesbophobia	lesbophobia	1	0	1.0	concept (values)	False
+gender	transgender women	L4	xx	xx	3	9	0.25	persona signal (self-referential)	True
+gender	transgender women	L4	biological woman	biological woman	0	2	0.0	persona signal (self-referential)	True
+gender	transgender women	L4	womyn	womyn	2	1	0.6666666666666666	persona signal (self-referential)	True
+gender	transgender women	L4	actual woman	actual woman	0	1	0.0	persona signal (self-referential)	True
+gender	transgender women	L4	biological man	biological man	0	1	0.0	persona signal (self-referential)	True
+gender	transgender women	L4	cherry emoji	cherry emoji	0	1	0.0	persona signal (symbol)	False
+gender	women	L2	single parent	single parent	1	2	0.3333333333333333	stereotype-based target group label	False
+gender	women	L2	baby mama	baby mama	1	1	0.5	stereotype-based target group label	False
+gender	women	L2	burning coal	burning coal	0	1	0.0	stereotype-based descriptor	False
+gender	women	L2	welfare queen	welfare queen	1	0	1.0	stereotype-based target group label	False
+gender	women	L4	coal burner	coal burner	2	0	1.0	arbitrary target group label	False
+origin	immigrant	L3	mass immigration	mass immigration	7	17	0.2916666666666667	concept (policy)	False
+origin	immigrant	L3	secure the border	secure the border	0	4	0.0	concept (policy)	False
+origin	immigrant	L3	cultural enrichment	cultural enrichment	2	1	0.6666666666666666	concept (other)	False
+origin	migrant worker	L3	secure the border	secure the border	0	4	0.0	concept (policy)	False
+origin	specific country	L4	pajeet	pajeet	2	1	0.6666666666666666	arbitrary target group label	False
+origin	undocumented	L2	illegal aliens	illegal aliens	26	129	0.16774193548387098	stereotype-based target group label	False
+origin	undocumented	L2	illegal immigrant	illegal immigrant	7	53	0.11666666666666667	stereotype-based target group label	False
+origin	undocumented	L2	anchor babies	anchor babies	8	6	0.5714285714285714	stereotype-based target group label	False
+origin	undocumented	L3	secure the border	secure the border	0	4	0.0	concept (policy)	False
+politics	conservative	L3	war on women	war on women	1	3	0.25	concept (policy)	False
+politics	conservative	L4	reagan	reagan	1	6	0.14285714285714285	arbitrary target group label	False
+politics	leftist	L2	snowflake	snowflake	15	6	0.7142857142857143	stereotype-based target group label	False
+politics	leftist	L2	soy boy	soy boy	7	4	0.6363636363636364	stereotype-based target group label	False
+politics	leftist	L4	npc	npc	3	3	0.5	arbitrary target group label	False
+politics	leftist	L4	bugman	bugman	2	2	0.5	arbitrary target group label	False
+politics	liberal	L2	snowflake	snowflake	15	6	0.7142857142857143	stereotype-based target group label	False
+politics	liberal	L2	soy boy	soy boy	7	4	0.6363636363636364	stereotype-based target group label	False
+politics	liberal	L2	cosmopolitan	cosmopolitan	0	1	0.0	stereotype-based target group label	False
+politics	liberal	L2	neoliberal	neoliberal	0	1	0.0	stereotype-based target group label	False
+politics	liberal	L4	cuck	cuck	130	100	0.5652173913043478	arbitrary target group label	False
+politics	liberal	L4	beta	beta	69	64	0.518796992481203	arbitrary target group label	False
+politics	liberal	L4	npc	npc	3	3	0.5	arbitrary target group label	False
+politics	liberal	L4	bugman	bugman	2	2	0.5	arbitrary target group label	False
+politics	liberal	L4	swpl	swpl	1	0	1.0	arbitrary target group label	False
+politics	republican	L3	war on women	war on women	1	3	0.25	concept (policy)	False
+politics	republican	L4	cuck	cuck	130	100	0.5652173913043478	arbitrary target group label	False
+race	asian	L4	bing	bing	2	3	0.4	arbitrary target group label	False
+race	asian	L4	pajeet	pajeet	2	1	0.6666666666666666	arbitrary target group label	False
+race	black	L2	ghetto	ghetto	158	845	0.1575274177467597	stereotype-based descriptor	False
+race	black	L2	thug	thug	20	42	0.3225806451612903	stereotype-based target group label	False
+race	black	L2	inner city	inner city	6	10	0.375	stereotype-based descriptor	False
+race	black	L2	dindu	dindu	10	4	0.7142857142857143	stereotype-based target group label	False
+race	black	L2	out of wedlock	out of wedlock	1	3	0.25	stereotype-based descriptor	False
+race	black	L2	single parent	single parent	1	2	0.3333333333333333	stereotype-based target group label	False
+race	black	L2	fatherless	fatherless	3	1	0.75	stereotype-based descriptor	False
+race	black	L2	baby mama	baby mama	1	1	0.5	stereotype-based target group label	False
+race	black	L2	we wuz kangz	we wuz kangz	1	1	0.5	stereotype-based descriptor	False
+race	black	L2	baby daddies	baby daddies	0	1	0.0	stereotype-based target group label	False
+race	black	L2	burning coal	burning coal	0	1	0.0	stereotype-based descriptor	False
+race	black	L2	gangbanger	gangbanger	0	1	0.0	stereotype-based target group label	False
+race	black	L2	he wuz a good boy	he wuz a good boy	0	1	0.0	stereotype-based descriptor	False
+race	black	L2	nibba	nibba	0	1	0.0	phonetic-based target group label	False
+race	black	L2	gibsmedat	gibsmedat	1	0	1.0	stereotype-based descriptor	False
+race	black	L2	welfare queen	welfare queen	1	0	1.0	stereotype-based target group label	False
+race	black	L3	affirmative action	affirmative action	14	21	0.4	concept (policy)	False
+race	black	L3	all lives matter	all lives matter	1	5	0.16666666666666666	concept (values)	False
+race	black	L3	law and order	law and order	1	5	0.16666666666666666	concept (policy)	False
+race	black	L3	public school	public school	2	4	0.3333333333333333	concept (other)	False
+race	black	L3	voter fraud	voter fraud	0	4	0.0	concept (policy)	False
+race	black	L3	personal responsibility	personal responsibility	1	3	0.25	concept (values)	False
+race	black	L3	white lives matter	white lives matter	1	3	0.25	concept (values)	False
+race	black	L3	blue lives matter	blue lives matter	2	1	0.6666666666666666	concept (values)	False
+race	black	L3	war on drugs	war on drugs	2	1	0.6666666666666666	concept (policy)	False
+race	black	L3	freedom of association	freedom of association	0	1	0.0	concept (policy)	False
+race	black	L3	tough on crime	tough on crime	0	1	0.0	concept (policy)	False
+race	black	L4	google	google	17	52	0.2463768115942029	arbitrary target group label	False
+race	black	L4	dindu nuffin	dindu nuffin	11	19	0.36666666666666664	humor/mockery/sarcasm	False
+race	black	L4	13%	13%	2	3	0.4	persona signal (symbol)	False
+race	black	L4	coal burner	coal burner	2	0	1.0	arbitrary target group label	False
+race	latinx	L2	illegal aliens	illegal aliens	26	129	0.16774193548387098	stereotype-based target group label	False
+race	latinx	L2	illegal immigrant	illegal immigrant	7	53	0.11666666666666667	stereotype-based target group label	False
+race	latinx	L2	anchor babies	anchor babies	8	6	0.5714285714285714	stereotype-based target group label	False
+race	latinx	L3	affirmative action	affirmative action	14	21	0.4	concept (policy)	False
+race	latinx	L3	law and order	law and order	1	5	0.16666666666666666	concept (policy)	False
+race	latinx	L3	public school	public school	2	4	0.3333333333333333	concept (other)	False
+race	latinx	L3	secure the border	secure the border	0	4	0.0	concept (policy)	False
+race	latinx	L3	voter fraud	voter fraud	0	4	0.0	concept (policy)	False
+race	latinx	L3	tough on crime	tough on crime	0	1	0.0	concept (policy)	False
+race	latinx	L4	yahoo	yahoo	0	4	0.0	arbitrary target group label	False
+race	middle eastern	L2	islamists	islamists	11	26	0.2972972972972973	stereotype-based target group label	False
+race	middle eastern	L2	islamic extremists	islamic extremists	0	3	0.0	stereotype-based target group label	False
+race	middle eastern	L3	sharia law	sharia law	24	35	0.4067796610169492	concept (other)	False
+race	middle eastern	L3	multiculturalism	multiculturalism	6	14	0.3	concept (other)	False
+race	middle eastern	L3	islamic terrorism	islamic terrorism	4	9	0.3076923076923077	concept (other)	False
+race	middle eastern	L3	war on terror	war on terror	0	2	0.0	concept (policy)	False
+race	middle eastern	L3	cultural enrichment	cultural enrichment	2	1	0.6666666666666666	concept (other)	False
+race	middle eastern	L3	islamic extremism	islamic extremism	0	1	0.0	concept (other)	False
+race	middle eastern	L3	remove kebab	remove kebab	1	0	1.0	concept (other)	False
+race	middle eastern	L4	deus vult	deus vult	4	0	1.0	persona signal (shared culture)	False
+race	white	L2	burning coal	burning coal	0	1	0.0	stereotype-based descriptor	False
+race	white	L4	coal burner	coal burner	2	0	1.0	arbitrary target group label	False
+religion	jewish	L2	zionist	zionist	51	55	0.4811320754716981	stereotype-based target group label	False
+religion	jewish	L2	globalist	globalist	14	34	0.2916666666666667	stereotype-based target group label	False
+religion	jewish	L2	coincidence	coincidence	5	13	0.2777777777777778	stereotype-based descriptor	False
+religion	jewish	L2	deep state	deep state	5	11	0.3125	stereotype-based descriptor	False
+religion	jewish	L2	illuminati	illuminati	4	8	0.3333333333333333	stereotype-based target group label	False
+religion	jewish	L2	cabal	cabal	1	7	0.125	stereotype-based target group label	False
+religion	jewish	L2	globalism	globalism	1	7	0.125	stereotype-based descriptor	False
+religion	jewish	L2	skype	skype	0	7	0.0	phonetic-based target group label	False
+religion	jewish	L2	every single time	every single time	1	5	0.16666666666666666	stereotype-based descriptor	False
+religion	jewish	L2	shekels	shekels	11	4	0.7333333333333333	stereotype-based descriptor	False
+religion	jewish	L2	cultural marxists	cultural marxists	2	3	0.4	stereotype-based target group label	False
+religion	jewish	L2	fellow white people	fellow white people	1	3	0.25	stereotype-based target group label	False
+religion	jewish	L2	bankers	bankers	3	2	0.6	stereotype-based target group label	False
+religion	jewish	L2	banksters	banksters	0	1	0.0	stereotype-based target group label	False
+religion	jewish	L2	cosmopolitan	cosmopolitan	0	1	0.0	stereotype-based target group label	False
+religion	jewish	L2	dual citizen	dual citizen	0	1	0.0	stereotype-based target group label	False
+religion	jewish	L2	octopus	octopus	0	1	0.0	stereotype-based target group label	False
+religion	jewish	L2	special interests	special interests	0	1	0.0	stereotype-based descriptor	False
+religion	jewish	L2	controlled media	controlled media	3	0	1.0	stereotype-based descriptor	False
+religion	jewish	L2	khazars	khazars	2	0	1.0	stereotype-based target group label	False
+religion	jewish	L2	global elite	global elite	1	0	1.0	stereotype-based target group label	False
+religion	jewish	L2	puppet masters	puppet masters	1	0	1.0	stereotype-based target group label	False
+religion	jewish	L3	attacks on or imagery of jewish financial leaders	george soros	2	9	0.18181818181818182	representative (bogeyman)	False
+religion	jewish	L3	george soros	george soros	2	9	0.18181818181818182	representative (bogeyman)	False
+religion	jewish	L3	cultural marxism	cultural marxism	2	7	0.2222222222222222	concept (other)	False
+religion	jewish	L3	new world order	new world order	6	5	0.5454545454545454	concept (other)	False
+religion	jewish	L3	america first	america first	2	5	0.2857142857142857	concept (policy)	False
+religion	jewish	L3	shoah	shoah	5	3	0.625	concept (other)	False
+religion	jewish	L3	rothschilds	rothschilds	4	3	0.5714285714285714	representative (bogeyman)	False
+religion	jewish	L3	kalergi plan	kalergi plan	0	2	0.0	concept (other)	False
+religion	jewish	L3	pilpul	pilpul	1	1	0.5	concept (other)	False
+religion	jewish	L3	israel lobby	israel lobby	0	1	0.0	concept (other)	False
+religion	jewish	L3	federal reserve	federal reserve	1	0	1.0	representative (bogeyman)	False
+religion	jewish	L3	judas	judas	1	0	1.0	concept (other)	False
+religion	jewish	L3	poisoning the well	poisoning the well	1	0	1.0	concept (other)	False
+religion	jewish	L4	goy	goy	23	17	0.575	persona signal (self-referential)	True
+religion	jewish	L4	oy vey	oy vey	8	7	0.5333333333333333	persona signal (shared culture)	False
+religion	jewish	L4	shlomo	shlomo	3	2	0.6	arbitrary target group label	False
+religion	jewish	L4	the goyim know	the goyim know	2	1	0.6666666666666666	persona signal (shared culture)	False
+religion	jewish	L4	loxism	loxism	0	1	0.0	arbitrary target group label	False
+religion	muslim	L2	islamists	islamists	11	26	0.2972972972972973	stereotype-based target group label	False
+religion	muslim	L2	radical islam	radical islam	4	13	0.23529411764705882	stereotype-based descriptor	False
+religion	muslim	L2	islamic terrorists	islamic terrorists	7	11	0.3888888888888889	stereotype-based target group label	False
+religion	muslim	L2	islamic extremists	islamic extremists	0	3	0.0	stereotype-based target group label	False
+religion	muslim	L3	sharia law	sharia law	24	35	0.4067796610169492	concept (other)	False
+religion	muslim	L3	multiculturalism	multiculturalism	6	14	0.3	concept (other)	False
+religion	muslim	L3	islamic terrorism	islamic terrorism	4	9	0.3076923076923077	concept (other)	False
+religion	muslim	L3	barack hussein obama	barack hussein obama	2	2	0.5	representative (bogeyman)	False
+religion	muslim	L3	war on terror	war on terror	0	2	0.0	concept (policy)	False
+religion	muslim	L3	cultural enrichment	cultural enrichment	2	1	0.6666666666666666	concept (other)	False
+religion	muslim	L3	islamic extremism	islamic extremism	0	1	0.0	concept (other)	False
+religion	muslim	L3	remove kebab	remove kebab	1	0	1.0	concept (other)	False
+religion	muslim	L4	deus vult	deus vult	4	0	1.0	persona signal (shared culture)	False
+self	referential_white_supremacist	L3	maga	maga	80	153	0.34334763948497854	concept (policy)	False
+self	referential_white_supremacist	L3	take back	take back	1	8	0.1111111111111111	concept (values)	False
+self	referential_white_supremacist	L3	all lives matter	all lives matter	1	5	0.16666666666666666	concept (values)	False
+self	referential_white_supremacist	L3	boogaloo	boogaloo	3	3	0.5	concept (values)	False
+self	referential_white_supremacist	L3	white lives matter	white lives matter	1	3	0.25	concept (values)	False
+self	referential_white_supremacist	L4	based	based	37	216	0.14624505928853754	persona signal (self-referential)	True
+self	referential_white_supremacist	L4	crusades imagery	crusades imagery	3	11	0.21428571428571427	persona signal (symbol)	False
+self	referential_white_supremacist	L4	medieval european imagery	medieval european imagery	3	11	0.21428571428571427	persona signal (symbol)	False
+self	referential_white_supremacist	L4	roman imagery	roman imagery	3	11	0.21428571428571427	persona signal (symbol)	False
+self	referential_white_supremacist	L4	alt-right	alt-right	1	10	0.09090909090909091	persona signal (self-referential)	True
+self	referential_white_supremacist	L4	reagan	reagan	1	6	0.14285714285714285	arbitrary target group label	False
+self	referential_white_supremacist	L4	kek	kek	6	4	0.6	persona signal (shared culture)	False
+self	referential_white_supremacist	L4	clown world	clown world	5	4	0.5555555555555556	persona signal (symbol)	False
+self	referential_white_supremacist	L4	silent majority	silent majority	1	2	0.3333333333333333	persona signal (self-referential)	True
+self	referential_white_supremacist	L4	bop	bop	0	2	0.0	humor/mockery/sarcasm	False
+self	referential_white_supremacist	L4	1488	1488	1	1	0.5	persona signal (symbol)	False
+self	referential_white_supremacist	L4	rahowa	rahowa	1	1	0.5	persona signal (symbol)	False
+self	referential_white_supremacist	L4	windmill	windmill	1	1	0.5	persona signal (symbol)	False
+self	referential_white_supremacist	L4	identitarianism	identitarianism	0	1	0.0	persona signal (self-referential)	True
+self	referential_white_supremacist	L4	it's okay to be white	it's okay to be white	0	1	0.0	persona signal (self-referential)	True
+self	referential_white_supremacist	L4	centipede	centipede	1	0	1.0	persona signal (self-referential)	True
+self	referential_white_supremacist	L4	free helicopter rides	free helicopter rides	1	0	1.0	humor/mockery/sarcasm	False
+self	referential_white_supremacist	L4	fren	fren	1	0	1.0	humor/mockery/sarcasm	False
+sexuality	bisexual	L2	snowflake	snowflake	15	6	0.7142857142857143	stereotype-based target group label	False
+sexuality	bisexual	L2	groomers	groomers	1	0	1.0	stereotype-based target group label	False
+sexuality	bisexual	L3	grooming	grooming	15	17	0.46875	concept (other)	False
+sexuality	bisexual	L3	religious freedom	religious freedom	0	7	0.0	concept (values)	False
+sexuality	bisexual	L3	family values	family values	3	6	0.3333333333333333	concept (values)	False
+sexuality	gay	L2	snowflake	snowflake	15	6	0.7142857142857143	stereotype-based target group label	False
+sexuality	gay	L2	groomers	groomers	1	0	1.0	stereotype-based target group label	False
+sexuality	gay	L3	grooming	grooming	15	17	0.46875	concept (other)	False
+sexuality	gay	L3	religious freedom	religious freedom	0	7	0.0	concept (values)	False
+sexuality	gay	L3	family values	family values	3	6	0.3333333333333333	concept (values)	False
+sexuality	gay	L4	butterfly	butterfly	1	1	0.5	arbitrary target group label	False
+sexuality	lesbian	L2	snowflake	snowflake	15	6	0.7142857142857143	stereotype-based target group label	False
+sexuality	lesbian	L2	groomers	groomers	1	0	1.0	stereotype-based target group label	False
+sexuality	lesbian	L3	grooming	grooming	15	17	0.46875	concept (other)	False
+sexuality	lesbian	L3	religious freedom	religious freedom	0	7	0.0	concept (values)	False
+sexuality	lesbian	L3	family values	family values	3	6	0.3333333333333333	concept (values)	False
+sexuality	other	L2	snowflake	snowflake	15	6	0.7142857142857143	stereotype-based target group label	False
+sexuality	other	L2	groomers	groomers	1	0	1.0	stereotype-based target group label	False
+sexuality	other	L3	grooming	grooming	15	17	0.46875	concept (other)	False
+sexuality	other	L3	religious freedom	religious freedom	0	7	0.0	concept (values)	False
+sexuality	other	L3	family values	family values	3	6	0.3333333333333333	concept (values)	False
+unknown	minority	L3	welfare	welfare	44	82	0.3492063492063492	concept (policy)	False
+unknown	minority	L3	mass immigration	mass immigration	7	17	0.2916666666666667	concept (policy)	False
+unknown	minority	L3	quotas	quotas	0	12	0.0	concept (policy)	False
+unknown	minority	L3	take back	take back	1	8	0.1111111111111111	concept (values)	False
+unknown	minority	L3	food stamps	food stamps	5	7	0.4166666666666667	concept (policy)	False
+unknown	minority	L3	political correctness	political correctness	1	6	0.14285714285714285	concept (policy)	False
+unknown	minority	L3	public school	public school	2	4	0.3333333333333333	concept (other)	False
+unknown	minority	L3	overpopulation	overpopulation	0	4	0.0	concept (policy)	False
+unknown	minority	L3	voter fraud	voter fraud	0	4	0.0	concept (policy)	False
+unknown	minority	L3	personal responsibility	personal responsibility	1	3	0.25	concept (values)	False
+unknown	minority	L3	race realism	race realism	1	2	0.3333333333333333	concept (values)	False
+unknown	minority	L3	colorblind	colorblind	0	2	0.0	concept (values)	False
+unknown	minority	L3	economic anxiety	economic anxiety	0	2	0.0	concept (values)	False
+unknown	minority	L3	forced diversity	forced diversity	0	2	0.0	concept (policy)	False
+unknown	minority	L3	freedom of association	freedom of association	0	1	0.0	concept (policy)	False
+unknown	minority	L4	amish	amish	1	5	0.16666666666666666	humor/mockery/sarcasm	False
+unknown	minority	L4	silent majority	silent majority	1	2	0.3333333333333333	persona signal (self-referential)	True

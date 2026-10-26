@@ -1,0 +1,102 @@
+taxonomy_level	target	coding_level	dogwhistle	status	is_self_referential
+self	referential_white_supremacist	L4	#milk	not_found	True
+gender	men	L2	absent fathers	not_found	False
+race	black	L2	absent fathers	not_found	False
+	unknown	L3	affirmative action	not_found	False
+religion	jewish	L3	attacks on or imagery of jewish political leaders	not_found	False
+race	black	L3	back the blue	not_found	False
+self	referential_white_supremacist	L3	back the blue	not_found	False
+	unknown	L3	big government	not_found	False
+	unknown	L3	big pharma	not_found	False
+race	black	L3	black-on-black crime	not_found	False
+race	black	L2	broken family	not_found	False
+religion	jewish	L2	central bankers	not_found	False
+gender	transgender unspecified	L3	children are being forced to transition	not_found	False
+origin	specific country	L2	china virus	not_found	False
+race	asian	L2	china virus	not_found	False
+religion	jewish	L2	citizens of nowhere	not_found	False
+race	black	L3	cleaning up our streets	not_found	False
+race	latinx	L3	cleaning up our streets	not_found	False
+religion	jewish	L2	cosmopolitan elite	not_found	False
+religion	jewish	L2	cosmopolitanism	not_found	False
+unknown	minority	L3	critical race theory	not_found	False
+religion	muslim	L2	culture enricher	not_found	False
+	unknown	L3	cut taxes	not_found	False
+unknown	minority	L3	cut taxes	not_found	False
+gender	men	L2	deadbeat dad	not_found	False
+race	black	L2	deadbeat dad	not_found	False
+religion	jewish	L2	deadly exchange	not_found	False
+	unknown	L3	dred scott	not_found	False
+gender	women	L3	dred scott	not_found	False
+race	black	L3	dred scott	not_found	False
+religion	jewish	L2	dual loyalty	not_found	False
+	unknown	L3	economic anxiety	not_found	False
+self	referential_white_supremacist	L3	election integrity	not_found	False
+unknown	minority	L3	election integrity	not_found	False
+unknown	minority	L3	entitlement programs	not_found	False
+	unknown	L3	entitlement spending	not_found	False
+unknown	minority	L3	entitlement spending	not_found	False
+race	black	L3	food stamp president	not_found	False
+	unknown	L3	food stamps	not_found	False
+race	black	L3	forced busing	not_found	False
+unknown	minority	L3	forced busing	not_found	False
+unknown	minority	L4	hard-working americans	not_found	True
+	unknown	L3	health freedom	not_found	False
+religion	jewish	L2	hollywood elite	not_found	False
+	unknown	L4	i have finished the race, i have kept the faith	not_found	False
+	unknown	L3	implicit bias	not_found	False
+unknown	minority	L3	implicit bias	not_found	False
+religion	jewish	L2	international bankers	not_found	False
+	unknown	L4	job creators	not_found	True
+race	middle eastern	L3	judeo-christian	not_found	False
+religion	muslim	L3	judeo-christian	not_found	False
+unknown	minority	L2	majority-minority	not_found	False
+origin	immigrant	L3	merit-based immigration policy	not_found	False
+origin	migrant worker	L3	merit-based immigration policy	not_found	False
+unknown	minority	L3	merit-based immigration policy	not_found	False
+	unknown	L4	middle class	not_found	True
+religion	jewish	L2	new york elite	not_found	False
+religion	jewish	L2	new york values	not_found	False
+self	referential_white_supremacist	L4	pepe the frog	not_found	False
+	unknown	L3	political correctness	not_found	False
+race	black	L3	property rights	not_found	False
+unknown	minority	L3	property rights	not_found	False
+gender	transgender unspecified	L3	protecting women and girls	not_found	False
+gender	transgender women	L3	protecting women and girls	not_found	False
+religion	jewish	L2	pulling strings	not_found	False
+religion	jewish	L2	rootless cosmopolitan	not_found	False
+race	black	L3	run your own schools	not_found	False
+self	referential_white_supremacist	L3	run your own schools	not_found	False
+race	black	L3	school choice	not_found	False
+race	latinx	L3	school choice	not_found	False
+unknown	minority	L3	school choice	not_found	False
+self	referential_white_supremacist	L3	security from unrest	not_found	False
+unknown	minority	L3	security from unrest	not_found	False
+	unknown	L4	send me	not_found	False
+gender	transgender unspecified	L4	sex is real	not_found	False
+politics	liberal	L2	social justice warrior	not_found	False
+	unknown	L4	sonnenrad	not_found	False
+self	referential_white_supremacist	L4	sonnenrad	not_found	False
+	unknown	L3	states' rights	not_found	False
+race	black	L3	states' rights	not_found	False
+age	young adults	L2	strapping young buck	not_found	False
+gender	men	L2	strapping young buck	not_found	False
+race	black	L2	strapping young buck	not_found	False
+religion	jewish	L2	string puller	not_found	False
+gender	men	L2	superpredators	not_found	False
+race	black	L2	superpredators	not_found	False
+race	black	L4	thin blue line	not_found	False
+unknown	minority	L4	thin blue line	not_found	False
+religion	jewish	L3	trilateral commission	not_found	False
+religion	jewish	L4	triple parentheses	not_found	False
+self	referential_white_supremacist	L4	vinland	not_found	False
+	unknown	L3	war on christmas	not_found	False
+gender	men	L3	war on crime	not_found	False
+race	black	L3	war on crime	not_found	False
+race	black	L2	welfare cheats	not_found	False
+unknown	minority	L3	welfare reform	not_found	False
+race	black	L3	willie horton	not_found	False
+	unknown	L4	wonder-working power	not_found	False
+	unknown	L4	working class	not_found	True
+gender	transgender unspecified	L4	you can identify as anything you'd like	not_found	False
+religion	jewish	L3	zionist occupation government	not_found	False

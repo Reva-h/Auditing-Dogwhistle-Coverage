@@ -1,0 +1,35 @@
+\begin{table*}[ht]
+\centering
+\small
+\begin{tabular}{@{} l c l r r l @{}}
+\toprule
+\textbf{Pair} & \textbf{Level} & \textbf{Metric} & \textbf{Full} & \textbf{Tier 1+2} & \textbf{4/5 rule (full $\to$ T1+2)} \\
+\midrule
+race:black vs.\ race:latinx & L2 & Annotation & 0.985 & 0.844 & pass $\to$ pass \\
+race:black vs.\ race:middle\mbox{\_}eastern & L2 & Annotation & 0.661 & 0.622 & fail $\to$ fail \\
+race:latinx vs.\ race:middle\mbox{\_}eastern & L2 & Annotation & 0.651 & 0.737 & fail $\to$ fail \\
+religion:jewish vs.\ religion:muslim & L2 & Annotation & 0.747 & 0.829 & \textbf{fail $\to$ pass} \\
+race:black vs.\ race:middle\mbox{\_}eastern & L2 & Coverage & 0.696 & 0.600 & fail $\to$ fail \\
+\addlinespace
+race:black vs.\ race:latinx & L3 & Annotation & 0.923 & 0.979 & pass $\to$ pass \\
+race:black vs.\ race:middle\mbox{\_}eastern & L3 & Annotation & 0.880 & 0.960 & pass $\to$ pass \\
+race:latinx vs.\ race:middle\mbox{\_}eastern & L3 & Annotation & 0.812 & 0.939 & pass $\to$ pass \\
+religion:jewish vs.\ religion:muslim & L3 & Annotation & 0.990 & 0.963 & pass $\to$ pass \\
+lgbtq:LGB vs.\ lgbtq:Trans/NB & L3 & Annotation & 0.855 & 0.966 & pass $\to$ pass \\
+\addlinespace
+race:black vs.\ race:latinx & L3 & Coverage & 0.705 & 0.667 & fail $\to$ fail \\
+race:black vs.\ race:middle\mbox{\_}eastern & L3 & Coverage & 0.484 & 0.480 & fail $\to$ fail \\
+race:latinx vs.\ race:middle\mbox{\_}eastern & L3 & Coverage & 0.667 & 0.667 & fail $\to$ fail \\
+religion:jewish vs.\ religion:muslim & L3 & Coverage & 0.750 & 0.750 & fail $\to$ fail \\
+lgbtq:LGB vs.\ lgbtq:Trans/NB & L3 & Coverage & 0.556 & 0.500 & fail $\to$ fail \\
+\addlinespace
+politics:liberal vs.\ politics:republican & L4 & Annotation & 0.970 & 0.970 & pass $\to$ pass \\
+\addlinespace
+lgbtq:LGB vs.\ lgbtq:Trans/NB & Pooled & Coverage & 0.563 & 0.667 & fail $\to$ fail \\
+race:latinx vs.\ race:middle\mbox{\_}eastern & Pooled & Coverage & 0.667 & 0.800 & \textbf{fail $\to$ pass} \\
+politics:liberal vs.\ politics:republican & Pooled & Coverage & 0.667 & 0.857 & \textbf{fail $\to$ pass} \\
+\bottomrule
+\end{tabular}
+\caption{Tier 1+2 robustness comparison for every pair discussed in the main text and \S\ref{app:provenance}, at every level where it is stable ($n \geq 30$ both groups). Pass/fail flips are bolded. This table covers 19 pair/level/metric rows; the complete 105-row comparison across all reporting-group granularities is available in the released code and data.}
+\label{tab:robustness}
+\end{table*}
