@@ -4,6 +4,7 @@ outputs
 outputs_*_backup/
 .DS_Store
 __pycache__/
+.venv/
 scratch/
 paper/
 deprecated/
