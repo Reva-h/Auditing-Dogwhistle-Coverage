@@ -30,8 +30,8 @@ Columns:
   after this module. Selects the specific pair/level/metric rows the paper
   discusses by name (Appendix A, Table 3) out of the full comparison above
   and renders them as paper-ready LaTeX -- this file is derived, not
-  hand-typed, so it cannot drift out of sync with `robustness_comparison.tsv`
-  the way the old hand-built version did. Regenerate with:
+  hand-typed, so it cannot drift out of sync with `robustness_comparison.tsv`.
+  Regenerate with:
 
   ```
   python -m audit_pipeline.generate_robustness_table_for_paper
@@ -39,9 +39,9 @@ Columns:
 
 **Pooled-DI methodology:** see the module docstring in
 `audit_pipeline/robustness_check.py` -- raw counts are summed across all
-coding levels before computing one DI ratio, which is *not* the same
-methodology as `generate_figures_final.py`'s deprecated
-`appD_worst_di_and_label_gap_pooled` (min of each level's own ratio).
+coding levels before computing one DI ratio. This is *not* the minimum of
+each level's own ratio, which is what the unused figure
+`appD_worst_di_and_label_gap_pooled` plots.
 
 **Staleness:** this table reflects whatever full/tier12 Stage 4 outputs
 were on disk when it was generated. Rerun `python -m audit_pipeline.run_all`
