@@ -20,6 +20,12 @@ Two annotators, Annotator 1 and Annotator 2, independently labeled two tasks:
 | `annotator1_glossary.tsv` | Glossary inference | Annotator 1's `inferred_target` assignments per `term` |
 | `annotator2_glossary.tsv` | Glossary inference | Annotator 2's `inferred_target` assignments per `term` |
 
+The glossary files also carry each entry's `persona_in_group`,
+`covert_meaning`, `description`, `examples`, `example_speakers` and
+`example_dates`, copied from the Mendelsohn et al. (2023) glossary so the
+annotators could see them. That text is the glossary authors', not covered
+by this repository's CC0 license; see [`data/README.md`](../data/README.md).
+
 Labels are comma-separated schema strings (e.g. `race_black, origin_specific country`).
 Blank or NaN entries are treated as `_unknown`.
 

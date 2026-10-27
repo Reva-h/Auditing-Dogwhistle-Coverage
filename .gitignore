@@ -6,6 +6,7 @@ __pycache__/
 # Source datasets (downloaded by each user; see README) -- data/glossary.md is tracked
 data/*
 !data/glossary.md
+!data/README.md
 
 # Pipeline outputs are regenerated locally; the public, ID-only subset lives in release/
 outputs/*

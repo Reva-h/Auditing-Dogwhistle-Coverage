@@ -145,3 +145,22 @@ pytest
 The tests use small synthetic data, so they run on a fresh clone. The
 release's post-text check also scans the real release against the
 standardized corpora when those exist locally.
+
+## License
+
+The code, documentation, annotations and data release in this repository
+are dedicated to the public domain under [CC0 1.0](LICENSE): you may use
+them for any purpose, without asking permission or giving credit.
+
+CC0 does **not** cover third-party material, which remains under its
+owners' terms:
+
+- **The dogwhistle glossary** (`data/glossary.md`, and the glossary
+  descriptions, examples and speaker fields copied into
+  `annotations/*glossary*.tsv`) belongs to [Mendelsohn et al.
+  (2023)](https://aclanthology.org/2023.acl-long.845) and the sources it
+  cites; see [`data/README.md`](data/README.md).
+- **The source datasets** (HateXplain, Measuring Hate Speech, Implicit
+  Hate) are not included. The release identifies their posts by ID only,
+  and its `source_` columns copy the datasets' own labels; obtain the
+  datasets from their authors under their terms.

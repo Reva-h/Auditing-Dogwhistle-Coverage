@@ -150,3 +150,15 @@ post text, is released as `matches/` instead). Each table is described in
 [`audit_pipeline/README.md`](../audit_pipeline/README.md#outputs); `robustness_check/README.md` documents the robustness comparison.
 `*_tier12` directories hold the tier-1+2 robustness check, and
 `stage1_with_elsherief` holds Stage 1 for the Implicit Hate–inclusive union.
+
+## License
+
+This project's contributions to the release (every derived label column,
+the glossary-to-taxonomy mapping, the FPR judgments, and the audit result
+tables) are dedicated to the public domain under [CC0 1.0](../LICENSE).
+
+CC0 does not cover material from others. The `source_` columns are copied
+from the source datasets, and post IDs and the `dogwhistle`, `type` and
+surface-form fields come from the datasets and the Mendelsohn et al. (2023)
+glossary; their owners' terms apply. No post text or glossary descriptions
+are included.
