@@ -21,9 +21,12 @@ Pipeline-internal files identify matched posts by ``text_dedup_key``
 export time and modifies no pipeline stage, so building the release cannot
 change any result.
 
-Run after the full pipeline and the FPR annotation export are in place:
+Run after the full pipeline, including ``build_elsherief_comparison_data``:
 
     python -m audit_pipeline.build_release
+
+The FPR files are rebuilt only when the (non-distributed) completed FPR
+worksheets are present; otherwise the released copies are kept.
 """
 
 from __future__ import annotations
@@ -241,9 +244,25 @@ def load_corpus_texts() -> list[str]:
     return [text for path in STANDARDIZED_TEXT_PATHS for text in read_tsv(path)["text"]]
 
 
+def _build_fpr_files(ids_by_key: pd.Series) -> None:
+    join_table = pd.read_csv(FPR_JOIN_TABLE_PATH, dtype=str, keep_default_na=False)
+    annotators = {name: load_fpr_annotator(path) for name, path in FPR_ANNOTATOR_PATHS.items()}
+    # The FPR sample was drawn while the primary corpus still included
+    # Implicit Hate, so 47 of its items are ElSherief posts that only the
+    # ElSherief-inclusive corpus contains (HateXplain/MHS IDs are identical
+    # in both corpora).
+    write_tsv(build_fpr(join_table, annotators, ids_by_key), RELEASE_DIR / "fpr" / "fpr_judgments.tsv")
+    shutil.copy2(FPR_METRICS_PATH, RELEASE_DIR / "fpr" / FPR_METRICS_PATH.name)
+
+
 def main() -> None:
+    # The completed FPR worksheets contain post text and are not distributed,
+    # so outside a full checkout the released FPR files are kept as they are.
+    fpr_inputs = [FPR_JOIN_TABLE_PATH, *FPR_ANNOTATOR_PATHS.values()]
+    rebuild_fpr = all(path.exists() for path in fpr_inputs)
     for name in GENERATED_DIRS:
-        shutil.rmtree(RELEASE_DIR / name, ignore_errors=True)
+        if name != "fpr" or rebuild_fpr:
+            shutil.rmtree(RELEASE_DIR / name, ignore_errors=True)
 
     print("[1/6] Corpora ...")
     corpus = read_tsv(DATA_PATH)
@@ -270,14 +289,10 @@ def main() -> None:
     )
 
     print("[4/6] FPR annotations ...")
-    join_table = pd.read_csv(FPR_JOIN_TABLE_PATH, dtype=str, keep_default_na=False)
-    annotators = {name: load_fpr_annotator(path) for name, path in FPR_ANNOTATOR_PATHS.items()}
-    # The FPR sample was drawn while the primary corpus still included
-    # Implicit Hate, so 47 of its items are ElSherief posts that only the
-    # ElSherief-inclusive corpus contains (HateXplain/MHS IDs are identical
-    # in both corpora).
-    write_tsv(build_fpr(join_table, annotators, ids_we), RELEASE_DIR / "fpr" / "fpr_judgments.tsv")
-    shutil.copy2(FPR_METRICS_PATH, RELEASE_DIR / "fpr" / FPR_METRICS_PATH.name)
+    if not rebuild_fpr:
+        print("      FPR worksheets not found; keeping the released files in release/fpr/")
+    else:
+        _build_fpr_files(ids_we)
 
     print("[5/6] Audit result tables ...")
     copy_audit_results()
