@@ -144,6 +144,10 @@ def synthetic_paths(tmp_path, monkeypatch):
         monkeypatch.setattr(module, "DATA_PATH", data_path, raising=True)
     for module in (stage1_coverage, stage4_rollup):
         monkeypatch.setattr(module, "GLOSSARY_PATH", glossary_path, raising=True)
+    # Keep Stage 4's Implicit Hate comparison off the real outputs/ tree; the
+    # inputs don't exist here, so it takes the no-comparison path.
+    monkeypatch.setattr(stage4_rollup, "OUT_S1_WITH_ELSHERIEF", tmp_path / "no_stage1_with_elsherief", raising=True)
+    monkeypatch.setattr(stage4_rollup, "DATA_PATH_WITH_ELSHERIEF", tmp_path / "no_corpus_with_elsherief.tsv", raising=True)
 
     return data_path, glossary_path
 

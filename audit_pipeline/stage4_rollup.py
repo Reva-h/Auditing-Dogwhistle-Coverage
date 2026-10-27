@@ -633,7 +633,21 @@ def run(variant: PipelineVariant = VARIANT_FULL) -> None:
     # inclusive corpus, computed here as cov_a3/ann_a3/pair_a3 -- a separate
     # call from cov_a/ann_a/pair_a, which must keep meaning the primary
     # two-way union for every other output this function writes.
-    if variant.allowed_tiers is None:
+    #
+    # If build_elsherief_comparison_data hasn't been run, the ElSherief-
+    # inclusive inputs don't exist and the comparison takes the same empty
+    # path as other variants.
+    have_elsherief_inputs = (
+        DATA_PATH_WITH_ELSHERIEF.exists()
+        and (OUT_S1_WITH_ELSHERIEF / "s1_matches.tsv").exists()
+    )
+    if variant.allowed_tiers is None and not have_elsherief_inputs:
+        print(
+            "  Implicit Hate comparison skipped: run "
+            "`python -m audit_pipeline.build_elsherief_comparison_data`, "
+            "then rerun Stage 4"
+        )
+    if variant.allowed_tiers is None and have_elsherief_inputs:
         global DATA_PATH
         _primary_data_path = DATA_PATH
         DATA_PATH = DATA_PATH_WITH_ELSHERIEF
@@ -654,7 +668,7 @@ def run(variant: PipelineVariant = VARIANT_FULL) -> None:
             DATA_PATH = _primary_data_path
     else:
         # Guarded off (see note above) -- no ElSherief-inclusive Stage 1
-        # output exists at this tier scope, so both sides stay on the
+        # output exists for this tier scope (or at all, yet), so both sides stay on the
         # primary corpus and the merge below still yields the prior
         # (empty/NaN) result rather than a tier-mismatched one.
         cov_a3, ann_a3, pair_a3 = cov_a, ann_a, pair_a
