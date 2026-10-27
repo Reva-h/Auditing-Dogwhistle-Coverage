@@ -1,6 +1,11 @@
 # Who Let the Dogs Out? Auditing Dogwhistle Coverage in Hate Speech Benchmarks Across Target Groups
 
-Code and data for the WOAH 2026 paper of the same name.
+Code and data for the WOAH 2026 paper of the same name by Reva Hirave and
+Ryan Oet. **[Read the paper (PDF)](paper.pdf)**
+
+<p align="center">
+  <a href="paper.pdf"><img src="assets/paper_first_page.png" alt="First page of the paper" width="420"></a>
+</p>
 
 The paper audits whether hate speech benchmarks contain dogwhistles (coded
 hateful language) and label them correctly, and whether that varies by target
@@ -34,6 +39,7 @@ You can use the release without running any code.
 
 | Path | Contents |
 |---|---|
+| [`paper.pdf`](paper.pdf) | The paper |
 | [`release/`](release/README.md) | ID-only data release (start here for the data) |
 | [`data_preprocessing/`](data_preprocessing/README.md) | Notebooks 00–06: parse the glossary, standardize each dataset, union and deduplicate, apply the human annotations |
 | [`annotations/`](annotations/README.md) | Both annotators' target-label and glossary annotations, the merge notebook, and the inter-annotator agreement notebook |
