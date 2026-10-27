@@ -24,6 +24,8 @@ step() {
 
 step "Preprocessing (notebooks 00-06)"
 bash scripts/run_data_preprocessing.sh
+# Notebook 00's tier tables by reporting group need notebook 06's output
+run_notebook data_preprocessing/00_glossary_formatter.ipynb
 
 step "Annotation merge and inter-annotator agreement (Table 4)"
 run_notebook annotations/merge_annotation_union.ipynb

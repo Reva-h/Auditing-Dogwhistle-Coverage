@@ -32,8 +32,10 @@ Outputs:
 
 - `outputs/glossary/glossary.tsv` — master term list (columns: `term`, `surface_forms`, `persona_in_group`, `covert_meaning`, `type`, `register`, `description`, `description_source`, `example_count`, `examples`, `example_sources`, `example_speakers`, `example_dates`, `source_domain`, `tier`)
 - `outputs/glossary/glossary_tier_summary.txt` — human-readable term/target counts per tier
-- `outputs/glossary/glossary_pipeline_groups_by_tier.tsv` — pipeline-normalized group names by tier
-- `outputs/glossary/glossary_sparse_t12.tsv` — glossary restricted to tiers 1+2 (input to the `tier12` robustness variant)
+- `outputs/glossary/glossary_pipeline_groups_by_tier.tsv` — glossary entries per reporting group and tier
+- `outputs/glossary/glossary_sparse_t12.tsv` — reporting groups with fewer than 5 tier-1+2 entries (unreliable in the robustness check)
+
+The last two tables need `outputs/unioned_data/06_glossary_label_reference.tsv`, so on a first run notebook 00 skips them; run it again after notebook 06 (`scripts/reproduce_paper.sh` does). Nothing downstream reads them.
 - `outputs/glossary/glossary_persona_by_tier.tsv` — persona/target breakdown aggregated by tier
 
 ## Shared Schema
