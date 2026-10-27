@@ -101,7 +101,7 @@ class TestLoadFprAnnotator:
         path = tmp_path / "a1.tsv"
         path.write_text("row_id\tpost_text\tjudgment\tannotator_notes\n1\tsome post\tHateful\tok\n")
         out = load_fpr_annotator(path)
-        assert out.to_dict("records") == [{"row_id": "1", "judgment": "Hateful", "notes": "ok"}]
+        assert out.to_dict("records") == [{"row_id": "1", "judgment": "Hateful"}]
 
     def test_uses_second_copy_of_duplicated_headers(self, tmp_path):
         path = tmp_path / "a2.tsv"
@@ -110,7 +110,7 @@ class TestLoadFprAnnotator:
             "1\t\t\tNot Hateful\tsarcastic\n"
         )
         out = load_fpr_annotator(path)
-        assert out.to_dict("records") == [{"row_id": "1", "judgment": "Not Hateful", "notes": "sarcastic"}]
+        assert out.to_dict("records") == [{"row_id": "1", "judgment": "Not Hateful"}]
 
 
 class TestFindPostTextLeaks:

@@ -136,7 +136,8 @@ Both annotation tasks combine the two annotators' labels by plain union; see
 | `dogwhistle`, `matched_surface_form`, `coding_level`, `all_target_groups` | The match being judged |
 | `binary_hate` | The benchmark's binarized label for the post |
 | `judgment_annotator1`, `judgment_annotator2` | Each annotator's judgment of whether the post uses the term hatefully: `Hateful`, `Not Hateful`, or `Unknown` (the paper's "Unclear") |
-| `notes_annotator1`, `notes_annotator2` | Optional free-text notes |
+
+The annotators' free-text notes are not released.
 
 The sample was drawn while the union still included Implicit Hate, so 47 of
 the 225 items are Implicit Hate posts; the per-level FPR estimates in the

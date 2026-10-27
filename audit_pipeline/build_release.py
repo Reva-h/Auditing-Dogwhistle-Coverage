@@ -96,7 +96,7 @@ STANDARDIZED_TEXT_PATHS = (
 
 # A released value sharing any run of this many consecutive words with a
 # corpus post counts as leaked post text. Long enough that glossary phrases,
-# label strings and annotator notes don't collide with posts by chance.
+# label strings don't collide with posts by chance.
 LEAK_NGRAM_WORDS = 8
 
 
@@ -163,24 +163,21 @@ def build_glossary_mapping(reference: pd.DataFrame) -> pd.DataFrame:
 
 
 def load_fpr_annotator(path: Path) -> pd.DataFrame:
-    """Return ``row_id``, raw ``judgment`` and ``notes`` from one annotator's
-    completed FPR worksheet.
+    """Return ``row_id`` and raw ``judgment`` from one annotator's completed
+    FPR worksheet. Free-text notes are not released.
 
     Annotator 2's sheet went through an Excel round-trip that duplicated its
-    headers; the filled-in columns are the second copies (``judgement.1``,
-    ``annotator_notes.1``), as in ``fpr_iaa_analysis.ipynb``.
+    headers; the filled-in column is the second copy (``judgement.1``).
     """
     df = read_tsv(path)
     if "judgement.1" in df.columns:
-        df = df.rename(columns={"judgement.1": "judgment", "annotator_notes.1": "notes"})
-    else:
-        df = df.rename(columns={"annotator_notes": "notes"})
-    return df[["row_id", "judgment", "notes"]]
+        df = df.rename(columns={"judgement.1": "judgment"})
+    return df[["row_id", "judgment"]]
 
 
 def build_fpr(join_table: pd.DataFrame, annotators: dict[str, pd.DataFrame], ids_by_key: pd.Series) -> pd.DataFrame:
     """One row per FPR sample item: post IDs, match metadata, and each
-    annotator's raw judgment and notes.
+    annotator's raw judgment.
 
     Post IDs come from the join table's ``text_dedup_key``, which the sampler
     copied from Stage 1; the annotators' own copies of that key were altered
@@ -190,7 +187,7 @@ def build_fpr(join_table: pd.DataFrame, annotators: dict[str, pd.DataFrame], ids
     out.insert(1, "post_ids", _lookup_post_ids(out, ids_by_key, "FPR sample"))
     out = out.drop(columns=["text_dedup_key"])
     for name, ann in annotators.items():
-        ann = ann.rename(columns={"judgment": f"judgment_{name}", "notes": f"notes_{name}"})
+        ann = ann.rename(columns={"judgment": f"judgment_{name}"})
         out = out.merge(ann, on="row_id", how="left", validate="one_to_one")
         if out[f"judgment_{name}"].isna().any():
             raise ValueError(f"FPR sample rows missing from {name}'s worksheet")
