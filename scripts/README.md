@@ -1,7 +1,20 @@
 # Scripts
 
-Shell entry points for running the two pipelines. Both scripts must be run
-from the repository root with the virtual environment activated.
+Shell entry points. Run them from the repository root with the virtual
+environment activated.
+
+## reproduce_paper.sh
+
+Regenerates every number, table and figure in the paper from the source
+datasets, then rebuilds the data release. It runs the steps listed in the
+repository [README](../README.md#reproducing-the-paper), stopping at the
+first failure.
+
+```bash
+scripts/reproduce_paper.sh
+```
+
+---
 
 ## run_audit_pipeline.sh
 
@@ -83,9 +96,9 @@ Execution order:
 - Automates the full preprocessing flow so it can be rerun consistently.
 - Stops immediately on the first notebook failure.
 - Keeps preprocessing outputs split by stage:
-- Notebook 00 writes glossary files to [outputs/glossary](../outputs/glossary).
-- Notebooks 01-03 write standardized files to [outputs/preprocessing](../outputs/preprocessing).
-- Notebooks 04-06 write union/filter/annotation files to [outputs/unioned_data](../outputs/unioned_data).
+  - Notebook 00 writes glossary files to `outputs/glossary/`.
+  - Notebooks 01-03 write standardized files to `outputs/preprocessing/`.
+  - Notebooks 04-06 write union/filter/annotation files to `outputs/unioned_data/`.
 
 ### Prerequisites
 
@@ -94,7 +107,6 @@ From the repository root:
 ```bash
 source .venv/bin/activate
 pip install -r requirements.txt
-pip install nbclient nbformat
 ```
 
 ### Usage

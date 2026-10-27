@@ -1,402 +1,147 @@
-# benchmarking_dogwhistles
+# Who Let the Dogs Out? Auditing Dogwhistle Coverage in Hate Speech Benchmarks Across Target Groups
 
-Benchmark audit for Section 4.1 of the dogwhistle project — preprocessing,
-annotation, and programmatic RQ analysis.
+Code and data for the WOAH 2026 paper of the same name.
 
-## Repository Structure
+The paper audits whether hate speech benchmarks contain dogwhistles (coded
+hateful language) and label them correctly, and whether that varies by target
+group. It matches the 340 dogwhistles of the [Mendelsohn et al.
+(2023)](https://www.semanticscholar.org/paper/a5731b32060909bfc8848fa5f7e1e14ca3b53240)
+glossary against the union of
+[HateXplain](https://github.com/hate-alert/HateXplain) and [Measuring Hate
+Speech](https://huggingface.co/datasets/ucberkeley-dlab/measuring-hate-speech)
+(MHS), and compares that union with [Implicit
+Hate](https://github.com/SALT-NLP/implicit-hate) alone. The audit asks three
+questions:
 
-| Directory | Purpose |
+1. **Coverage:** are dogwhistles aimed at each group present in the benchmarks?
+2. **Annotation quality:** when they are, are the posts labeled hateful?
+3. **Fairness:** do coverage and labeling differ between groups, under the
+   four-fifths rule?
+
+## Released data
+
+[`release/`](release/README.md) holds the post-level data behind every
+result, **identified by post ID only, with no post text**. It contains the
+benchmark union with our target-group labels, every dogwhistle match, our
+glossary-to-taxonomy mapping, the false-positive-rate (FPR) annotations, and
+every audit result table. To read the posts, get each source dataset from its
+authors and join on `dataset` and `post_id`; [`release/README.md`](release/README.md)
+explains how.
+
+You can use the release without running any code.
+
+## Repository layout
+
+| Path | Contents |
 |---|---|
-| [`data_preprocessing/`](data_preprocessing/README.md) | Notebook pipeline: parse glossary → standardize datasets → union/dedup → apply annotations |
-| [`annotations/`](annotations/README.md) | Annotator TSVs, merge notebook, IAA notebook |
-| [`annotation_results/`](annotation_results/) | Raw annotation output TSVs from each annotator (Ryan's glossary and label files) |
-| [`audit_pipeline/`](audit_pipeline/README.md) | Python pipeline: coverage → annotation quality → disparity → rollup → robustness check |
-| [`fpr_annotation/`](fpr_annotation/) | False-positive-rate annotation task: sampler script, annotator worksheets, and collected judgments |
-| [`scripts/`](scripts/README.md) | Shell entry points for running the data-preprocessing and audit pipelines end-to-end |
-| `scratch/` | Personal working notes and exploratory drafts — not part of the reproducible pipeline |
+| [`release/`](release/README.md) | ID-only data release (start here for the data) |
+| [`data_preprocessing/`](data_preprocessing/README.md) | Notebooks 00–06: parse the glossary, standardize each dataset, union and deduplicate, apply the human annotations |
+| [`annotations/`](annotations/README.md) | Both annotators' target-label and glossary annotations, the merge notebook, and the inter-annotator agreement notebook |
+| [`audit_pipeline/`](audit_pipeline/README.md) | Stages 1–4 of the audit (coverage, annotation quality, disparity, rollup), the robustness check, the paper figures, and the release builder |
+| [`fpr_annotation/`](fpr_annotation/README.md) | The FPR annotation task: sampler, annotator instructions, and the analysis notebook |
+| [`scripts/`](scripts/README.md) | Shell entry points, including one that reproduces the whole paper |
+| [`tests/`](tests/) | Unit and integration tests (`pytest`) |
+| `data/` | Source datasets go here (not distributed, except the glossary) |
+| `outputs/` | Pipeline outputs (regenerated locally, not distributed; `group_labels.tsv` is a hand-made input) |
 
-## End-to-End Workflow
+## Setup
 
-### Step 1 — Data Preprocessing
-
-Runs notebooks `00` through `06` in order.  Output: cleaned, annotated corpus under `outputs/`.
-
-```bash
-scripts/run_data_preprocessing.sh
-```
-
-Notebook `06` reads the raw per-annotator files (`annotations/reva_labels.tsv`,
-`ryan_labels.tsv`, `reva_glossary.tsv`, `ryan_glossary.tsv`) directly and
-derives its own union — `annotations/merge_annotation_union.ipynb` is **not**
-a prerequisite for this step. That notebook is a separate analysis producing
-`merged_*.tsv` / `merged_*_resolved.tsv`, consumed only by
-`annotations/inter_annotator_agreement.ipynb` (see
-[Annotation Agreement](#annotation-agreement) below).
-
-### Step 2 — Audit Pipeline (RQ metrics)
-
-Reads from Step 1 outputs.  Runs two passes by default, then compares them:
-
-- **Primary analysis** (all glossary tiers) → `outputs/stage1/` … `outputs/stage4/`
-- **Tier-1+2 robustness check** (explicit slurs and stereotype-based terms only) → `outputs/stage1_tier12/` … `outputs/stage4_tier12/`
-- **Comparison** — once both passes have run, `audit_pipeline/robustness_check.py` compares their Stage 4 outputs pair-by-pair, per level and pooled → `outputs/robustness_check/`
+Tested with Python 3.12.
 
 ```bash
-python -m audit_pipeline.run_all
-```
-
-Run only the primary analysis (skip the robustness check and its comparison):
-
-```bash
-scripts/run_audit_pipeline.sh --no-robustness
-```
-
-Individual stages can be rerun independently (defaults to full variant):
-
-```bash
-python -m audit_pipeline.stage1_coverage
-python -m audit_pipeline.stage1_coverage --variant tier12
-python -m audit_pipeline.robustness_check
-python -m audit_pipeline.generate_robustness_table_for_paper  # after robustness_check
-```
-
-Neither `run_all.py` nor `scripts/run_audit_pipeline.sh` populates the
-Section 5.4 / Appendix G union-vs-ElSherief comparison — that requires a
-separate, manually-run step first (see [`audit_pipeline/README.md`](audit_pipeline/README.md#note-on-build_elsherief_comparison_datapy)):
-
-```bash
-python -m audit_pipeline.build_elsherief_comparison_data
-python -m audit_pipeline.stage4_rollup
-```
-
-### Step 3 — Regenerating the Paper Figures
-
-Reads from Step 2's primary-analysis outputs (`outputs/stage1/` … `outputs/stage4/`).
-All 14 figures embedded in the paper (verified by rendering `WOAH26_BDW.pdf`
-and pixel-comparing each embedded figure against this notebook's output) are
-generated by a single notebook, executed non-interactively:
-
-```bash
-jupyter nbconvert --to notebook --execute --inplace \
-  audit_pipeline/figures_consolidated.ipynb
-```
-
-Writes to `outputs/figures_final/` (the paper's figures), plus
-`outputs/stage5/` and `outputs/audit_visualizations/` (additional PNGs the
-notebook also regenerates as part of its full inventory; not cited in the
-paper). Safe to re-run — every figure is overwritten unconditionally, so
-re-running after upstream data changes updates the canonical files in place
-rather than accumulating stale duplicates. See the notebook's own final
-"Production promotion" cell for the verification method. This notebook
-replaces two earlier standalone scripts (`generate_figures_final.py`,
-`generate_fig2_annotation_di_pairwise.py`), since superseded and removed
-from this repository.
-
-## Preprocessing Pipeline Summary
-
-The primary pipeline is the modular notebook sequence in [data_preprocessing](data_preprocessing), documented in detail at [data_preprocessing/README.md](data_preprocessing/README.md).
-
-Run order:
-1. [data_preprocessing/00_glossary_formatter.ipynb](data_preprocessing/00_glossary_formatter.ipynb)
-2. [data_preprocessing/01_hatexplain_formatting.ipynb](data_preprocessing/01_hatexplain_formatting.ipynb)
-3. [data_preprocessing/02_mhs_formatting.ipynb](data_preprocessing/02_mhs_formatting.ipynb)
-4. [data_preprocessing/03_elsherief_formatting.ipynb](data_preprocessing/03_elsherief_formatting.ipynb)
-5. [data_preprocessing/04_union_and_dedup.ipynb](data_preprocessing/04_union_and_dedup.ipynb)
-6. [data_preprocessing/05_target_label_analysis_and_filtering.ipynb](data_preprocessing/05_target_label_analysis_and_filtering.ipynb)
-7. [data_preprocessing/06_apply_annotations.ipynb](data_preprocessing/06_apply_annotations.ipynb) — reads the raw per-annotator files directly and derives its own union; does not depend on `annotations/merge_annotation_union.ipynb`
-
-At a high level, this pipeline:
-1. Builds glossary artifacts from glossary source files into [outputs/glossary](outputs/glossary).
-2. Standardizes each source dataset into a shared post-level schema.
-3. Unions standardized outputs and deduplicates with ID-first, text-key fallback logic.
-4. Normalizes/analyzes target labels and optionally filters low-support groups.
-5. Applies human annotation schemas and writes cleaned labels.
-6. Writes stage outputs under [outputs/glossary](outputs/glossary), [outputs/preprocessing](outputs/preprocessing), and [outputs/unioned_data](outputs/unioned_data).
-
-Shared schema used throughout the notebook:
-- `post_id`
-- `text`
-- `raw_label`
-- `binary_hate`
-- `targets`
-- `dataset`
-- `text_dedup_key`
-
-For MHS post-level aggregation, the notebook also keeps:
-- `n_annotations`
-
-## Expected Directory Structure
-
-Expected project layout for a successful run:
-
-```text
-benchmarking_dogwhistles/
-	data_preprocessing/       # notebook pipeline (stages 00–06)
-	annotations/              # annotator TSVs + merge + IAA notebooks
-	annotation_results/       # raw per-annotator output TSVs
-	audit_pipeline/           # Python RQ analysis pipeline
-	fpr_annotation/           # FPR annotation task (sampler, worksheets, judgments)
-	scripts/                  # shell entry points for data_preprocessing and audit_pipeline
-	scratch/                  # personal working notes (gitignored)
-	data/
-		glossary.md
-		hatexplain.json
-		measuring_hate_speech.parquet
-		implicit-hate-corpus/
-			implicit_hate_v1_stg1_posts.tsv
-			implicit_hate_v1_stg3_posts.tsv
-			...
-	outputs/
-		glossary/
-			glossary.tsv                         # master term list with tier, targets, persona
-			glossary_persona_by_tier.tsv         # persona/target breakdown aggregated by tier
-			glossary_pipeline_groups_by_tier.tsv # pipeline group mapping by tier
-			glossary_sparse_t12.tsv              # glossary restricted to tiers 1+2 (robustness variant)
-			glossary_tier_summary.txt            # human-readable term counts per tier
-		preprocessing/
-			01_hatexplain_standardized.tsv       # HateXplain in shared schema
-			02_mhs_standardized.tsv              # MHS in shared schema
-			03_elsherief_standardized.tsv        # ElSherief in shared schema (optional)
-		unioned_data/
-			04_union_primary.tsv                 # all datasets unioned before dedup
-			04_dedup_primary.tsv                 # deduplicated corpus (canonical set)
-			04_union_dedup_summary.tsv           # dedup statistics and collision counts
-			05_union_primary_filtered.tsv        # union after low-support group filtering
-			05_dedup_primary_filtered.tsv        # dedup after filtering
-			05_raw_label_counts_for_annotation.tsv # per-label counts sent to annotators
-			06_cleaned_labels.tsv                # normalized target labels post-annotation
-			06_cleaned_labels_glossary_mapped.tsv # labels joined to glossary term metadata
-			06_glossary_label_reference.tsv      # reference table: raw label → glossary term
-		stage1/                                  # coverage audit outputs (all glossary tiers)
-		stage1_tier12/                           # same, restricted to tiers 1+2
-		stage2/                                  # annotation quality outputs
-		stage2_tier12/
-		stage3/                                  # disparity outputs
-		stage3_tier12/
-		stage4/                                  # rollup outputs (group and level×group)
-		stage4_tier12/
-		robustness_check/                        # full-vs-tier12 comparison table (see below)
-		group_labels.tsv                         # canonical group label reference
-```
-
-Notes:
-- [data/measuring_hate_speech.parquet](data/measuring_hate_speech.parquet) is used as a local cache and can be auto-created by the notebook.
-- ElSherief is optional and controlled with `include_elsherief` in the config cell.
-- Every `stageN/` directory has a parallel `stageN_tier12/` containing identical outputs computed on the tier-1+2-only glossary variant.
-
-## Environment Setup
-
-Set up a virtual environment and install dependencies from [requirements.txt](requirements.txt):
-
-```bash
-cd benchmarking_dogwhistles
-python3 -m venv .venv
+python3.12 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Then select the `.venv` interpreter as the notebook kernel in VS Code before running notebooks.
+## Getting the source data
 
-## Running the Data Preprocessing Notebooks
+The datasets are not redistributed here. Place them under `data/`:
 
-Use the stage-by-stage notebooks in [data_preprocessing](data_preprocessing):
+| Dataset | Where to get it | Put it at |
+|---|---|---|
+| HateXplain | `Data/dataset.json` in [hate-alert/HateXplain](https://github.com/hate-alert/HateXplain) | `data/hatexplain.json` |
+| Measuring Hate Speech | Downloaded automatically from [Hugging Face](https://huggingface.co/datasets/ucberkeley-dlab/measuring-hate-speech) on the first run | `data/measuring_hate_speech.parquet` (cached) |
+| Implicit Hate | [SALT-NLP/implicit-hate](https://github.com/SALT-NLP/implicit-hate) (the authors ask you to fill in a short form) | `data/implicit-hate-corpus/implicit_hate_v1_stg1_posts.tsv` and `implicit_hate_v1_stg3_posts.tsv` |
+| Dogwhistle glossary | Already included | `data/glossary.md` |
 
-1. Run [data_preprocessing/00_glossary_formatter.ipynb](data_preprocessing/00_glossary_formatter.ipynb)
-2. Run [data_preprocessing/01_hatexplain_formatting.ipynb](data_preprocessing/01_hatexplain_formatting.ipynb)
-3. Run [data_preprocessing/02_mhs_formatting.ipynb](data_preprocessing/02_mhs_formatting.ipynb)
-4. Run [data_preprocessing/03_elsherief_formatting.ipynb](data_preprocessing/03_elsherief_formatting.ipynb)
-5. Run [data_preprocessing/04_union_and_dedup.ipynb](data_preprocessing/04_union_and_dedup.ipynb)
-6. Run [data_preprocessing/05_target_label_analysis_and_filtering.ipynb](data_preprocessing/05_target_label_analysis_and_filtering.ipynb)
+Implicit Hate (ElSherief et al., 2021) is called `elsherief` in the code,
+file names and the release.
 
-For detailed stage behavior and inputs/outputs, see [data_preprocessing/README.md](data_preprocessing/README.md).
+## Reproducing the paper
 
-## Annotation Agreement
+With the data in place, from the repository root:
 
-Inter-annotator agreement (IAA) is computed separately in [annotations/inter_annotator_agreement.ipynb](annotations/inter_annotator_agreement.ipynb), alongside the annotation TSV files it reads.
+```bash
+scripts/reproduce_paper.sh
+```
 
-The IAA notebook computes agreement between Reva and Ryan for both target-label mapping and dogwhistle inferred-target annotation tasks using:
+It runs these steps in order; each can also be run on its own:
 
-- Exact Match %
-- Mean Jaccard Similarity
-- Macro-averaged Cohen's kappa (per-label binary formulation)
-- Krippendorff's alpha with Jaccard distance
+| Step | Command | Produces |
+|---|---|---|
+| 1. Preprocessing | `scripts/run_data_preprocessing.sh` | The annotated corpus in `outputs/unioned_data/` |
+| 2. Annotation agreement | Run `annotations/merge_annotation_union.ipynb`, then `annotations/inter_annotator_agreement.ipynb` | Table 4 |
+| 3. Audit | `scripts/run_audit_pipeline.sh` | `outputs/stage1/`–`stage4/`, the tier-1+2 robustness check (`*_tier12/`), and `outputs/robustness_check/` |
+| 4. Implicit Hate comparison | `python -m audit_pipeline.build_elsherief_comparison_data`, then `python -m audit_pipeline.stage4_rollup` | `outputs/stage4/elsherief/` (Section 5.4, Appendix G) |
+| 5. Robustness table | `python -m audit_pipeline.generate_robustness_table_for_paper` | Table 3 |
+| 6. Figures | Run `audit_pipeline/figures_consolidated.ipynb` | Figures 1–13, in `outputs/figures_final/` |
+| 7. FPR | Run `fpr_annotation/fpr_iaa_analysis.ipynb` | Table 2 and Figures 14–16, in `fpr_annotation/outputs/` |
+| 8. Release | `python -m audit_pipeline.build_release` | `release/` |
 
-It also includes a top-20 per-label kappa breakdown and built-in sanity checks against expected benchmark values.
+Step 7 reads only `release/fpr/`, so it runs on a fresh clone with no source
+data. Step 4 is separate from step 3 because the primary corpus excludes
+Implicit Hate (the paper's primary audit covers HateXplain and MHS only);
+it builds a second corpus that includes it, leaving the primary outputs
+untouched.
 
-**Note on disagreement resolution:** the paper describes disagreements as resolved by four named rules plus lead-annotator adjudication. The audit pipeline does not apply those resolutions: `data_preprocessing/06_apply_annotations.ipynb` uses the plain union of both annotators' raw labels, and the paper's audit results were computed from that union. The rule-based and adjudicated labels are produced separately by `annotations/merge_annotation_union.ipynb`. See [annotations/README.md](annotations/README.md#note-on-disagreement-resolution-vs-the-paper) for which items differ.
+Run a notebook non-interactively with
+`jupyter nbconvert --to notebook --execute --inplace <notebook>`.
 
-## FPR Annotation
+### Where each figure and table comes from
 
-The `fpr_annotation/` directory contains the false-positive-rate (FPR) annotation task, which asks human annotators to judge whether each corpus post is using a matched dogwhistle term genuinely (as coded hate speech), as counter-speech, journalistically, or in an unclear way.
+| Paper | Output file | Generated from |
+|---|---|---|
+| Figure 1 (§5.2) | `outputs/figures_final/fig01_annotation_rates_by_level.pdf` | Stage 2 |
+| Figure 2 (§5.3) | `outputs/figures_final/fig02_annotation_di_by_pair_level.pdf` | Stage 4 |
+| Figure 3 (§5.3) | `outputs/figures_final/fig03_di_histograms_by_level.pdf` | Stage 4 |
+| Figure 4a, 4b (§5.4) | `outputs/figures_final/fig04a_elsherief_annotation_delta.pdf`, `fig04b_elsherief_coverage_delta.pdf` | Stage 4, Implicit Hate comparison |
+| Table 2 (Limitations) | `fpr_annotation/outputs/fpr_reportable_metrics.txt` | FPR notebook |
+| Table 3 (App. A) | `outputs/robustness_check/robustness_table_for_paper.tex` | Robustness check |
+| Figures 5–7 (App. B) | `outputs/figures_final/fig05_coverage_heatmap.pdf`, `fig06_coverage_presence_vs_type_by_level.pdf`, `fig07_token_frequency_by_level.pdf` | Stages 1 and 4 |
+| Figures 8–9 (App. C) | `outputs/figures_final/fig08_annotation_rates_pooled.pdf`, `fig09_case_ab_counts_by_level.pdf` | Stages 2 and 4 |
+| Table 4 (App. D) | Printed by `annotations/inter_annotator_agreement.ipynb` | Raw annotator files |
+| Figures 10–11 (App. E) | `outputs/figures_final/fig10_worst_di_by_pair_level.pdf`, `fig11_annotation_label_gap_by_level.pdf` | Stage 4 |
+| Figure 12 (App. F) | `outputs/figures_final/fig12_cross_level_deltas.pdf` | Stage 3 |
+| Figure 13 (App. G) | `outputs/figures_final/fig13_elsherief_pairwise_di_delta.pdf` | Stage 4, Implicit Hate comparison |
+| Figures 14–16 (App. H) | `fpr_annotation/outputs/fig14_fpr_by_level.pdf`, `fig15_fpr_agreement_matrix.pdf`, `fig16_fpr_annotator_vs_benchmark.pdf` | FPR notebook |
 
-The task samples 75 posts per coding level (L2 / L3 / L4) from `outputs/stage1/s1_matches.tsv`, stratified to avoid excluded target groups (`referential_white_supremacist`, `unknown`, `minority`).
+The figures regenerated here contain exactly the data shown in the paper.
+Some of the paper's figures were exported before a final styling pass, so
+fonts and colors can differ slightly. Files named `fig_unused_*` are
+generated but not in the paper.
 
-| File | Contents |
-|---|---|
-| `sample_fpr.py` | Sampler script: draws the 75-per-level budget, seeds locked rows from a prior annotator's completed worksheet, and writes the worksheet/join-table outputs |
-| `worksheet_materials/fpr_annotation_worksheet_blank.csv` | Annotator-facing worksheet: `row_id`, `post_text`, `matched_surface_form`, `benchmark_label`, blank `judgment` and `annotator_notes` columns |
-| `worksheet_materials/fpr_annotator_instructions.md` / `.pdf` | Annotator briefing sheet explaining the judgment task and options |
-| `fpr_join_table.csv` | Join table linking each `row_id` to its glossary metadata (`row_id`, `text_dedup_key`, `dogwhistle`, `matched_surface_form`, `coding_level`, `all_target_groups`, `binary_hate`, `dataset`) |
-| `completed_labels/annotator1.tsv`, `annotator2.tsv` | Collected raw annotations: `row_id`, `text_dedup_key`, `dataset`, `benchmark_label`, `matched_surface_form`, `post_text`, `judgment`, `annotator_notes` |
-| `fpr_iaa_analysis.ipynb` | Computes FPR rates and inter-annotator agreement from `completed_labels/`; produces the paper's FPR figures and numbers (see below) |
-| `outputs/fig14_fpr_by_level.pdf`, `fig15_fpr_agreement_matrix.pdf`, `fig16_fpr_annotator_vs_benchmark.pdf` | Figures cited in the paper (`fig_unused_fpr_unclear_rate.pdf` is also generated but not embedded in the paper) |
-| `outputs/fpr_reportable_metrics.txt` | Headline FPR/agreement numbers cited in the paper's text |
+## Notes on reproducing the paper
 
-## Glossary Stage
+- **Disagreement resolution.** The paper describes annotator disagreements
+  as resolved by four rules plus adjudication by the lead annotator. The
+  audit does not apply those resolutions:
+  `data_preprocessing/06_apply_annotations.ipynb` takes the plain union of
+  both annotators' labels, and the paper's results were computed from that
+  union. The resolved labels are produced separately by
+  `annotations/merge_annotation_union.ipynb`. See
+  [`annotations/README.md`](annotations/README.md#note-on-disagreement-resolution-vs-the-paper)
+  for the items that differ.
+- **FPR sample.** The FPR sample was drawn while the corpus still included
+  Implicit Hate, so 47 of its 225 posts come from Implicit Hate, although
+  the primary audit excludes it.
 
-The glossary formatter is stage `00` of the modular pipeline:
+## Tests
 
-- [data_preprocessing/00_glossary_formatter.ipynb](data_preprocessing/00_glossary_formatter.ipynb)
+```bash
+pytest
+```
 
-Outputs written to [outputs/glossary/](outputs/glossary/):
-
-| File | Contents |
-|---|---|
-| `glossary.tsv` | Master term list: dogwhistle term, surface forms, persona/covert meaning, type, register, description + provenance, and tier |
-| `glossary_persona_by_tier.tsv` | Persona and target-group breakdown aggregated by tier |
-| `glossary_pipeline_groups_by_tier.tsv` | Mapping of pipeline-normalized group names by tier |
-| `glossary_sparse_t12.tsv` | Glossary restricted to tiers 1+2 — input to the robustness (`tier12`) pipeline variant |
-| `glossary_tier_summary.txt` | Human-readable term and target counts per tier |
-
-## Configuration
-
-Edit the config cells in the modular notebooks under [data_preprocessing](data_preprocessing):
-
-- [data_preprocessing/01_hatexplain_formatting.ipynb](data_preprocessing/01_hatexplain_formatting.ipynb): HateXplain input path and hate majority threshold.
-- [data_preprocessing/02_mhs_formatting.ipynb](data_preprocessing/02_mhs_formatting.ipynb): local/remote MHS source, refresh behavior, and primary threshold.
-- [data_preprocessing/03_elsherief_formatting.ipynb](data_preprocessing/03_elsherief_formatting.ipynb): stage-1/stage-3 ElSherief source paths.
-- [data_preprocessing/04_union_and_dedup.ipynb](data_preprocessing/04_union_and_dedup.ipynb): `include_elsherief` and union/dedup output paths.
-- [data_preprocessing/05_target_label_analysis_and_filtering.ipynb](data_preprocessing/05_target_label_analysis_and_filtering.ipynb): filtering controls and filtered export paths.
-
-Audit pipeline thresholds and pipeline variants (full vs. tier-1+2 robustness check) are set in [`audit_pipeline/config.py`](audit_pipeline/config.py).
-
-## Output Files
-
-### Preprocessing outputs
-
-From [outputs/preprocessing/](outputs/preprocessing/):
-
-| File | Contents |
-|---|---|
-| `01_hatexplain_standardized.tsv` | HateXplain posts in shared schema (post_id, text, binary_hate, targets, dataset, text_dedup_key) |
-| `02_mhs_standardized.tsv` | MHS posts in shared schema, with `n_annotations` from post-level aggregation |
-| `03_elsherief_standardized.tsv` | ElSherief posts in shared schema (only present when ElSherief is included) |
-
-From [outputs/unioned_data/](outputs/unioned_data/):
-
-| File | Contents |
-|---|---|
-| `04_union_primary.tsv` | All three datasets unioned before deduplication |
-| `04_dedup_primary.tsv` | Deduplicated corpus — canonical input to all downstream stages |
-| `04_union_dedup_summary.tsv` | Dedup statistics: per-dataset row counts, ElSherief inclusion, cross-dataset conflict-key/row counts, deduplicated row count, and label-conflict count (flat metric/value table, not broken out by dataset pair) |
-| `05_union_primary_filtered.tsv` | Union after filtering out target groups below the support threshold |
-| `05_dedup_primary_filtered.tsv` | Deduplicated version of the filtered union |
-| `05_raw_label_counts_for_annotation.tsv` | Per-label counts extracted for the human annotation task |
-| `06_cleaned_labels.tsv` | Normalized target labels after applying human annotation decisions |
-| `06_cleaned_labels_glossary_mapped.tsv` | `06_cleaned_labels.tsv` plus `glossary_mapped_taxonomy_levels`, `glossary_mapped_targets`, `glossary_mapped_types` |
-| `06_glossary_label_reference.tsv` | Reference table mapping each raw corpus label to its canonical glossary term |
-
-### Audit pipeline outputs
-
-Each stage writes to `outputs/stageN/` for the primary (all-tier) run and `outputs/stageN_tier12/` for the tier-1+2 robustness check.
-
-#### Stage 1 — Coverage ([outputs/stage1/](outputs/stage1/))
-
-| File | Contents |
-|---|---|
-| `s1_matches.tsv` | All matches of glossary terms against corpus posts: one row per (post, term, surface form) match |
-| `s1_coverage_detailed.tsv` | Per-(level, target, dogwhistle) match detail: matched-post count and a self-referential flag. (Presence-rate/type-coverage figures live in `s1_coverage_by_level_target.tsv`, not here.) |
-| `s1_coverage_by_level_target.tsv` | Coverage aggregated by coding level × target group |
-| `s1_coverage_missing.tsv` | Glossary terms with zero corpus matches |
-
-#### Stage 2 — Annotation Quality ([outputs/stage2/](outputs/stage2/))
-
-| File | Contents |
-|---|---|
-| `s2_annotation_by_level_target.tsv` | Annotation rates (% labeled, correct, failure) by coding level × target group |
-| `s2_form_labeling_detail.tsv` | Per-dogwhistle annotation label breakdown (case A/B counts; all matched surface forms for that dogwhistle collapsed into one semicolon-joined row) |
-
-#### Stage 3 — Disparity ([outputs/stage3/](outputs/stage3/))
-
-| File | Contents |
-|---|---|
-| `s3_annotation_disparity.tsv` | Annotation label disparity between group pairs |
-| `s3_coverage_disparity.tsv` | Coverage rate disparity between group pairs |
-| `s3_cross_level_consistency.tsv` | Cross-level consistency check: whether the same term is covered/labeled consistently across L2/L3/L4 |
-
-#### Stage 4 — Rollup ([outputs/stage4/](outputs/stage4/))
-
-Rollup outputs are organized into three sub-directories:
-
-**`by_group/`** — metrics collapsed to target group:
-
-| File | Contents |
-|---|---|
-| `s4a_annotation_by_group.tsv` | Annotation rates aggregated per target group |
-| `s4a_coverage_by_group.tsv` | Coverage rates aggregated per target group |
-| `s4a_pairwise_disparity_by_group.tsv` | Pairwise disparity index (DI) between all group pairs |
-| `s4a_pass_fail_summary.tsv` | Per-group pass/fail audit verdict across coverage and annotation thresholds |
-
-**`by_level_group/`** — metrics stratified by coding level × group:
-
-| File | Contents |
-|---|---|
-| `s4b_annotation_by_level_group.tsv` | Annotation rates by level × group |
-| `s4b_coverage_by_level_group.tsv` | Coverage rates by level × group |
-| `s4b_pairwise_disparity_by_level_group.tsv` | Pairwise DI by level × group |
-
-**`elsherief/`** — delta tables comparing union corpus vs. ElSherief-only:
-
-| File | Contents |
-|---|---|
-| `s4c_annotation_delta_union_vs_elsherief.tsv` | Per-group annotation rate delta between union and ElSherief-only |
-| `s4c_coverage_delta_union_vs_elsherief.tsv` | Per-group coverage rate delta |
-| `s4c_pairwise_delta_union_vs_elsherief.tsv` | Pairwise DI delta |
-
-### Robustness check output ([outputs/robustness_check/](outputs/robustness_check/))
-
-Written once, after both the `full` and `tier12` variants have completed —
-compares their Stage 4 outputs directly (does not re-run Stage 1-4 or
-re-derive anything from raw preprocessed data):
-
-| File | Contents |
-|---|---|
-| `robustness_comparison.tsv` | One row per (pair, level, metric): full-glossary value, tier-1+2 value, whether the pair passes the 4/5 rule under each, whether that conclusion changes, and the direction of the shift. Covers both fine-grained/raw-taxonomy-target pairs and collapsed reporting-group pairs, at every coding level plus one pooled-coverage-DI row per pair. |
-| `robustness_table_for_paper.tsv` / `robustness_table_for_paper.tex` | Written by `audit_pipeline/generate_robustness_table_for_paper.py`, run after `robustness_check.py`. Selects the pair/level/metric rows the paper discusses by name out of `robustness_comparison.tsv` above and renders them as the paper's Appendix A Table 3 — derived from the comparison table, not hand-typed. |
-| `README.md` | Column reference and the pooled-DI methodology note (see below). |
-
-**Pooled DI:** computed by summing each group's raw counts across *all*
-coding levels first, then computing one DI ratio from the pooled rates —
-not by taking `min()` of each level's own ratio (a different, older
-methodology used by `appD_worst_di_and_label_gap_pooled` in a since-removed
-legacy figure script, which gives a different number for the same pair;
-that figure was generated but never embedded in the paper). See
-`audit_pipeline/robustness_check.py`'s
-module docstring for the full explanation and a concrete example.
-
-### Annotation results ([annotation_results/](annotation_results/))
-
-Raw per-annotator output files before merge:
-
-| File | Contents |
-|---|---|
-| `ryan_glossary_annotations.tsv` | Ryan's raw annotations for the glossary-mapping task |
-| `ryan_label_annotations.tsv` | Ryan's raw annotations for the target-label task |
-
-Reva's counterpart files live in [annotations/](annotations/) alongside the merge and IAA notebooks.
-
-## Rerunning with ElSherief
-
-When ElSherief data is available:
-1. Ensure both stage files exist locally:
-	- [data/implicit-hate-corpus/implicit_hate_v1_stg1_posts.tsv](data/implicit-hate-corpus/implicit_hate_v1_stg1_posts.tsv)
-	- [data/implicit-hate-corpus/implicit_hate_v1_stg3_posts.tsv](data/implicit-hate-corpus/implicit_hate_v1_stg3_posts.tsv)
-2. Run [data_preprocessing/03_elsherief_formatting.ipynb](data_preprocessing/03_elsherief_formatting.ipynb).
-3. Set `include_elsherief = True` in [data_preprocessing/04_union_and_dedup.ipynb](data_preprocessing/04_union_and_dedup.ipynb).
-4. Re-run [data_preprocessing/04_union_and_dedup.ipynb](data_preprocessing/04_union_and_dedup.ipynb) and [data_preprocessing/05_target_label_analysis_and_filtering.ipynb](data_preprocessing/05_target_label_analysis_and_filtering.ipynb).
-
-## Notes
-
-- MHS fetch is one-time unless `refresh_mhs_local_copy=True`.
-- Dedup prioritizes `post_id` and falls back to `text_dedup_key`.
-- Sensitivity analysis with `sensitivity_thresholds` is available in `scratch/preprocessing_pipeline.ipynb` (exploratory draft, not part of the reproducible pipeline).
+The tests use small synthetic data, so they run on a fresh clone. The
+release's post-text check also scans the real release against the
+standardized corpora when those exist locally.

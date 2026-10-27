@@ -146,8 +146,7 @@ paper are computed over all 225.
 ### `audit_results/`
 
 Stage outputs copied unchanged (except that `s1_matches.tsv`, which contains
-post text, is released as `matches/` instead). Each table is described in the
-repository README's [audit pipeline outputs](../README.md#audit-pipeline-outputs)
-section; `robustness_check/README.md` documents the robustness comparison.
+post text, is released as `matches/` instead). Each table is described in
+[`audit_pipeline/README.md`](../audit_pipeline/README.md#outputs); `robustness_check/README.md` documents the robustness comparison.
 `*_tier12` directories hold the tier-1+2 robustness check, and
 `stage1_with_elsherief` holds Stage 1 for the Implicit Hate–inclusive union.

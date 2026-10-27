@@ -1,208 +1,170 @@
 # Audit Pipeline
 
-Programmatic Python pipeline that computes all research-question metrics and
-figures from the cleaned, annotated corpus produced by
-`data_preprocessing/06_apply_annotations.ipynb`.
+Computes every audit metric in the paper from the annotated corpus written by
+[`data_preprocessing/06_apply_annotations.ipynb`](../data_preprocessing/README.md),
+then draws the figures and builds the data release.
 
 ## Inputs
 
-All stages read from the outputs of the data-preprocessing pipeline:
-
-| File | Producer |
+| File | Written by |
 |---|---|
 | `outputs/unioned_data/06_cleaned_labels_glossary_mapped.tsv` | `data_preprocessing/06_apply_annotations.ipynb` |
 | `outputs/unioned_data/06_glossary_label_reference.tsv` | `data_preprocessing/06_apply_annotations.ipynb` |
-| `outputs/glossary/glossary.tsv` | `data_preprocessing/00_glossary_formatter.ipynb` |
-| `outputs/unioned_data/06_cleaned_labels_glossary_mapped_with_elsherief.tsv`, `outputs/stage1_with_elsherief/` | `audit_pipeline/build_elsherief_comparison_data.py` (only needed for `stage4_rollup.py`'s Section 5.4 / Appendix G union-vs-ElSherief comparison; see below) |
+| `outputs/unioned_data/06_cleaned_labels_glossary_mapped_with_elsherief.tsv`, `outputs/stage1_with_elsherief/` | `build_elsherief_comparison_data.py` (needed only for the Implicit Hate comparison) |
 
 ## Modules
 
-| Module | Description |
+| Module | What it does |
 |---|---|
-| `config.py` | Central path, threshold constants, and pipeline variant definitions |
-| `helpers.py` | Pure helper functions shared across stages (parsing, mapping, I/O) |
-| `stage1_coverage.py` | Dogwhistle presence and type-coverage metrics per group |
-| `stage2_annotation.py` | Case A/B annotation quality metrics per group |
-| `stage3_disparity.py` | Pairwise disparate-impact ratios within taxonomy levels |
-| `stage4_rollup.py` | Group-level rollup tables from stage1–3 outputs |
-| `robustness_check.py` | Compares the `full` and `tier12` variants' Stage 4 outputs pair-by-pair, per level and pooled |
-| `generate_robustness_table_for_paper.py` | Selects the paper-discussed subset of `robustness_check.py`'s output and renders it as paper-ready LaTeX (Appendix A, Table 3) |
-| `build_elsherief_comparison_data.py` | Builds a second, ElSherief-inclusive corpus (in memory, via the 04–06 preprocessing notebooks with `include_elsherief=True`) and runs Stage 1 matching against it, so `stage4_rollup.py` has ElSherief-only data for its Section 5.4 / Appendix G comparison — not run by `run_all.py`; see below |
-| `run_all.py` | Orchestrator: runs stages 1–4 for all active variants, then `robustness_check.py` once if both variants ran |
+| `config.py` | Paths, thresholds, and the two pipeline variants |
+| `helpers.py` | Parsing, group mapping, and disparity helpers shared by the stages |
+| `stage1_coverage.py` | Stage 1 (RQ1): matches glossary surface forms against posts; presence rate and type coverage per group |
+| `stage2_annotation.py` | Stage 2 (RQ2): whether matched posts are labeled hateful (Case A) or not (Case B), per group |
+| `stage3_disparity.py` | Stage 3 (RQ3): pairwise disparate-impact (DI) ratios within each taxonomy level, and cross-level consistency |
+| `stage4_rollup.py` | Stage 4: rolls Stages 1–3 up to reporting groups and coding levels, and compares the union with Implicit Hate |
+| `run_all.py` | Runs Stages 1–4 for both variants, then the robustness check |
+| `robustness_check.py` | Compares the two variants' Stage 4 outputs pair by pair, per level and pooled |
+| `generate_robustness_table_for_paper.py` | Renders the pairs the paper discusses as Table 3 |
+| `build_elsherief_comparison_data.py` | Builds the Implicit Hate–inclusive corpus and its Stage 1 matches (see below) |
+| `figures_consolidated.ipynb` | Draws Figures 1–13 into `outputs/figures_final/` |
+| `build_release.py` | Exports the ID-only data release to [`release/`](../release/README.md) |
 
-Publication figures are generated separately from this pipeline, by [`audit_pipeline/figures_consolidated.ipynb`](figures_consolidated.ipynb) (see the root [README.md](../README.md#regenerating-the-paper-figures) for the regeneration command). Earlier modules this pipeline superseded (`rq_reporting.py`, `stage5_figures.py`, and the pre-2026-09-09 figure scripts) have been removed from this repository.
+## Running
 
-## Pipeline Variants
-
-The pipeline runs in two *variants*:
-
-| Variant | Tiers included | Output directories |
-|---|---|---|
-| `full` (primary) | All glossary tiers (1, 2, 3) | `outputs/stage1/` … `outputs/stage4/` |
-| `tier12` (robustness check) | Tiers 1 and 2 only | `outputs/stage1_tier12/` … `outputs/stage4_tier12/` |
-
-`robustness_check.py` compares the two variants once both have run and writes
-to `outputs/robustness_check/` — it is not itself a per-variant stage.
-
-**Why tier filtering is done at the glossary level (Stage 1 and Stage 4), not
-post-match:** the glossary drives both (a) which surface-form tokens appear in
-the regex and (b) the `total_glossary_dogwhistles` denominator for
-`presence_rate`.  Filtering after matching would leave tier-3 tokens in the
-regex and inflate match counts for the restricted variant, while also producing
-a misleadingly low `presence_rate` because the denominator would still include
-tier-3 entries.
-
-The tier distribution in the current glossary is:
-
-| Tier | Terms | Description |
-|---|---|---|
-| 1 | ~140 | Explicit slurs and direct labels (least cultural decoding required) |
-| 2 | ~96 | Stereotype-based terms (cultural knowledge required) |
-| 3 | ~239 | Concepts, policy language, persona signals (in-group knowledge required) |
-
-## Stage Outputs
-
-Each stage writes its artifacts to a dedicated subdirectory of `outputs/`.
-The `full` variant uses the primary paths; the `tier12` variant appends `_tier12`.
-
-| Stage | Full output directory | Tier-12 output directory |
-|---|---|---|
-| stage1 | `outputs/stage1/` | `outputs/stage1_tier12/` |
-| stage2 | `outputs/stage2/` | `outputs/stage2_tier12/` |
-| stage3 | `outputs/stage3/` | `outputs/stage3_tier12/` |
-| stage4 | `outputs/stage4/` | `outputs/stage4_tier12/` |
-
-`robustness_check.py` writes to a single directory, `outputs/robustness_check/`,
-covering both variants at once (it compares them; it does not have a
-per-variant output).
-
-## Running the Pipeline
-
-Run both variants (primary + robustness check) from the repository root:
+From the repository root:
 
 ```bash
-python -m audit_pipeline.run_all
+python -m audit_pipeline.run_all                      # both variants, then the robustness check
+python -m audit_pipeline.run_all --variant full       # primary analysis only
+python -m audit_pipeline.stage1_coverage --variant tier12   # one stage, one variant
+python -m audit_pipeline.robustness_check             # needs both variants' Stage 4 outputs
+python -m audit_pipeline.generate_robustness_table_for_paper   # after robustness_check
 ```
 
-Run a single variant:
+`scripts/run_audit_pipeline.sh` wraps `run_all` with `--from`/`--to` stage
+selection; see [`scripts/README.md`](../scripts/README.md).
 
-```bash
-python -m audit_pipeline.run_all --variant full
-python -m audit_pipeline.run_all --variant tier12
-```
+### The Implicit Hate comparison
 
-Run a single stage independently (defaults to `full` variant):
-
-```bash
-python -m audit_pipeline.stage1_coverage
-```
-
-Run a single stage for the tier-1+2 robustness check:
-
-```bash
-python -m audit_pipeline.stage1_coverage --variant tier12
-```
-
-Run just the full-vs-tier12 comparison, once both variants' Stage 4 outputs
-already exist on disk (no `--variant` flag — it always compares both):
-
-```bash
-python -m audit_pipeline.robustness_check
-```
-
-Then generate the paper's Table 3 (Appendix A) from that comparison:
-
-```bash
-python -m audit_pipeline.generate_robustness_table_for_paper
-```
-
-To populate the Section 5.4 / Appendix G union-vs-ElSherief comparison
-(otherwise `outputs/stage4/by_group/s4c_*_delta_union_vs_elsherief.tsv` comes
-out all-NaN on the ElSherief side — the primary corpus never includes
-ElSherief), run this once before `stage4_rollup.py` (or before `run_all.py`/
-`run_audit_pipeline.sh`, which don't call it automatically):
+The primary audit covers HateXplain and MHS only, so the primary corpus
+contains no Implicit Hate posts. The comparison in Section 5.4 and
+Appendix G needs them, so `build_elsherief_comparison_data.py` runs
+preprocessing notebooks 04–06 in memory with Implicit Hate included, writes
+that corpus to separate `*_with_elsherief` files, and runs Stage 1 on it.
+The primary outputs are not touched. Run it after preprocessing, then rerun
+Stage 4:
 
 ```bash
 python -m audit_pipeline.build_elsherief_comparison_data
 python -m audit_pipeline.stage4_rollup
 ```
 
-## Key Constants (`config.py`)
+Without this step, the Implicit Hate side of `outputs/stage4/elsherief/` is
+empty.
 
-| Constant | Default | Meaning |
+### The data release
+
+```bash
+python -m audit_pipeline.build_release
+```
+
+Run it after everything above. It drops post text, replaces each post's
+normalized-text key with its source post ID, writes `release/`, and fails
+if any released file contains post text (a text column, or any 8 consecutive
+words of a post). The FPR files are rebuilt only when the completed FPR
+worksheets are present; they contain post text and are not distributed, so
+on a fresh clone the released FPR files are kept as they are.
+
+## Pipeline variants
+
+| Variant | Glossary entries used | Outputs |
 |---|---|---|
-| `N_MIN` | 30 | Minimum matched-post count for stable per-group estimates |
-| `DI_THRESHOLD` | 0.8 | Disparate-impact ratio threshold (80% rule) |
-| `VARIANT_FULL` | — | Primary variant (all tiers, standard output paths) |
-| `VARIANT_TIER12` | — | Robustness variant (tiers 1+2 only, `*_tier12` output paths) |
-| `ALL_VARIANTS` | `(VARIANT_FULL, VARIANT_TIER12)` | Ordered tuple iterated by `run_all.py` |
+| `full` (primary) | All 340 | `outputs/stage1/` … `outputs/stage4/` |
+| `tier12` (robustness check, Appendix A) | Tiers 1 and 2 only (152) | `outputs/stage1_tier12/` … `outputs/stage4_tier12/` |
 
-## PipelineVariant
+Tiers describe the provenance of each glossary entry's source:
 
-`PipelineVariant` is a `NamedTuple` defined in `config.py` that bundles:
+| Tier | Entries | Source |
+|---|---|---|
+| 1 | 89 | Peer-reviewed publishers, established journalism, civil-society organizations |
+| 2 | 63 | Named authors without formal editorial review, including advocacy sources |
+| 3 | 180 | Community-edited sources (179 from rationalwiki.org, 1 from Wikipedia) |
+| unknown | 8 | No source URL; excluded from `tier12` |
 
-- `name` — short identifier (`"full"` or `"tier12"`)
-- `allowed_tiers` — `frozenset[int] | None` (None = all tiers)
-- `out_s1` … `out_s4` — output path for each stage
-- `out_s5` — output path for stage5-shaped figure writers; sandboxed by
-  `figures_consolidated.ipynb` via `variant._replace(out_s5=...)`
+Tiers are filtered on the glossary itself, before matching, because the
+glossary sets both which surface forms are matched and the denominator of
+the presence rate. Filtering matches afterwards would leave both
+unchanged.
 
-Pass a `PipelineVariant` to any stage's `run()` function to control which
-tiers are active and where outputs land.  The `resolve_variant()` helper parses
-a `--variant <name>` flag from `sys.argv` for use in `__main__` blocks.
+A variant is a `PipelineVariant` (in `config.py`): a name, the allowed
+tiers (`None` for all), and the output directory of each stage. Every
+stage's `run()` takes one, and `--variant <name>` selects one on the command
+line.
 
-## Helper Functions (`helpers.py`)
+## Key constants (`config.py`)
 
-Shared utilities used across stages. Highlights:
+| Constant | Value | Meaning |
+|---|---|---|
+| `N_MIN` | 30 | Minimum matched posts for a group's estimate to count as stable |
+| `DI_THRESHOLD` | 0.8 | Four-fifths rule threshold for DI ratios |
 
-- `norm_target(value)` — normalise taxonomy target strings for grouping
-- `map_reporting_group(level, target) -> ReportGroup` — map raw taxonomy labels to reporting groups
-- `add_reporting_columns(df, level_col, target_col)` — add `report_level`, `report_target`, `report_include` to a DataFrame
-- `safe_float(value)` / `safe_di_ratio(a, b)` / `safe_di(...)` — numeric helpers with sparse-data guards
-- `parse_list_like(value)` / `parse_labels(value)` — parse list-valued notebook output columns
-- `build_pairwise_rows(df, ...)` — assemble pairwise comparison rows for disparity tables
-- `write_tsv(df, path)` / `ensure_dirs(*paths)` — I/O utilities
+## Outputs
 
-## Note on `robustness_check.py`
+Every stage writes one directory per variant: `outputs/stageN/` for `full`,
+`outputs/stageN_tier12/` for `tier12`. All of these tables except
+`s1_matches.tsv` are copied unchanged into
+[`release/audit_results/`](../release/README.md).
 
-Reads only the already-computed Stage 4 outputs for two `PipelineVariant`s
-(default `VARIANT_FULL` vs. `VARIANT_TIER12`) — it never re-runs stage1–4 and
-never re-derives metrics from raw preprocessed data. Its pooled-DI
-computation (`compute_pooled_coverage_di`) sums each pair's raw counts
-across all coding levels first, then computes one DI ratio — see the module
-docstring for why this specific methodology was chosen (it's the one that
-reproduces the paper's cited pooled figures; a naive `min()` of each level's
-own ratio does not).
+### Stage 1: coverage (`outputs/stage1/`)
 
-## Note on `generate_robustness_table_for_paper.py`
+| File | Contents |
+|---|---|
+| `s1_matches.tsv` | One row per (post, dogwhistle, target) match. Contains post text, so it is released as `release/matches/` with post IDs instead |
+| `s1_coverage_detailed.tsv` | Matched-post count per (level, target, dogwhistle), with a self-referential flag |
+| `s1_coverage_by_level_target.tsv` | Presence rate and type coverage per coding level and target group |
+| `s1_coverage_missing.tsv` | Glossary dogwhistles with no match in the corpus |
 
-Reads `robustness_comparison.tsv` and re-derives the paper's Appendix A
-table (values, pass/fail verdicts, bolded flips, and the row/flip counts
-quoted in the caption) instead of it being hand-typed. The one thing that
-still has to be maintained by hand is `PAPER_ROWS`, the list of which
-pair/level/metric combinations the paper actually discusses by name — that's
-an editorial choice, not something derivable from the data. It looks each
-row up in `robustness_comparison.tsv` order-insensitively on `target_a` /
-`target_b` and raises if a row can't be found or is ambiguous, so a stale or
-renamed pair breaks the script loudly rather than silently dropping a row
-from the paper.
+`outputs/stage1_with_elsherief/` has the same files for the Implicit
+Hate–inclusive corpus.
 
-## Note on `build_elsherief_comparison_data.py`
+### Stage 2: annotation quality (`outputs/stage2/`)
 
-The primary analysis deliberately excludes ElSherief (`include_elsherief`
-defaults to `False` in `04_union_and_dedup.ipynb`, per the paper's Methods:
-the primary audit is HateXplain+MHS only). But `stage4_rollup.py`'s Section
-5.4 / Appendix G comparison needs ElSherief's own Stage 1 matches to compare
-against, and nothing in the primary corpus ever contains ElSherief posts for
-it to filter for.
+| File | Contents |
+|---|---|
+| `s2_annotation_by_level_target.tsv` | Case A (labeled hateful) and Case B (not labeled hateful) counts and rates per coding level and target group |
+| `s2_form_labeling_detail.tsv` | Case A/B counts per dogwhistle, with its matched surface forms |
 
-This module builds a second, fully separate corpus that *does* include
-ElSherief — running `04_union_and_dedup.ipynb`, `05_target_label_analysis_and_filtering.ipynb`,
-and `06_apply_annotations.ipynb` in memory with `include_elsherief=True` and
-alternate output paths, then running Stage 1 matching against the result —
-without ever touching the primary (ElSherief-excluded) files those notebooks
-normally produce. It is a standalone, manually-run step: `run_all.py` and
-`scripts/run_audit_pipeline.sh` do not call it, so skipping it doesn't break
-the primary pipeline — it just leaves the Section 5.4 / Appendix G delta
-tables all-NaN on the ElSherief side. See the command in "Running the
-Pipeline" above.
+### Stage 3: disparity (`outputs/stage3/`)
+
+| File | Contents |
+|---|---|
+| `s3_coverage_disparity.tsv` | Pairwise coverage DI between target groups within each level |
+| `s3_annotation_disparity.tsv` | Pairwise annotation DI between target groups within each level |
+| `s3_cross_level_consistency.tsv` | Change in each group's presence rate, type coverage, and labeling rates from L2 to L3 and from L3 to L4 |
+
+### Stage 4: rollup (`outputs/stage4/`)
+
+| File | Contents |
+|---|---|
+| `by_group/s4a_coverage_by_group.tsv` | Coverage per reporting group, pooled over levels |
+| `by_group/s4a_annotation_by_group.tsv` | Annotation rates per reporting group, pooled over levels |
+| `by_group/s4a_pairwise_disparity_by_group.tsv` | Pairwise DI per reporting-group pair |
+| `by_group/s4a_pass_fail_summary.tsv` | Per coding level and reporting group: its worst pairwise coverage and annotation DI, and whether each passes the four-fifths rule |
+| `by_level_group/s4b_coverage_by_level_group.tsv` | Coverage per coding level and reporting group |
+| `by_level_group/s4b_annotation_by_level_group.tsv` | Annotation rates per coding level and reporting group |
+| `by_level_group/s4b_pairwise_disparity_by_level_group.tsv` | Pairwise DI per coding level and reporting-group pair |
+| `elsherief/s4c_coverage_delta_union_vs_elsherief.tsv` | Presence-rate difference, union minus Implicit Hate, per group |
+| `elsherief/s4c_annotation_delta_union_vs_elsherief.tsv` | Correct-labeling-rate difference, union minus Implicit Hate, per group |
+| `elsherief/s4c_pairwise_delta_union_vs_elsherief.tsv` | Pairwise DI difference, union minus Implicit Hate |
+
+### Robustness check (`outputs/robustness_check/`)
+
+| File | Contents |
+|---|---|
+| `robustness_comparison.tsv` | One row per (group pair, level, metric): the `full` and `tier12` values, the four-fifths verdict under each, and whether it flips. Includes one pooled coverage-DI row per pair |
+| `robustness_table_for_paper.tsv`, `.tex` | Table 3: the rows of `robustness_comparison.tsv` the paper discusses, selected by `PAPER_ROWS` in `generate_robustness_table_for_paper.py` |
+| `README.md` | Column reference |
+
+Pooled coverage DI sums each group's counts over all coding levels before
+taking one ratio; it is not the minimum of the per-level ratios. The
+`robustness_check.py` docstring explains why, with an example.

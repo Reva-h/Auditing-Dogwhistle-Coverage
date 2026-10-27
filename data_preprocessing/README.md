@@ -1,6 +1,6 @@
 # Data Preprocessing Pipeline
 
-This directory contains the modular notebook pipeline that builds the unified corpus used by downstream audits.
+Notebooks 00–06 build the annotated benchmark union that the [audit pipeline](../audit_pipeline/README.md) reads. Run them in order with `scripts/run_data_preprocessing.sh`, or open them and run each top to bottom. Each notebook finds the repository root whether it is run from the root or from this directory.
 
 ## Pipeline Overview
 
@@ -9,7 +9,7 @@ The pipeline runs in seven stages:
 1. `00_glossary_formatter.ipynb`
 2. `01_hatexplain_formatting.ipynb`
 3. `02_mhs_formatting.ipynb`
-4. `03_elsherief_formatting.ipynb` (optional in downstream union)
+4. `03_elsherief_formatting.ipynb` (Implicit Hate; used only by the Implicit Hate comparison)
 5. `04_union_and_dedup.ipynb`
 6. `05_target_label_analysis_and_filtering.ipynb`
 7. `06_apply_annotations.ipynb`
@@ -56,7 +56,7 @@ Notebook: `01_hatexplain_formatting.ipynb`
 
 What it does:
 
-1. Loads HateXplain JSON from `data/hatexplain.json`.
+1. Loads HateXplain's `dataset.json`, saved as `data/hatexplain.json`.
 2. Normalizes text and target fields.
 3. Computes `binary_hate` using a positive-only majority rule from annotator labels.
 4. Exports one standardized row per post.
@@ -71,8 +71,7 @@ Notebook: `02_mhs_formatting.ipynb`
 
 What it does:
 
-1. Loads MHS from local parquet cache `data/measuring_hate_speech.parquet`.
-2. Optionally refreshes from the configured Hugging Face parquet URI.
+1. Loads MHS from the local cache `data/measuring_hate_speech.parquet`, downloading it from Hugging Face first if it is missing (or if `refresh_mhs_local_copy=True`).
 3. Harmonizes annotator-level rows into the shared schema.
 4. Aggregates to one post-level row and computes `binary_hate` from the post-level mean score threshold.
 
@@ -104,7 +103,7 @@ Inputs:
 
 - `outputs/preprocessing/01_hatexplain_standardized.tsv`
 - `outputs/preprocessing/02_mhs_standardized.tsv`
-- `outputs/preprocessing/03_elsherief_standardized.tsv` (optional via config)
+- `outputs/preprocessing/03_elsherief_standardized.tsv` (only when `include_elsherief=True`)
 
 What it does:
 
@@ -156,8 +155,8 @@ Inputs:
 What it does:
 
 1. Loads the raw per-annotator label and glossary TSVs directly from `annotations/` (not the pre-merged `merged_*.tsv` files there — this notebook derives its own union independently of `annotations/merge_annotation_union.ipynb`).
-2. Aggregates direct raw-target annotations and glossary-term annotations into a future-proof annotator-aware structure.
-3. Resolves disagreements by taking the union of assigned labels.
+2. Collects both annotators' labels for each raw target label and each glossary entry.
+3. Combines the two annotators' labels by plain union. The paper describes rule-based resolution instead; see [the note in `annotations/README.md`](../annotations/README.md#note-on-disagreement-resolution-vs-the-paper).
 4. Applies those annotations into a new `cleaned_label` column.
 5. Maps matched glossary terms to taxonomy-level and target labels for downstream audits.
 6. Reports raw label counts split across hate and non-hate rows and renders summary figures.
@@ -175,20 +174,12 @@ Run notebooks from `00` to `06` in order. If you only need glossary outputs, run
 ## Configuration Notes
 
 - `02_mhs_formatting.ipynb`: controls local-vs-remote MHS loading and threshold settings.
-- `04_union_and_dedup.ipynb`: `include_elsherief` controls whether stage `03` output is included.
+- `04_union_and_dedup.ipynb`: `include_elsherief` controls whether stage `03` output is included. Leave it `False`: the paper's primary audit excludes Implicit Hate, and setting it overwrites the primary corpus. The Implicit Hate comparison is built separately by `python -m audit_pipeline.build_elsherief_comparison_data`, which runs 04–06 with Implicit Hate included and writes to separate files.
 - `05_target_label_analysis_and_filtering.ipynb`: controls filtering behavior and export of filtered outputs.
 - `06_apply_annotations.ipynb`: controls how direct annotations, glossary annotations, and legacy target backfills are merged into `cleaned_label`.
 
 The glossary stage writes all outputs to `outputs/glossary/`.
 
-## Quick Start
+## Setup
 
-From the project root:
-
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-```
-
-Then open the notebooks in this folder and run them top-to-bottom in stage order.
+See the repository [README](../README.md#setup) for the environment and [where to put the source datasets](../README.md#getting-the-source-data).
