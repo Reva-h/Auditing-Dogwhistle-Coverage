@@ -25,10 +25,10 @@ hirave_oet_proposal.pdf
 *.csv
 *.parquet
 !release/**
-!annotations/reva_labels.tsv
-!annotations/ryan_labels.tsv
-!annotations/reva_glossary.tsv
-!annotations/ryan_glossary.tsv
+!annotations/annotator1_labels.tsv
+!annotations/annotator2_labels.tsv
+!annotations/annotator1_glossary.tsv
+!annotations/annotator2_glossary.tsv
 !annotations/merged_labels_resolved.tsv
 !annotations/merged_glossary_resolved.tsv
 !outputs/group_labels.tsv

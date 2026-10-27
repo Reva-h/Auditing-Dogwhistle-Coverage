@@ -5,7 +5,7 @@ If LOCKED_ANNOTATIONS points to a TSV of completed annotations (from a
 prior worksheet version), those rows are guaranteed to appear in the new
 sample.  The remaining per-level budget is drawn uniformly from the
 residual pool.  A personal copy of the new worksheet is written for the
-locked annotator with her existing judgments pre-filled.
+locked annotator with their existing judgments pre-filled.
 """
 
 from pathlib import Path
@@ -18,10 +18,10 @@ MATCHES_TSV    = REPO_ROOT / "outputs" / "stage1" / "s1_matches.tsv"
 OUT_DIR        = Path(__file__).resolve().parent
 WORKSHEET_OUT  = OUT_DIR / "fpr_annotation_worksheet.csv"
 JOIN_TABLE_OUT = OUT_DIR / "fpr_join_table.csv"
-JING_OUT       = OUT_DIR / "jing_inprogress_new.tsv"
+LOCKED_OUT     = OUT_DIR / "locked_annotator_inprogress_new.tsv"
 
 # Set to None to disable locked-row seeding
-LOCKED_ANNOTATIONS = OUT_DIR / "jing_inprogress.tsv"
+LOCKED_ANNOTATIONS = OUT_DIR / "locked_annotator_inprogress.tsv"
 
 # ── constants ─────────────────────────────────────────────────────────────────
 
@@ -214,8 +214,8 @@ def write_outputs(sample: pd.DataFrame) -> None:
     # Join table — pipeline metadata, no annotation content
     sample[JOIN_COLS].to_csv(JOIN_TABLE_OUT, index=False)
 
-    # Jing's personal copy — locked rows have her existing judgment pre-filled
-    sample[WORKSHEET_COLS].to_csv(JING_OUT, sep="\t", index=False)
+    # The locked annotator's personal copy — locked rows have their existing judgment pre-filled
+    sample[WORKSHEET_COLS].to_csv(LOCKED_OUT, sep="\t", index=False)
 
 
 # ── step 6: validation ────────────────────────────────────────────────────────
@@ -223,7 +223,7 @@ def write_outputs(sample: pd.DataFrame) -> None:
 def validate() -> None:
     ws = pd.read_csv(WORKSHEET_OUT)
     jt = pd.read_csv(JOIN_TABLE_OUT)
-    jing_new = pd.read_csv(JING_OUT, sep="\t")
+    locked_new = pd.read_csv(LOCKED_OUT, sep="\t")
 
     print(f"\n{'═'*60}")
     print("  VALIDATION")
@@ -248,10 +248,10 @@ def validate() -> None:
     assert dupes == 0, f"{dupes} duplicate (text_dedup_key, dogwhistle) pairs in join table"
     print("(text_dedup_key, dogwhistle) unique in join table: ✓")
 
-    jing_filled = jing_new["judgment"].notna() & (jing_new["judgment"].str.strip() != "")
-    print(f"\nJing's copy ({JING_OUT.name}):")
-    print(f"  Rows with judgment pre-filled: {jing_filled.sum()} / {len(jing_new)}")
-    print(f"  Unique judgment values       : {jing_new.loc[jing_filled, 'judgment'].value_counts().to_dict()}")
+    locked_filled = locked_new["judgment"].notna() & (locked_new["judgment"].str.strip() != "")
+    print(f"\nLocked annotator's copy ({LOCKED_OUT.name}):")
+    print(f"  Rows with judgment pre-filled: {locked_filled.sum()} / {len(locked_new)}")
+    print(f"  Unique judgment values       : {locked_new.loc[locked_filled, 'judgment'].value_counts().to_dict()}")
 
     print("\n5 sample rows (row_id | surface_form | post_text[:80]):")
     for _, row in ws.sample(5, random_state=RANDOM_STATE).sort_values("row_id").iterrows():
@@ -276,7 +276,7 @@ def print_summary(sample: pd.DataFrame) -> None:
     print(f"{'═'*60}")
     print(f"\nWorksheet saved to   : {WORKSHEET_OUT}")
     print(f"Join table saved to  : {JOIN_TABLE_OUT}")
-    print(f"Jing's copy saved to : {JING_OUT}")
+    print(f"Locked annotator's copy saved to : {LOCKED_OUT}")
     print(f"Total rows           : {len(sample)}")
     print(f"L2: {counts['L2']} | L3: {counts['L3']} | L4: {counts['L4']}")
     print(f"Unique posts in sample          : {jt['text_dedup_key'].nunique()}")

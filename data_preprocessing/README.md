@@ -147,8 +147,8 @@ Outputs:
 Inputs:
 
 - `outputs/unioned_data/05_union_primary_filtered.tsv`
-- `annotations/reva_labels.tsv`, `annotations/ryan_labels.tsv`
-- `annotations/reva_glossary.tsv`, `annotations/ryan_glossary.tsv`
+- `annotations/annotator1_labels.tsv`, `annotations/annotator2_labels.tsv`
+- `annotations/annotator1_glossary.tsv`, `annotations/annotator2_glossary.tsv`
 - `outputs/glossary/glossary.tsv`
 - `outputs/group_labels.tsv`
 

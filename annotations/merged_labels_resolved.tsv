@@ -1,4 +1,4 @@
-dataset	raw_target_label	dest_label	annotator notes	dest_label_reva	dest_label_ryan	dest_label_merged	merge_method	merge_flag
+dataset	raw_target_label	dest_label	annotator notes	dest_label_annotator1	dest_label_annotator2	dest_label_merged	merge_method	merge_flag
 hatexplain	arab	race_middle eastern		race_middle eastern	race_middle eastern	race_middle eastern	exact	
 elsherief	asian people	race_asian		race_asian	race_asian	race_asian	exact	
 elsherief	syrian refugees	origin_specific country, origin_immigrant		origin_specific country, origin_immigrant	origin_specific country, origin_immigrant	origin_immigrant, origin_specific country	exact	

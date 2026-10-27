@@ -4,7 +4,7 @@ Human annotation files and merge/IAA notebooks for the dogwhistle benchmark audi
 
 ## Annotators
 
-Two annotators (Reva and Ryan) independently labeled two tasks:
+Two annotators, Annotator 1 and Annotator 2, independently labeled two tasks:
 
 | Task | Key | Description |
 |---|---|---|
@@ -15,15 +15,15 @@ Two annotators (Reva and Ryan) independently labeled two tasks:
 
 | File | Task | Contents |
 |---|---|---|
-| `reva_labels.tsv` | Label mapping | Reva's `dest_label` assignments per `(dataset, raw_target_label)` |
-| `ryan_labels.tsv` | Label mapping | Ryan's `dest_label` assignments per `(dataset, raw_target_label)` |
-| `reva_glossary.tsv` | Glossary inference | Reva's `inferred_target` assignments per `term` |
-| `ryan_glossary.tsv` | Glossary inference | Ryan's `inferred_target` assignments per `term` |
+| `annotator1_labels.tsv` | Label mapping | Annotator 1's `dest_label` assignments per `(dataset, raw_target_label)` |
+| `annotator2_labels.tsv` | Label mapping | Annotator 2's `dest_label` assignments per `(dataset, raw_target_label)` |
+| `annotator1_glossary.tsv` | Glossary inference | Annotator 1's `inferred_target` assignments per `term` |
+| `annotator2_glossary.tsv` | Glossary inference | Annotator 2's `inferred_target` assignments per `term` |
 
 Labels are comma-separated schema strings (e.g. `race_black, origin_specific country`).
 Blank or NaN entries are treated as `_unknown`.
 
-`ryan_labels.tsv` and `ryan_glossary.tsv` match the annotator's original
+`annotator2_labels.tsv` and `annotator2_glossary.tsv` match the annotator's original
 worksheets except that blank cells are recorded as `_unknown` (116 items in
 the labels task, 10 in the glossary task). No resolution rule has been
 applied to them, so the inter-annotator agreement computed from them is on
@@ -33,7 +33,7 @@ pre-resolution labels.
 
 ### `merge_annotation_union.ipynb`
 
-Merges Reva and Ryan's annotations using a union strategy, enriches the glossary
+Merges the two annotators' annotations using a union strategy, enriches the glossary
 output with provenance tier data, and runs a disagreement analysis.
 
 **Merge strategy:**
@@ -78,8 +78,8 @@ for the small number of cases (~30) no rule resolves. Writes:
 
 ### `inter_annotator_agreement.ipynb`
 
-Computes inter-annotator agreement (IAA) between Reva and Ryan for both tasks.
-Reads the raw `reva_*.tsv`/`ryan_*.tsv` files directly (not the merged files).
+Computes inter-annotator agreement (IAA) between Annotator 1 and Annotator 2 for both tasks.
+Reads the raw `annotator1_*.tsv`/`annotator2_*.tsv` files directly (not the merged files).
 
 **Metrics computed:**
 
@@ -102,22 +102,22 @@ metrics above do not.
 
 ### `merged_labels.tsv`
 
-Columns from `reva_labels.tsv` (all reva columns as base) plus:
+Columns from `annotator1_labels.tsv` (all annotator1 columns as base) plus:
 
 | Column | Description |
 |---|---|
-| `dest_label_reva` | Reva's original label string |
-| `dest_label_ryan` | Ryan's original label string |
+| `dest_label_annotator1` | Annotator 1's original label string |
+| `dest_label_annotator2` | Annotator 2's original label string |
 | `dest_label_merged` | Union-merged label string |
 
 ### `merged_glossary.tsv`
 
-Columns from `reva_glossary.tsv` plus:
+Columns from `annotator1_glossary.tsv` plus:
 
 | Column | Description |
 |---|---|
-| `inferred_target_reva` | Reva's original inferred target string |
-| `inferred_target_ryan` | Ryan's original inferred target string |
+| `inferred_target_annotator1` | Annotator 1's original inferred target string |
+| `inferred_target_annotator2` | Annotator 2's original inferred target string |
 | `inferred_target_merged` | Union-merged inferred target string |
 | `source_domain` | Domain of the description source URL (from `glossary.tsv`) |
 | `tier` | Provenance tier: `1` (high), `2` (moderate), `3` (wiki), `unknown` |
@@ -125,8 +125,8 @@ Columns from `reva_glossary.tsv` plus:
 ## Downstream Use
 
 `data_preprocessing/06_apply_annotations.ipynb` does **not** read the merged
-files in this directory — it reads `reva_labels.tsv`, `ryan_labels.tsv`,
-`reva_glossary.tsv`, and `ryan_glossary.tsv` directly and derives its own
+files in this directory — it reads `annotator1_labels.tsv`, `annotator2_labels.tsv`,
+`annotator1_glossary.tsv`, and `annotator2_glossary.tsv` directly and derives its own
 union in-notebook, then applies the result to the full corpus to produce
 `outputs/unioned_data/06_cleaned_labels.tsv`.
 
